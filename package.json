@@ -13,6 +13,7 @@
     "postuninstall": "electron-builder install-app-deps"
   },
   "dependencies": {
+    "bulma": "^0.8.2",
     "calendar": "^0.1.1",
     "chai-as-promised": "^7.1.1",
     "moment": "^2.26.0",

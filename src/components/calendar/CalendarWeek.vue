@@ -1,5 +1,5 @@
 <template>
-    <div class="row">
+    <div class="columns">
         <CalendarDay v-for="day in week" v-bind:day="day" v-bind:month="month" v-bind:year="year"></CalendarDay>
     </div>
 </template>

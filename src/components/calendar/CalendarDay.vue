@@ -1,5 +1,5 @@
 <template>
-    <div v-if="day !== 0">{{ formattedDate.format('ll') }}</div>
+    <div v-if="day !== 0" class="column">{{ formattedDate.format('ll') }}</div>
 </template>
 
 <script>
@@ -24,5 +24,7 @@
 </script>
 
 <style scoped>
-
+    div{
+        background-color: aliceblue;
+    }
 </style>
