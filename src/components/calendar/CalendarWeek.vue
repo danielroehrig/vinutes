@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-        <CalendarDay v-for="day in week" v-bind:day="day"></CalendarDay>
+        <CalendarDay v-for="day in week" v-bind:day="day" v-bind:month="month" v-bind:year="year"></CalendarDay>
     </div>
 </template>
 
@@ -11,7 +11,9 @@
         name: "CalendarWeek",
         components: {CalendarDay},
         props: {
-            week: Array
+            week: Array,
+            month: Number,
+            year: Number,
         }
     }
 </script>

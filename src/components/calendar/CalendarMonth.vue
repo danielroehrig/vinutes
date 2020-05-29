@@ -1,6 +1,6 @@
 <template>
     <div>
-    <CalendarWeek v-for="week in weeks" v-bind:week="week"></CalendarWeek>
+    <CalendarWeek v-for="week in weeks" v-bind:week="week" v-bind:year="year" v-bind:month="month"></CalendarWeek>
     </div>
 </template>
 
@@ -19,7 +19,7 @@
         data: function () {
             const monthDates = projectCalendar.monthDays(this.year, this.month);
             return {
-                weeks: monthDates,
+                weeks: monthDates
             }
         },
     }

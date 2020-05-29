@@ -1,12 +1,24 @@
 <template>
-    <div v-if="day !== 0">Calendar Day {{ day }}</div>
+    <div v-if="day !== 0">{{ formattedDate.format('ll') }}</div>
 </template>
 
 <script>
+    const moment = require('moment');
     export default {
         name: "CalendarDay",
         props:{
-            day: Number
+            day: Number,
+            year: Number,
+            month: Number,
+        },
+        data: function () {
+            return {
+                formattedDate: moment({
+                    "year": this.year,
+                    "month": this.month,
+                    "day": this.day
+                }),
+            }
         }
     }
 </script>
