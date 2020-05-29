@@ -1,5 +1,5 @@
 <template>
-    <div v-if="day !== 0" class="column">{{ formattedDate.format('ll') }}</div>
+    <div v-bind:class="{'column': true, 'active': (day !== 0) }">{{ (day !== 0) ? formattedDate.format('ll') : 'nope' }}</div>
 </template>
 
 <script>
@@ -26,5 +26,8 @@
 <style scoped>
     div{
         background-color: aliceblue;
+    }
+    div.active {
+        background-color: red;
     }
 </style>
