@@ -1,19 +1,25 @@
 <template>
     <div>
-    <CalendarDay v-for="day in days"></CalendarDay>
-
+    <CalendarWeek v-for="week in weeks" v-bind:week="week"></CalendarWeek>
     </div>
 </template>
 
 <script>
-    import CalendarDay from "./CalendarDay";
+    import CalendarWeek from "./CalendarWeek";
+    const calendar = require('calendar');
+    let projectCalendar = new calendar.Calendar(0);
+
     export default {
         name: "CalendarMonth",
-        components: {CalendarDay},
-        props: ['month'],
+        components: {CalendarWeek},
+        props: {
+            'month': Number,
+            'year': Number,
+        },
         data: function () {
+            const monthDates = projectCalendar.monthDays(this.year, this.month);
             return {
-                days: [2,3,4]
+                weeks: monthDates,
             }
         },
     }

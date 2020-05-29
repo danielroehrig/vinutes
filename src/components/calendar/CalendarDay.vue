@@ -1,10 +1,13 @@
 <template>
-    <div>Calendar Day</div>
+    <div v-if="day !== 0">Calendar Day {{ day }}</div>
 </template>
 
 <script>
     export default {
-        name: "CalendarDay"
+        name: "CalendarDay",
+        props:{
+            day: Number
+        }
     }
 </script>
 
