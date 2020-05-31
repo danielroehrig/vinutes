@@ -14,7 +14,7 @@
             week: Array,
             month: Number,
             year: Number,
-        }
+        },
     }
 </script>
 
