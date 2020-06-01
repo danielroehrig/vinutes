@@ -1,12 +1,11 @@
 <template>
-    <div v-bind:class="{'column': true, 'active': (day !== 0) }" v-on:click="showVideoPlayer">{{ (day !== 0) ?
+    <div v-bind:class="{'column': true, 'active': (day !== 0) }" v-on:click="openMediaFileDialog">{{ (day !== 0) ?
         formattedDate.format('ll') : 'nope' }}
     </div>
 </template>
 
 <script>
-    import store from "../../store";
-
+    const { ipcRenderer } = require('electron');
     const moment = require('moment');
     export default {
         name: "CalendarDay",
@@ -25,9 +24,8 @@
             }
         },
         methods: {
-            showVideoPlayer: function (event) {
-                console.log(event);
-                this.$store.commit('toggleVideoPlayerVisibility');
+            openMediaFileDialog: function () {
+                ipcRenderer.send('show-open-dialog', this.year, this.month, this.day);
             }
         }
     }

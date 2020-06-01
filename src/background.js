@@ -1,11 +1,12 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, dialog } from 'electron'
 import {
   createProtocol,
   /* installVueDevtools */
 } from 'vue-cli-plugin-electron-builder/lib'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const { ipcMain } = require('electron');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -87,3 +88,18 @@ if (isDevelopment) {
     })
   }
 }
+
+ipcMain.on('show-open-dialog', (event, year, month, day)=> {
+  console.log(`Open File Dialog for ${year} ${month} ${day}`);
+  let filePaths = dialog.showOpenDialog({
+    title: "Choose a video or image",
+    filters: [
+      { name: 'All media files', extensions: ['mp4', 'mov', 'avi', 'mpg', 'mpeg', 'jpg', 'jpeg', 'gif', 'png']},
+      { name: 'Videos', extensions: ['mp4', 'mov', 'avi', 'mpg', 'mpeg']},
+      { name: 'Images', extensions: ['jpg', 'jpeg', 'gif', 'png']}
+    ],
+    properties: ['openFile']
+  });
+    let filePath = filePaths[0];
+    console.log(`File path ${filePath}`);
+});
