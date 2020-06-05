@@ -5,10 +5,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    isVideoPlayerVisible: false
+    isVideoPlayerVisible: false,
+    currentDate: null,
   },
   mutations: {
-    toggleVideoPlayerVisibility(state) {
+    openMediaFileDialog(state) {
       state.isVideoPlayerVisible = !state.isVideoPlayerVisible;
     }
   },

@@ -1,17 +1,21 @@
 <template>
-    <div>
-    <CalendarWeek v-for="week in weeks" v-bind:week="week" v-bind:year="year" v-bind:month="month"></CalendarWeek>
-        <div class="modal is-active" v-if="this.$store.state.isVideoPlayerVisible">
-            <div class="modal-background"></div>
-            <div class="modal-content">
-                Hier Video Player
+    <section class="section">
+        <div class="container is-fluid">
+            <CalendarWeek v-for="week in weeks" v-bind:week="week" v-bind:year="year"
+                          v-bind:month="month"></CalendarWeek>
+            <div class="modal is-active" v-if="this.$store.state.isVideoPlayerVisible">
+                <div class="modal-background"></div>
+                <div class="modal-content">
+                    Hier Video Player
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 </template>
 
 <script>
     import CalendarWeek from "./CalendarWeek";
+
     const calendar = require('calendar');
     let projectCalendar = new calendar.Calendar(0);
 

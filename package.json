@@ -13,6 +13,7 @@
     "postuninstall": "electron-builder install-app-deps"
   },
   "dependencies": {
+    "@mdi/font": "^5.3.45",
     "bulma": "^0.8.2",
     "calendar": "^0.1.1",
     "chai-as-promised": "^7.1.1",
@@ -28,8 +29,8 @@
     "@vue/cli-service": "^4.3.1",
     "@vue/test-utils": "^1.0.3",
     "chai": "^4.2.0",
-    "electron": "^5.0.13",
-    "vue-cli-plugin-electron-builder": "^1.4.6",
+    "electron": "^9.0.0",
+    "vue-cli-plugin-electron-builder": "^2.0.0-rc.1",
     "vue-template-compiler": "^2.6.11"
   },
   "main": "background.js"

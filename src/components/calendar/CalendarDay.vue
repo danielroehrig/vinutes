@@ -5,8 +5,7 @@
 </template>
 
 <script>
-    const { ipcRenderer } = require('electron');
-    const moment = require('moment');
+    import moment from 'moment';
     export default {
         name: "CalendarDay",
         props: {
