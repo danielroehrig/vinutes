@@ -1,7 +1,7 @@
 <template>
     <div>
-        <MonthSelector v-bind:month=month v-bind:year=year></MonthSelector>
-        <CalendarMonth v-bind:month=month v-bind:year=year></CalendarMonth>
+        <MonthSelector></MonthSelector>
+        <CalendarMonth></CalendarMonth>
     </div>
 </template>
 <script>
@@ -10,12 +10,6 @@
     import CalendarMonth from "../components/calendar/CalendarMonth";
     import MonthSelector from "../components/calendar/MonthSelector";
     export default {
-        components: {MonthSelector, CalendarMonth, CalendarDay, CalendarWeek},
-        data: function () {
-            return {
-                month: 3,
-                year: 2020
-            }
-        }
+        components: {MonthSelector, CalendarMonth, CalendarDay, CalendarWeek}
     }
 </script>
