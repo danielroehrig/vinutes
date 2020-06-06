@@ -21,10 +21,9 @@
     export default {
         name: "CalendarMonth",
         components: {CalendarWeek},
-        data: function () {
-            const monthDates = projectCalendar.monthDays(this.$store.state.currentYear, this.$store.state.currentMonth);
-            return {
-                weeks: monthDates,
+        computed: {
+            weeks() {
+                return projectCalendar.monthDays(this.$store.state.currentYear, this.$store.state.currentMonth);
             }
         }
     }

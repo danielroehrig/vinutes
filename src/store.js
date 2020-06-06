@@ -16,13 +16,13 @@ export default new Vuex.Store({
       state.isVideoPlayerVisible = !state.isVideoPlayerVisible;
     },
     moveToPreviousMonth(state) {
-      let currentMoment = moment({year: state.currentMonth, month: state.currentMonth});
+      let currentMoment = moment({year: state.currentYear, month: state.currentMonth});
       currentMoment.subtract(1, 'month');
       state.currentMonth = currentMoment.month();
       state.currentYear = currentMoment.year();
     },
     moveToNextMonth(state) {
-      let currentMoment = moment({year: state.currentMonth, month: state.currentMonth});
+      let currentMoment = moment({year: state.currentYear, month: state.currentMonth});
       currentMoment.add(1, 'month');
       state.currentMonth = currentMoment.month();
       state.currentYear = currentMoment.year();
