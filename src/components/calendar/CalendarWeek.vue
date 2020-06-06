@@ -1,6 +1,6 @@
 <template>
     <div class="columns">
-        <CalendarDay v-for="day in week" v-bind:day="day" v-bind:month=$store.state.currentMonth v-bind:year=$store.state.currentYear></CalendarDay>
+        <CalendarDay v-for="day in week" v-bind:day="day"></CalendarDay>
     </div>
 </template>
 

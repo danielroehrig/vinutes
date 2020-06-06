@@ -10,21 +10,19 @@
         name: "CalendarDay",
         props: {
             day: Number,
-            year: Number,
-            month: Number,
         },
-        data: function () {
-            return {
-                formattedDate: moment({
-                    "year": this.year,
-                    "month": this.month,
+        computed: {
+            formattedDate() {
+                return moment({
+                    "year": this.$store.state.currentYear,
+                    "month": this.$store.state.currentMonth,
                     "day": this.day
-                }),
+                });
             }
         },
         methods: {
             openMediaFileDialog: function () {
-                ipcRenderer.send('show-open-dialog', this.year, this.month, this.day);
+                ipcRenderer.send('show-open-dialog', this.$store.state.currentYear, this.$store.state.currentYear);
             }
         }
     }
