@@ -16,7 +16,7 @@
     import CalendarWeek from "./CalendarWeek";
 
     const calendar = require('calendar');
-    let projectCalendar = new calendar.Calendar(0);
+    let projectCalendar = new calendar.Calendar(1);
 
     export default {
         name: "CalendarMonth",
