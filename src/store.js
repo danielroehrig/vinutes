@@ -24,8 +24,10 @@ export default new Vuex.Store({
     moveToNextMonth(state) {
       let currentMoment = moment({year: state.currentYear, month: state.currentMonth});
       currentMoment.add(1, 'month');
-      state.currentMonth = currentMoment.month();
-      state.currentYear = currentMoment.year();
+      if(currentMoment < moment()){
+        state.currentMonth = currentMoment.month();
+        state.currentYear = currentMoment.year();
+      }
     }
   },
   actions: {
