@@ -11,6 +11,7 @@
 
 <script>
     import moment from 'moment';
+    import {mapState} from 'vuex';
 
     export default {
         name: "CalendarDay",
@@ -18,17 +19,21 @@
             day: Number,
         },
         computed: {
+            ...mapState([
+                'currentYear',
+                'currentMonth'
+            ]),
             formattedDate() {
                 return moment({
-                    "year": this.$store.state.currentYear,
-                    "month": this.$store.state.currentMonth,
+                    "year": this.currentYear,
+                    "month":this.currentMonth,
                     "day": this.day
                 });
-            }
+            },
         },
         methods: {
             openMediaFileDialog: function () {
-                ipcRenderer.send('show-open-dialog', this.$store.state.currentYear, this.$store.state.currentYear);
+                ipcRenderer.send('show-open-dialog', this.currentYear, this.currentMonth, this.day);
             }
         }
     }
@@ -38,11 +43,13 @@
     div.inactive {
         visibility: hidden;
     }
+
     div.box {
         width: 100%;
-        padding: 56.25% 0 0 0 ;
+        padding: 56.25% 0 0 0;
         position: relative; /* If you want text inside of it */
     }
+
     div.date {
         position: absolute;
         top: 0;
@@ -51,6 +58,7 @@
         right: 0;
         padding: 20px;
     }
+
     div.box:hover {
         background-color: hsl(171, 100%, 41%);
         color: white;
