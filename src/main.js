@@ -5,7 +5,6 @@ import store from './store'
 import './../node_modules/bulma/css/bulma.css';
 import './../node_modules/@mdi/font/css/materialdesignicons.css';
 
-
 Vue.config.productionTip = false
 
 new Vue({

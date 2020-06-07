@@ -109,11 +109,9 @@ ipcMain.on('show-open-dialog', (event, year, month, day)=> {
         properties: ['openFile']
     }).then(result => {
         let filePath = result.filePaths[0];
-        console.log(`File path ${filePath}`);
-
         let dailyMedia = new DailyMedia(year, month, day);
         dailyMedia.filePath = filePath;
-        dailyMedia.fileType = "unknown";
-        this.$store.state.mediaFiles[moment({year: year, month: month, day:day}).format('YYYYmmdd')] = dailyMedia;
+        dailyMedia.fileType = "unknown"; //TODO Get Media Type
+        event.reply('media-file-selected', dailyMedia);
     });
 });

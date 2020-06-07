@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import moment from "moment";
+import DailyMedia from "./lib/DailyMedia";
 
 Vue.use(Vuex)
 
@@ -30,8 +31,9 @@ export default new Vuex.Store({
         state.currentYear = currentMoment.year();
       }
     },
-    changeMediaFile(state, year, month, day, path, type) {
-
+    changeMediaFile(state, dailyMedia) {
+      let dayAsMoment = moment({year: dailyMedia.year, month: dailyMedia.month, day: dailyMedia.day});
+      state.mediaFiles[dayAsMoment.format('YYYYMMDD')] = dailyMedia;
     }
   },
   actions: {

@@ -12,6 +12,7 @@
 <script>
     import moment from 'moment';
     import {mapState} from 'vuex';
+    import DailyMedia from "../../lib/DailyMedia";
 
     export default {
         name: "CalendarDay",
@@ -37,6 +38,10 @@
             }
         }
     }
+    ipcRenderer.on('media-file-selected', (event, dailyMedia) => {
+        console.log('From Main, '+dailyMedia.filePath);
+        this.$store.commit('changeMediaFile', dailyMedia);
+    });
 </script>
 
 <style scoped>
