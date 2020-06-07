@@ -1,18 +1,20 @@
 'use strict'
 
-import {app, protocol, BrowserWindow, dialog} from 'electron'
+import {app, protocol, BrowserWindow, dialog} from 'electron';
 import {
     createProtocol,
     /* installVueDevtools */
-} from 'vue-cli-plugin-electron-builder/lib'
+} from 'vue-cli-plugin-electron-builder/lib';
+import DailyMedia from "./lib/DailyMedia";
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const {ipcMain} = require('electron');
 const path = require('path');
+const moment = require('moment');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win
+let win;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: {secure: true, standard: true}}])
@@ -108,5 +110,10 @@ ipcMain.on('show-open-dialog', (event, year, month, day)=> {
     }).then(result => {
         let filePath = result.filePaths[0];
         console.log(`File path ${filePath}`);
+
+        let dailyMedia = new DailyMedia(year, month, day);
+        dailyMedia.filePath = filePath;
+        dailyMedia.fileType = "unknown";
+        this.$store.state.mediaFiles[moment({year: year, month: month, day:day}).format('YYYYmmdd')] = dailyMedia;
     });
 });

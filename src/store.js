@@ -10,6 +10,7 @@ export default new Vuex.Store({
     currentDate: null,
     currentMonth: moment().month(),
     currentYear:  moment().year(),
+    mediaFiles: {},
   },
   mutations: {
     openMediaFileDialog(state) {
@@ -28,6 +29,9 @@ export default new Vuex.Store({
         state.currentMonth = currentMoment.month();
         state.currentYear = currentMoment.year();
       }
+    },
+    changeMediaFile(state, year, month, day, path, type) {
+
     }
   },
   actions: {
