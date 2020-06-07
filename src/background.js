@@ -95,9 +95,9 @@ if (isDevelopment) {
     }
 }
 
-ipcMain.on('show-open-dialog', (event, year, month, day) => {
+ipcMain.on('show-open-dialog', (event, year, month, day)=> {
     console.log(`Open File Dialog for ${year} ${month} ${day}`);
-    let filePaths = dialog.showOpenDialog({
+    dialog.showOpenDialog({
         title: "Choose a video or image",
         filters: [
             {name: 'All media files', extensions: ['mp4', 'mov', 'avi', 'mpg', 'mpeg', 'jpg', 'jpeg', 'gif', 'png']},
@@ -105,7 +105,8 @@ ipcMain.on('show-open-dialog', (event, year, month, day) => {
             {name: 'Images', extensions: ['jpg', 'jpeg', 'gif', 'png']}
         ],
         properties: ['openFile']
+    }).then(result => {
+        let filePath = result.filePaths[0];
+        console.log(`File path ${filePath}`);
     });
-    let filePath = filePaths[0];
-    console.log(`File path ${filePath}`);
 });
