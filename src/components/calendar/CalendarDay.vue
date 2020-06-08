@@ -36,12 +36,14 @@
             openMediaFileDialog: function () {
                 ipcRenderer.send('show-open-dialog', this.currentYear, this.currentMonth, this.day);
             }
+        },
+        mounted() {
+            ipcRenderer.on('media-file-selected', (event, dailyMedia) => {
+                console.log('From Main, '+dailyMedia.filePath);
+                this.$store.commit('changeMediaFile', dailyMedia);
+            });
         }
     }
-    ipcRenderer.on('media-file-selected', (event, dailyMedia) => {
-        console.log('From Main, '+dailyMedia.filePath);
-        this.$store.commit('changeMediaFile', dailyMedia);
-    });
 </script>
 
 <style scoped>
