@@ -18,6 +18,7 @@ export default new Vuex.Store({
       state.isVideoPlayerVisible = !state.isVideoPlayerVisible;
     },
     moveToPreviousMonth(state) {
+      console.log("previous month");
       let currentMoment = moment({year: state.currentYear, month: state.currentMonth});
       currentMoment.subtract(1, 'month');
       state.currentMonth = currentMoment.month();
@@ -33,7 +34,8 @@ export default new Vuex.Store({
     },
     changeMediaFile(state, dailyMedia) {
       let dayAsMoment = moment({year: dailyMedia.year, month: dailyMedia.month, day: dailyMedia.day});
-      state.mediaFiles[dayAsMoment.format('YYYYMMDD')] = dailyMedia;
+      let key = "k"+dayAsMoment.format('YYYYMMDD');
+      Vue.set(state.mediaFiles, key, dailyMedia);
     }
   },
   actions: {

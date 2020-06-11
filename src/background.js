@@ -10,7 +10,6 @@ import DailyMedia from "./lib/DailyMedia";
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const {ipcMain} = require('electron');
 const path = require('path');
-const moment = require('moment');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -99,7 +98,7 @@ if (isDevelopment) {
 
 ipcMain.on('show-open-dialog', (event, year, month, day)=> {
     console.log(`Open File Dialog for ${year} ${month} ${day}`);
-    dialog.showOpenDialog({
+    const filePaths = dialog.showOpenDialogSync({
         title: "Choose a video or image",
         filters: [
             {name: 'All media files', extensions: ['mp4', 'mov', 'avi', 'mpg', 'mpeg', 'jpg', 'jpeg', 'gif', 'png']},
@@ -107,11 +106,12 @@ ipcMain.on('show-open-dialog', (event, year, month, day)=> {
             {name: 'Images', extensions: ['jpg', 'jpeg', 'gif', 'png']}
         ],
         properties: ['openFile']
-    }).then(result => {
-        let filePath = result.filePaths[0];
+        //TODO: Handle Cancel and error
+    });
+        let filePath = filePaths[0];
         let dailyMedia = new DailyMedia(year, month, day);
         dailyMedia.filePath = filePath;
         dailyMedia.fileType = "unknown"; //TODO Get Media Type
-        event.reply('media-file-selected', dailyMedia);
-    });
+        event.returnValue = dailyMedia;
+
 });

@@ -1,9 +1,9 @@
 <template>
     <div class="column" style="padding: 5px;">
-        <div class="box" v-bind:class="{'inactive': (day === 0) }" v-on:click="openMediaFileDialog">
+        <div class="box" v-bind:class="{'inactive': (day === 0), 'withMedia': (dailyMedia) }" v-on:click="openMediaFileDialog">
             <div class="date">
                 {{ (day !== 0) ?
-                formattedDate.format('ddd, D. MMM, Y') : '' }}
+                momentToday.format('ddd, D. MMM, Y') : '' }} {{ dailyMedia }}
             </div>
         </div>
     </div>
@@ -14,6 +14,8 @@
     import {mapState} from 'vuex';
     import DailyMedia from "../../lib/DailyMedia";
 
+    let currentDailyMedia = null;
+
     export default {
         name: "CalendarDay",
         props: {
@@ -22,33 +24,39 @@
         computed: {
             ...mapState([
                 'currentYear',
-                'currentMonth'
+                'currentMonth',
+                'mediaFiles',
             ]),
-            formattedDate() {
+            momentToday() {
                 return moment({
                     "year": this.currentYear,
                     "month":this.currentMonth,
                     "day": this.day
                 });
             },
+            dailyMedia() {
+                return this.mediaFiles['k'+moment({
+                    "year": this.currentYear,
+                    "month":this.currentMonth,
+                    "day": this.day
+                }).format('YYYYMMDD')];
+            }
         },
         methods: {
             openMediaFileDialog: function () {
-                ipcRenderer.send('show-open-dialog', this.currentYear, this.currentMonth, this.day);
+                let dailyMedia = ipcRenderer.sendSync('show-open-dialog', this.currentYear, this.currentMonth, this.day);
+                this.$store.commit('changeMediaFile', dailyMedia);
             }
         },
-        mounted() {
-            ipcRenderer.on('media-file-selected', (event, dailyMedia) => {
-                console.log('From Main, '+dailyMedia.filePath);
-                this.$store.commit('changeMediaFile', dailyMedia);
-            });
-        }
     }
 </script>
 
 <style scoped>
     div.inactive {
         visibility: hidden;
+    }
+    div.hasDateMedia {
+        background-color: #2c3e50;
     }
 
     div.box {
