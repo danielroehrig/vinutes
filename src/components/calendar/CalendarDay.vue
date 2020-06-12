@@ -48,7 +48,11 @@
         methods: {
             openMediaFileDialog: function () {
                 let dailyMedia = ipcRenderer.sendSync('show-open-dialog', this.currentYear, this.currentMonth, this.day);
-                this.$store.commit('changeMediaFile', dailyMedia);
+                if(null !== dailyMedia){
+                    this.$store.commit('changeMediaFile', dailyMedia);
+                }else{
+                    this.$store.commit('removeMediaFile', this.currentMoment());
+                }
             },
             currentMoment: function () {
                 return moment({

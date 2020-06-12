@@ -36,6 +36,9 @@ export default new Vuex.Store({
       let dayAsMoment = moment({year: dailyMedia.year, month: dailyMedia.month, day: dailyMedia.day});
       let key = "k"+dayAsMoment.format('YYYYMMDD');
       Vue.set(state.mediaFiles, key, dailyMedia);
+    },
+    removeMediaFile(state, moment){
+      Vue.delete(state.mediaFiles, "k"+moment.format('YYYYMMDD'));
     }
   },
   actions: {

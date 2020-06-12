@@ -118,10 +118,13 @@ ipcMain.on("show-open-dialog", (event, year, month, day) => {
         properties: ["openFile"],
         //TODO: Handle Cancel and error
     });
-    let filePath = filePaths[0];
-    let dailyMedia = new DailyMedia(year, month, day);
-    dailyMedia.filePath = filePath;
-    dailyMedia.fileType = "unknown"; //TODO Get Media Type
-    event.returnValue = dailyMedia;
-
+    if(filePaths){
+        let filePath = filePaths[0];
+        let dailyMedia = new DailyMedia(year, month, day);
+        dailyMedia.filePath = filePath;
+        dailyMedia.fileType = "unknown"; //TODO Get Media Type
+        event.returnValue = dailyMedia;
+    }else{
+        event.returnValue = null;
+    }
 });
