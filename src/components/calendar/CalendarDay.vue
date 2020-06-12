@@ -33,18 +33,10 @@
                 });
             },
             dailyMedia() {
-                return this.mediaFiles['k'+moment({
-                    "year": this.currentYear,
-                    "month":this.currentMonth,
-                    "day": this.day
-                }).format('YYYYMMDD')];
+                return this.mediaFiles[this.generateMediaFilesKey()];
             },
             styling() {
-                let mediaFile = this.mediaFiles['k'+moment({
-                    "year": this.currentYear,
-                    "month":this.currentMonth,
-                    "day": this.day
-                }).format('YYYYMMDD')];
+                let mediaFile = this.mediaFiles[this.generateMediaFilesKey()];
                 if(mediaFile){
                     return {
                         backgroundImage: "url('file://"+mediaFile.filePath+"')",
@@ -57,6 +49,16 @@
             openMediaFileDialog: function () {
                 let dailyMedia = ipcRenderer.sendSync('show-open-dialog', this.currentYear, this.currentMonth, this.day);
                 this.$store.commit('changeMediaFile', dailyMedia);
+            },
+            currentMoment: function () {
+                return moment({
+                    "year": this.currentYear,
+                    "month":this.currentMonth,
+                    "day": this.day
+                });
+            },
+            generateMediaFilesKey: function () {
+                return "k"+this.currentMoment().format('YYYYMMDD');
             }
         },
     }
