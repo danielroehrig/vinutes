@@ -1,6 +1,6 @@
 <template>
     <div class="column" style="padding: 5px;">
-        <div class="box" v-bind:class="{'inactive': (day === 0), 'withMedia': (dailyMedia) }" :style="styling" v-on:click="openMediaFileDialog">
+        <div class="box" :class="{'inactive': (day === 0), 'withMedia': (dailyMedia) }" :style="styling" @click="openMediaFileDialog">
             <div class="date">
                 {{ (day !== 0) ?
                 momentToday.format('ddd, D. MMM, Y') : '' }}
