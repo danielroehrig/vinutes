@@ -1,9 +1,9 @@
 <template>
     <div class="column" style="padding: 5px;">
-        <div class="box" v-bind:class="{'inactive': (day === 0), 'withMedia': (dailyMedia) }" v-on:click="openMediaFileDialog">
+        <div class="box" v-bind:class="{'inactive': (day === 0), 'withMedia': (dailyMedia) }" :style="styling" v-on:click="openMediaFileDialog">
             <div class="date">
                 {{ (day !== 0) ?
-                momentToday.format('ddd, D. MMM, Y') : '' }} {{ dailyMedia }}
+                momentToday.format('ddd, D. MMM, Y') : '' }}
             </div>
         </div>
     </div>
@@ -13,8 +13,6 @@
     import moment from 'moment';
     import {mapState} from 'vuex';
     import DailyMedia from "../../lib/DailyMedia";
-
-    let currentDailyMedia = null;
 
     export default {
         name: "CalendarDay",
@@ -40,6 +38,19 @@
                     "month":this.currentMonth,
                     "day": this.day
                 }).format('YYYYMMDD')];
+            },
+            styling() {
+                let mediaFile = this.mediaFiles['k'+moment({
+                    "year": this.currentYear,
+                    "month":this.currentMonth,
+                    "day": this.day
+                }).format('YYYYMMDD')];
+                if(mediaFile){
+                    return {
+                        backgroundImage: "url('file://"+mediaFile.filePath+"')",
+                    }
+                }
+                return {};
             }
         },
         methods: {
@@ -55,8 +66,11 @@
     div.inactive {
         visibility: hidden;
     }
-    div.hasDateMedia {
-        background-color: #2c3e50;
+    div.withMedia {
+        background-position: center;
+        background-size: cover;
+        color: white;
+        text-shadow: 1px 1px #333333;
     }
 
     div.box {

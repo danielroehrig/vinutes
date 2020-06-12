@@ -25,6 +25,7 @@ function createWindow() {
             width: 1024, height: 800, minWidth: 1024, webPreferences: {
                 nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
                 preload: path.join(__dirname, "preload.js"),
+                webSecurity: false,
             },
         });
 
@@ -76,8 +77,17 @@ app.on("ready", async () => {
         // } catch (e) {
         //   console.error('Vue Devtools failed to install:', e.toString())
         // }
-
     }
+    const protocolName = 'file'
+    protocol.registerFileProtocol(protocolName, (request, callback) => {
+        const url = request.url.replace(`${protocolName}://`, '')
+        try {
+            return callback(decodeURIComponent(url))
+        }
+        catch (error) {
+            console.error(error)
+        }
+    });
     createWindow();
 });
 
