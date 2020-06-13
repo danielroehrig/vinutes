@@ -1,18 +1,19 @@
 <template>
     <div class="column" style="padding: 5px;">
-        <div class="box" :class="{'inactive': (day === 0), 'withMedia': (dailyMedia) }" :style="styling" @click="openMediaFileDialog">
+        <div class="box" :class="{'inactive': (day === 0), 'withMedia': (dailyMedia) }" :style="styling"
+             @click="openMediaFileDialog">
             <div class="date">
                 {{ (day !== 0) ?
-                momentToday.format('ddd, D. MMM, Y') : '' }}
+                momentToday.format("ddd, D. MMM, Y") : "" }}
             </div>
         </div>
     </div>
 </template>
 
 <script>
-    import moment from 'moment';
-    import {mapState} from 'vuex';
-    import DailyMedia from "../../lib/DailyMedia";
+    import moment from "moment";
+    import {mapState} from "vuex";
+    import {DailyMedia, fileType} from "../../lib/DailyMedia";
 
     export default {
         name: "CalendarDay",
@@ -21,57 +22,60 @@
         },
         computed: {
             ...mapState([
-                'currentYear',
-                'currentMonth',
-                'mediaFiles',
+                "currentYear",
+                "currentMonth",
+                "mediaFiles",
             ]),
             momentToday() {
                 return moment({
                     "year": this.currentYear,
-                    "month":this.currentMonth,
-                    "day": this.day
+                    "month": this.currentMonth,
+                    "day": this.day,
                 });
             },
             dailyMedia() {
-                return this.mediaFiles[this.generateMediaFilesKey()];
+                let mediaFile = this.mediaFiles[this.generateMediaFilesKey()];
+                return mediaFile;
             },
             styling() {
                 let mediaFile = this.mediaFiles[this.generateMediaFilesKey()];
-                if(mediaFile){
+                if (mediaFile) {
+                    console.log(fileType(mediaFile));
                     return {
-                        backgroundImage: "url('file://"+mediaFile.filePath+"')",
-                    }
+                        backgroundImage: "url('file://" + mediaFile.filePath + "')",
+                    };
                 }
                 return {};
-            }
+            },
         },
         methods: {
             openMediaFileDialog: function () {
-                let dailyMedia = ipcRenderer.sendSync('show-open-dialog', this.currentYear, this.currentMonth, this.day);
-                if(null !== dailyMedia){
-                    this.$store.commit('changeMediaFile', dailyMedia);
-                }else{
-                    this.$store.commit('removeMediaFile', this.currentMoment());
+                let dailyMedia = ipcRenderer.sendSync("show-open-dialog", this.currentYear, this.currentMonth, this.day);
+                if (null !== dailyMedia) {
+                    this.$store.commit("changeMediaFile", dailyMedia);
+                } else {
+                    this.$store.commit("removeMediaFile", this.currentMoment());
                 }
             },
             currentMoment: function () {
                 return moment({
                     "year": this.currentYear,
-                    "month":this.currentMonth,
-                    "day": this.day
+                    "month": this.currentMonth,
+                    "day": this.day,
                 });
             },
             generateMediaFilesKey: function () {
-                return "k"+this.currentMoment().format('YYYYMMDD');
-            }
+                return "k" + this.currentMoment().format("YYYYMMDD");
+            },
         },
-    }
+    };
 </script>
 
 <style scoped>
     div.inactive {
         visibility: hidden;
     }
+
     div.withMedia {
         background-position: center;
         background-size: cover;
