@@ -7,6 +7,7 @@
                 <div class="modal-content">
                     Hier Video Player
                 </div>
+                <button class="modal-close is-large" aria-label="close" @click="closeVideoPlayer"></button>
             </div>
         </div>
     </section>
@@ -24,6 +25,11 @@
         computed: {
             weeks() {
                 return projectCalendar.monthDays(this.$store.state.currentYear, this.$store.state.currentMonth);
+            }
+        },
+        methods: {
+            closeVideoPlayer: function () {
+                this.$store.commit('hideVideoPlayer');
             }
         }
     }

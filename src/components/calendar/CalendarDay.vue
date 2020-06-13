@@ -12,7 +12,7 @@
 
 <script>
     import moment from "moment";
-    import {mapState} from "vuex";
+    import {mapState, mapMutations} from "vuex";
     import {DailyMedia, fileType} from "../../lib/DailyMedia";
 
     export default {
@@ -35,26 +35,46 @@
             },
             dailyMedia() {
                 let mediaFile = this.mediaFiles[this.generateMediaFilesKey()];
+                if (mediaFile) {
+                    const currentFileType = fileType(mediaFile);
+                    if (currentFileType === "video") {
+                        console.log("Is Video");
+                        this.showVideoPlayer();
+
+                    } else if (currentFileType === "image") {
+                        console.log("Is Image");
+                    }
+                }
                 return mediaFile;
             },
             styling() {
                 let mediaFile = this.mediaFiles[this.generateMediaFilesKey()];
                 if (mediaFile) {
-                    console.log(fileType(mediaFile));
-                    return {
-                        backgroundImage: "url('file://" + mediaFile.filePath + "')",
-                    };
+                    const currentFileType = fileType(mediaFile);
+                    if (currentFileType === "video") {
+                        console.log("Is Video");
+                    } else if (currentFileType === "image") {
+                        return {
+                            backgroundImage: "url('file://" + mediaFile.filePath + "')",
+                        };
+                    }
                 }
                 return {};
             },
         },
         methods: {
+            ...mapMutations([
+                "changeMediaFile",
+                "removeMediaFile",
+                "showVideoPlayer",
+                "hideVideoPlayer",
+            ]),
             openMediaFileDialog: function () {
                 let dailyMedia = ipcRenderer.sendSync("show-open-dialog", this.currentYear, this.currentMonth, this.day);
                 if (null !== dailyMedia) {
-                    this.$store.commit("changeMediaFile", dailyMedia);
+                    this.changeMediaFile(dailyMedia);
                 } else {
-                    this.$store.commit("removeMediaFile", this.currentMoment());
+                    this.removeMediaFile(this.currentMoment());
                 }
             },
             currentMoment: function () {

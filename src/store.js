@@ -14,8 +14,11 @@ export default new Vuex.Store({
     mediaFiles: {},
   },
   mutations: {
-    openMediaFileDialog(state) {
-      state.isVideoPlayerVisible = !state.isVideoPlayerVisible;
+    showVideoPlayer(state) {
+      state.isVideoPlayerVisible = true;
+    },
+    hideVideoPlayer(state) {
+      state.isVideoPlayerVisible = false;
     },
     moveToPreviousMonth(state) {
       console.log("previous month");
