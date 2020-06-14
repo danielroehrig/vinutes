@@ -22,6 +22,10 @@ export default new Vuex.Store({
       state.currentDailyMediaShown = null;
       state.isVideoPlayerVisible = false;
     },
+    setTimeStampForVideo(state, timeStamp){
+      state.currentDailyMediaShown.timeStamp = timeStamp;
+      console.log(state.mediaFiles);
+    },
     moveToPreviousMonth(state) {
       console.log("previous month");
       let currentMoment = moment({year: state.currentYear, month: state.currentMonth});
