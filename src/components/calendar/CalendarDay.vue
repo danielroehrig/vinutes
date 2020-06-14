@@ -39,7 +39,7 @@
                     const currentFileType = fileType(mediaFile);
                     if (currentFileType === "video") {
                         console.log("Is Video");
-                        this.showVideoPlayer();
+                        this.showVideoPlayer(mediaFile);
 
                     } else if (currentFileType === "image") {
                         console.log("Is Image");

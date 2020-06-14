@@ -8,16 +8,18 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     isVideoPlayerVisible: false,
-    currentDate: null,
+    currentDailyMediaShown: null,
     currentMonth: moment().month(),
     currentYear:  moment().year(),
     mediaFiles: {},
   },
   mutations: {
-    showVideoPlayer(state) {
+    showVideoPlayer(state, dailyMedia) {
+      state.currentDailyMediaShown = dailyMedia;
       state.isVideoPlayerVisible = true;
     },
     hideVideoPlayer(state) {
+      state.currentDailyMediaShown = null;
       state.isVideoPlayerVisible = false;
     },
     moveToPreviousMonth(state) {
