@@ -51,6 +51,9 @@ export default new Vuex.Store({
     }
   },
   actions: {
-
+    saveTimeStamp(context, timeStamp){
+      context.commit('setTimeStampForVideo', timeStamp);
+      context.commit('hideVideoPlayer');
+    }
   }
 })

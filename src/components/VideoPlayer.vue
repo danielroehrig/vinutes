@@ -32,8 +32,7 @@
             },
             acceptVideo: function () {
                 const videoPreviewPlayer = document.getElementById('videoPreviewPlayer');
-                console.log(`current position ${videoPreviewPlayer.currentTime}`);
-                this.$store.commit('setTimeStampForVideo', videoPreviewPlayer.currentTime);
+                this.$store.dispatch('saveTimeStamp', videoPreviewPlayer.currentTime);
             }
         },
     };
