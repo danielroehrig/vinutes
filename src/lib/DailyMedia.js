@@ -7,6 +7,7 @@ export class DailyMedia {
         this.day = day;
         this.filePath = filePath;
         this.timeStamp = 0.0;
+        this.screenshotPath = null;
     }
 }
 export function fileType(dailyMedia) {

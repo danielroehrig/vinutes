@@ -39,7 +39,6 @@
                     const currentFileType = fileType(mediaFile);
                     if (currentFileType === "video") {
                         this.showVideoPlayer(mediaFile);
-
                     } else if (currentFileType === "image") {
                         console.log("Is Image");
                     }
@@ -50,8 +49,10 @@
                 let mediaFile = this.mediaFiles[this.generateMediaFilesKey()];
                 if (mediaFile) {
                     const currentFileType = fileType(mediaFile);
-                    if (currentFileType === "video") {
-                        console.log("Is Video");
+                    if (currentFileType === "video" && mediaFile.screenshotPath !== null) {//TODO: Check if not yet deleted
+                        return {
+                            backgroundImage: "url('file://" + mediaFile.screenshotPath + "')",
+                        }
                     } else if (currentFileType === "image") {
                         return {
                             backgroundImage: "url('file://" + mediaFile.filePath + "')",

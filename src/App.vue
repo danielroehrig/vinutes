@@ -29,6 +29,12 @@
 <script>
   import Navbar from "./components/Navbar";
   export default {
-    components: {Navbar}
+    components: {Navbar},
+    mounted() {
+      ipcRenderer.on('screenshot-created', (event, dailyMedia)=>{
+        console.log("Screenshot-created received");
+        this.$store.commit('changeMediaFile', dailyMedia);
+      });
+    }
   }
 </script>

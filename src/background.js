@@ -126,3 +126,8 @@ ipcMain.on("show-open-dialog", (event, year, month, day) => {
         event.returnValue = null;
     }
 });
+
+ipcMain.on("create-video-screenshot", (event, dailyMedia)=>{
+    console.log(`Create screenshot for ${dailyMedia.filePath}`);
+    event.reply('screenshot-created', dailyMedia);
+})

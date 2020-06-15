@@ -32,7 +32,9 @@
             },
             acceptVideo: function () {
                 const videoPreviewPlayer = document.getElementById('videoPreviewPlayer');
-                this.$store.dispatch('saveTimeStamp', videoPreviewPlayer.currentTime);
+                let currentDailyMedia = this.$store.state.currentDailyMediaShown;
+                this.$store.dispatch('acceptVideo', videoPreviewPlayer.currentTime);
+                ipcRenderer.send('create-video-screenshot', currentDailyMedia);
             }
         },
     };

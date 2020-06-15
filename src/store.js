@@ -51,7 +51,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    saveTimeStamp(context, timeStamp){
+    acceptVideo(context, timeStamp){
       context.commit('setTimeStampForVideo', timeStamp);
       context.commit('hideVideoPlayer');
     }
