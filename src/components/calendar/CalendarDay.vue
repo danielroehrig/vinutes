@@ -12,8 +12,8 @@
 
 <script>
     import moment from "moment";
-    import {mapState, mapMutations} from "vuex";
-    import {DailyMedia, fileType} from "../../lib/DailyMedia";
+    import {mapMutations, mapState} from "vuex";
+    import {fileType} from "../../lib/DailyMedia";
 
     export default {
         name: "CalendarDay",
@@ -34,16 +34,7 @@
                 });
             },
             dailyMedia() {
-                let mediaFile = this.mediaFiles[this.generateMediaFilesKey()];
-                if (mediaFile) {
-                    const currentFileType = fileType(mediaFile);
-                    if (currentFileType === "video") {
-                        this.showVideoPlayer(mediaFile);
-                    } else if (currentFileType === "image") {
-                        console.log("Is Image");
-                    }
-                }
-                return mediaFile;
+                return this.mediaFiles[this.generateMediaFilesKey()];
             },
             styling() {
                 let mediaFile = this.mediaFiles[this.generateMediaFilesKey()];
@@ -64,15 +55,13 @@
         },
         methods: {
             ...mapMutations([
-                "changeMediaFile",
                 "removeMediaFile",
                 "showVideoPlayer",
-                "hideVideoPlayer",
             ]),
             openMediaFileDialog: function () {
                 let dailyMedia = ipcRenderer.sendSync("show-open-dialog", this.currentYear, this.currentMonth, this.day);
                 if (null !== dailyMedia) {
-                    this.changeMediaFile(dailyMedia);
+                    this.showVideoPlayer(dailyMedia);
                 } else {
                     this.removeMediaFile(this.currentMoment());
                 }

@@ -119,9 +119,7 @@ ipcMain.on("show-open-dialog", (event, year, month, day) => {
     });
     if(filePaths){
         let filePath = filePaths[0];
-        let dailyMedia = new DailyMedia(year, month, day, filePath);
-        console.log(dailyMedia.fileType);
-        event.returnValue = dailyMedia;
+        event.returnValue = new DailyMedia(year, month, day, filePath);
     }else{
         event.returnValue = null;
     }
