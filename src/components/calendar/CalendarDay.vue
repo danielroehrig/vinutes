@@ -62,8 +62,6 @@
                 let dailyMedia = ipcRenderer.sendSync("show-open-dialog", this.currentYear, this.currentMonth, this.day);
                 if (null !== dailyMedia) {
                     this.showVideoPlayer(dailyMedia);
-                } else {
-                    this.removeMediaFile(this.currentMoment());
                 }
             },
             currentMoment: function () {
