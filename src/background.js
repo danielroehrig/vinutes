@@ -1,5 +1,4 @@
 "use strict";
-
 import {app, protocol, BrowserWindow, dialog} from "electron";
 import {
     createProtocol,
@@ -10,6 +9,11 @@ import {DailyMedia} from "./lib/DailyMedia";
 const isDevelopment = process.env.NODE_ENV !== "production";
 const {ipcMain} = require("electron");
 const path = require("path");
+const ffmpegPath = path.join(__static, "bin", "amd64", "ffmpeg");
+const ffprobePath = path.join(__static, "bin", "amd64", "ffmpeg");
+const FfmpegCommand = require("fluent-ffmpeg");
+FfmpegCommand.setFfmpegPath(ffmpegPath);
+FfmpegCommand.setFfprobePath(ffprobePath);
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -78,14 +82,13 @@ app.on("ready", async () => {
         //   console.error('Vue Devtools failed to install:', e.toString())
         // }
     }
-    const protocolName = 'file'
+    const protocolName = "file";
     protocol.registerFileProtocol(protocolName, (request, callback) => {
-        const url = request.url.replace(`${protocolName}://`, '')
+        const url = request.url.replace(`${protocolName}://`, "");
         try {
-            return callback(decodeURIComponent(url))
-        }
-        catch (error) {
-            console.error(error)
+            return callback(decodeURIComponent(url));
+        } catch (error) {
+            console.error(error);
         }
     });
     createWindow();
@@ -117,15 +120,23 @@ ipcMain.on("show-open-dialog", (event, year, month, day) => {
         ],
         properties: ["openFile"],
     });
-    if(filePaths){
+    if (filePaths) {
         let filePath = filePaths[0];
         event.returnValue = new DailyMedia(year, month, day, filePath);
-    }else{
+    } else {
         event.returnValue = null;
     }
 });
 
-ipcMain.on("create-video-screenshot", (event, dailyMedia)=>{
-    console.log(`Create screenshot for ${dailyMedia.filePath}`);
-    event.reply('screenshot-created', dailyMedia);
-})
+ipcMain.on("create-video-screenshot", (event, dailyMedia) => {
+    console.log(`Create screenshot for ${dailyMedia.filePath} ${ffmpegPath}`);
+    new FfmpegCommand(dailyMedia.filePath).screenshots({
+        timestamps: [dailyMedia.timeStamp],
+        filename: "test.jpg",
+        folder: "/tmp",
+        size: "320x240",
+    }).on("end", function () {
+        console.log("screenshot created?");
+    });
+    event.reply("screenshot-created", dailyMedia);
+});
