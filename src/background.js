@@ -6,6 +6,7 @@ import {
 } from "vue-cli-plugin-electron-builder/lib";
 import {DailyMedia} from "./lib/DailyMedia";
 
+
 const isDevelopment = process.env.NODE_ENV !== "production";
 const {ipcMain} = require("electron");
 const path = require("path");
@@ -14,10 +15,19 @@ const ffprobePath = path.join(__static, "bin", "amd64", "ffmpeg");
 const FfmpegCommand = require("fluent-ffmpeg");
 FfmpegCommand.setFfmpegPath(ffmpegPath);
 FfmpegCommand.setFfprobePath(ffprobePath);
+const sep = path.sep;
+const configFilePath = path.join(sep, app.getPath('userData'), 'config.json');
+const screenshotsFolder = path.join(sep, app.getPath('userData'), 'screenshots');
+const ConfigService = require("./lib/ConfigService");
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
+
+//Load Presets
+let jasConfig = ConfigService.loadConfig(configFilePath);
+console.log(JSON.stringify(jasConfig));
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: "app", privileges: {secure: true, standard: true}}]);
