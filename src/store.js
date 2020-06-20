@@ -12,6 +12,8 @@ export default new Vuex.Store({
     currentMonth: moment().month(),
     currentYear:  moment().year(),
     mediaFiles: {},
+    language: "en",
+    calendarTimesTampFormat: "ddd, D. MMM, Y",
   },
   mutations: {
     showVideoPlayer(state, dailyMedia) {
