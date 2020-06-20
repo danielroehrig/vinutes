@@ -1,8 +1,13 @@
-export default class JasConfig {
+"use strict";
+
+const internal = {};
+
+module.exports = internal.JasConfig = class{
     constructor() {
         this.timelines = [];
     }
-    static from(json){
-        return Object.assign(new JasConfig(), json);
+
+    static from(json) {
+        return Object.assign(new internal.JasConfig(), json);
     }
 }

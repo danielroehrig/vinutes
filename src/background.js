@@ -27,7 +27,6 @@ let win;
 
 //Load Presets
 let jasConfig = ConfigService.loadConfig(configFilePath);
-console.log(JSON.stringify(jasConfig));
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: "app", privileges: {secure: true, standard: true}}]);
