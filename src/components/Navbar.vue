@@ -2,7 +2,7 @@
     <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <div class="navbar-item">
-                <img src="img/shutterIcon.png" width="28" height="28">
+                <router-link to="/"><img src="img/shutterIcon.png" width="28" height="28"></router-link>
             </div>
 
             <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
@@ -37,9 +37,9 @@
                         <a class="button is-primary">
                             <strong>Render</strong>
                         </a>
-                        <a>
+                        <router-link to="/preferences">
                            <span class="button mdi mdi-24px mdi-cog"></span>
-                        </a>
+                        </router-link>
                     </div>
                 </div>
             </div>
