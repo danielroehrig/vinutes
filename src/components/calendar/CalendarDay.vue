@@ -13,7 +13,7 @@
 <script>
     import moment from "moment";
     import {mapMutations, mapState} from "vuex";
-    import {fileType} from "../../lib/DailyMedia";
+    import {fileTypeCategory} from "../../lib/DailyMedia";
 
     export default {
         name: "CalendarDay",
@@ -39,7 +39,7 @@
             styling() {
                 let mediaFile = this.mediaFiles[this.generateMediaFilesKey()];
                 if (mediaFile) {
-                    const currentFileType = fileType(mediaFile);
+                    const currentFileType = fileTypeCategory(mediaFile);
                     if (currentFileType === "video" && mediaFile.screenshotPath !== null) {//TODO: Check if not yet deleted
                         return {
                             backgroundImage: "url('file://" + mediaFile.screenshotPath + "')",
