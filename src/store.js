@@ -50,6 +50,15 @@ export default new Vuex.Store({
     },
     removeMediaFile(state, moment){
       Vue.delete(state.mediaFiles, "k"+moment.format('YYYYMMDD'));
+    },
+    /**
+     * Change the language of the ui and timestamps
+     *
+     * @param {object} state
+     * @param {string} language
+     */
+    changeLanguage(state, language){
+      state.language = language;
     }
   },
   actions: {

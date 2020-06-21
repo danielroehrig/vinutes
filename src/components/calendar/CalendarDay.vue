@@ -27,6 +27,7 @@
                 "mediaFiles",
             ]),
             momentToday() {
+                moment.locale(this.$store.state.language);
                 return moment({
                     "year": this.currentYear,
                     "month": this.currentMonth,
@@ -43,7 +44,7 @@
                     if (currentFileType === "video" && mediaFile.screenshotPath !== null) {//TODO: Check if not yet deleted
                         return {
                             backgroundImage: "url('file://" + mediaFile.screenshotPath + "')",
-                        }
+                        };
                     } else if (currentFileType === "image") {
                         return {
                             backgroundImage: "url('file://" + mediaFile.filePath + "')",
