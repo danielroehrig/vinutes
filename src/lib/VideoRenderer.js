@@ -6,7 +6,7 @@ const FfmpegCommand = require("fluent-ffmpeg");
 FfmpegCommand.setFfmpegPath(ffmpegPath);
 FfmpegCommand.setFfprobePath(ffprobePath);
 const sep = path.sep;
-const screenshotsFolder = path.join(sep, app.getPath('userData'), 'screenshots');
+const screenshotsFolder = path.join(sep, app.getPath("userData"), "screenshots");
 
 /**
  * Create screenshot at the given time stamp from file path
@@ -23,7 +23,8 @@ const createScreenshot = (dailyMedia, timeline, event) => {
         size: "320x240",
     }).on("end", function () {
         console.log("screenshot created?");
+        dailyMedia.screenshotPath = "/tmp/test.jpg";
         event.reply("screenshot-created", dailyMedia);
     });
-}
+};
 module.exports.createScreenshot = createScreenshot;
