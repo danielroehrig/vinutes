@@ -16,17 +16,29 @@ describe("CalendarDay.vue", () => {
             month: moment().month(),
             day: day
         });
-        expect(wrapper.text()).to.include(testMoment.format(store.state.calendarTimesTampFormat));
+        expect(wrapper.text()).to.include(testMoment.format(store.state.calendarTimeStampFormat));
         expect(wrapper.get('div.box').classes()).to.not.include('inactive');
     });
-
+    it("displays current month, year in a non default format", () => {
+        const day = 2;
+        store.state.calendarTimeStampFormat = 'Y.M.D';
+        const wrapper = shallowMount(CalendarDay, {
+            store: store,
+            propsData: {day},
+        });
+        let testMoment = moment({
+            year: moment().year(),
+            month: moment().month(),
+            day: day
+        });
+        expect(wrapper.text()).to.include(testMoment.format(store.state.calendarTimeStampFormat));
+    });
     it("displays nothing if day is zero", () => {
         const day = 0;
         const wrapper = shallowMount(CalendarDay, {
             store: store,
             propsData: {day},
         });
-
         expect(wrapper.get('div.box').classes()).to.include('inactive');
     });
 });

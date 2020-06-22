@@ -14,7 +14,7 @@ export default new Vuex.Store({
     currentTimeline: null,
     mediaFiles: {},
     language: "en",
-    calendarTimesTampFormat: "ddd, D. MMM, Y",
+    calendarTimeStampFormat: "ddd, D. MMM, Y",
   },
   mutations: {
     showVideoPlayer(state, dailyMedia) {
@@ -30,7 +30,6 @@ export default new Vuex.Store({
       console.log(state.mediaFiles);
     },
     moveToPreviousMonth(state) {
-      console.log("previous month");
       let currentMoment = moment({year: state.currentYear, month: state.currentMonth});
       currentMoment.subtract(1, 'month');
       state.currentMonth = currentMoment.month();
@@ -60,6 +59,14 @@ export default new Vuex.Store({
      */
     changeLanguage(state, language){
       state.language = language;
+    },
+    /**
+     * Change the timestamp format displayed in the calendar
+     * @param state
+     * @param {string} format
+     */
+    changeTimestampFormat(state, format){
+      state.calendarTimeStampFormat = format;
     }
   },
   actions: {

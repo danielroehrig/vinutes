@@ -11,6 +11,12 @@
                 </div>
             </div>
         </div>
+        <div class="field has-text-left">
+            <label class="label">Timestamp format</label>
+            <div class="control">
+                    <input class="input" type="text" v-model="timestampFormat">
+            </div>
+        </div>
     </div>
 </template>
 
@@ -24,6 +30,14 @@
                 },
                 get() {
                     return this.$store.state.language;
+                },
+            },
+            timestampFormat: {
+                set(timestampFormat) {
+                    this.$store.commit("changeTimestampFormat", timestampFormat);
+                },
+                get() {
+                    return this.$store.state.calendarTimeStampFormat;
                 },
             },
         },

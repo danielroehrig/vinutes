@@ -4,7 +4,7 @@
              @click="openMediaFileDialog">
             <div class="date">
                 {{ (day !== 0) ?
-                momentToday.format("ddd, D. MMM, Y") : "" }}
+                momentToday.format(timestampFormatting) : "" }}
             </div>
         </div>
     </div>
@@ -33,6 +33,9 @@
                     "month": this.currentMonth,
                     "day": this.day,
                 });
+            },
+            timestampFormatting() {
+                return this.$store.state.calendarTimeStampFormat;
             },
             dailyMedia() {
                 return this.mediaFiles[this.generateMediaFilesKey()];
