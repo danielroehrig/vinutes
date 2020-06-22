@@ -33,8 +33,9 @@
             acceptVideo: function () {
                 const videoPreviewPlayer = document.getElementById('videoPreviewPlayer');
                 let currentDailyMedia = this.$store.state.currentDailyMediaShown;
+                let currentTimeline = this.$store.state.currentTimeline;
                 this.$store.dispatch('acceptVideo', videoPreviewPlayer.currentTime);
-                ipcRenderer.send('create-video-screenshot', currentDailyMedia);
+                ipcRenderer.send('create-video-screenshot', currentDailyMedia, currentTimeline);
             }
         },
     };

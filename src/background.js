@@ -6,19 +6,13 @@ import {
 } from "vue-cli-plugin-electron-builder/lib";
 import {DailyMedia} from "./lib/DailyMedia";
 
-
 const isDevelopment = process.env.NODE_ENV !== "production";
 const {ipcMain} = require("electron");
 const path = require("path");
-const ffmpegPath = path.join(__static, "bin", "amd64", "ffmpeg");
-const ffprobePath = path.join(__static, "bin", "amd64", "ffmpeg");
-const FfmpegCommand = require("fluent-ffmpeg");
-FfmpegCommand.setFfmpegPath(ffmpegPath);
-FfmpegCommand.setFfprobePath(ffprobePath);
 const sep = path.sep;
 const configFilePath = path.join(sep, app.getPath('userData'), 'config.json');
-const screenshotsFolder = path.join(sep, app.getPath('userData'), 'screenshots');
 const ConfigService = require("./lib/ConfigService");
+const VideoRenderer = require("./lib/VideoRenderer");
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -137,15 +131,7 @@ ipcMain.on("show-open-dialog", (event, year, month, day) => {
     }
 });
 
-ipcMain.on("create-video-screenshot", (event, dailyMedia) => {
-    console.log(`Create screenshot for ${dailyMedia.filePath} ${ffmpegPath}`);
-    new FfmpegCommand(dailyMedia.filePath).screenshots({
-        timestamps: [dailyMedia.timeStamp],
-        filename: "test.jpg",
-        folder: "/tmp",
-        size: "320x240",
-    }).on("end", function () {
-        console.log("screenshot created?");
-    });
-    event.reply("screenshot-created", dailyMedia);
+ipcMain.on("create-video-screenshot", (event, dailyMedia, timeline) => {
+    console.log(`Create screenshot for ${dailyMedia.filePath}`);
+    VideoRenderer.createScreenshot(dailyMedia, timeline, event);
 });

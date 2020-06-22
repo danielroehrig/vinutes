@@ -11,6 +11,7 @@ export default new Vuex.Store({
     currentDailyMediaShown: null,
     currentMonth: moment().month(),
     currentYear:  moment().year(),
+    currentTimeline: null,
     mediaFiles: {},
     language: "en",
     calendarTimesTampFormat: "ddd, D. MMM, Y",

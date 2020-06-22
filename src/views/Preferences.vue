@@ -20,11 +20,9 @@
         computed: {
             language: {
                 set(language) {
-                    console.log("Set Language " + language);
                     this.$store.commit("changeLanguage", language);
                 },
                 get() {
-                    console.log("Get Language " + this.$store.state.language);
                     return this.$store.state.language;
                 },
             },

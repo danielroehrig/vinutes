@@ -32,7 +32,7 @@
     components: {Navbar},
     mounted() {
       ipcRenderer.on('screenshot-created', (event, dailyMedia)=>{
-        console.log("Screenshot-created received");
+        console.log("Yes! Screenshot created");
         this.$store.commit('changeMediaFile', dailyMedia);
       });
     }
