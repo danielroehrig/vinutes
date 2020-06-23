@@ -10,7 +10,7 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 const {ipcMain} = require("electron");
 const path = require("path");
 const sep = path.sep;
-const configFilePath = path.join(sep, app.getPath('userData'), 'config.json');
+const configDirPath = app.getPath('userData');
 const ConfigService = require("./lib/ConfigService");
 const VideoRenderer = require("./lib/VideoRenderer");
 
@@ -20,7 +20,7 @@ const VideoRenderer = require("./lib/VideoRenderer");
 let win;
 
 //Load Presets
-let jasConfig = ConfigService.loadConfig(configFilePath);
+let jasConfig = ConfigService.loadConfig(configDirPath);
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: "app", privileges: {secure: true, standard: true}}]);

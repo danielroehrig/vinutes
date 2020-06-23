@@ -1,22 +1,53 @@
 "use strict";
-const fs = require('fs');
-const JasConfig = require ("./JasConfig");
+const {app} = require("electron");
+const path = require("path");
+const sep = path.sep;
+const fs = require("fs");
+const JasConfig = require("./JasConfig");
 
-const loadConfig = (configFilePath) => {
+/**
+ * Load config file from user data location.
+ *
+ * @param {string} configPath
+ * @returns {JasConfig}
+ */
+const loadConfig = (configPath) => {
+    const configFilePath = path.join(sep, app.getPath("userData"), "config.json");
+    let jasConfig;
     if (fs.existsSync(configFilePath)) {
-        const jsonConfigData = JSON.parse(fs.readFileSync(configFilePath, {encoding: 'utf8', flag: 'r'}));
-        return JasConfig.from(jsonConfigData);
+        jasConfig = loadConfigFromFile(configFilePath);
+    }else{
+        jasConfig = new JasConfig(app.getLocaleCountryCode());
+        writeConfig(jasConfig, configFilePath);
     }
-    let jasConfig = new JasConfig();
-    writeConfig(jasConfig, configFilePath);
     return jasConfig;
 };
 
+/**
+ * Save config to disk
+ *
+ * @param jasConfig
+ * @param configFilePath
+ */
 const writeConfig = (jasConfig, configFilePath) => {
     fs.writeFile(configFilePath, JSON.stringify(jasConfig), (err) => {
-        if (err)
-            console.log(err)
-    })
+        if (err) {
+            //TODO: Display a warning that reads "Cannot write in your user directory"
+            console.log(err);
+            app.exit(1);
+        }
+    });
+};
+
+/**
+ * Load config file from path.
+ *
+ * @param {string} configFilePath
+ */
+function loadConfigFromFile(configFilePath) {
+    const buffer = fs.readFileSync(configFilePath, {encoding: "utf8", flag: "r"});
+    const jsonConfigData = JSON.parse(buffer.toString());
+    return JasConfig.from(jsonConfigData);
 }
 
 exports.loadConfig = loadConfig;
