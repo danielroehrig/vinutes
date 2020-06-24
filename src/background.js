@@ -9,11 +9,11 @@ import {DailyMedia} from "./lib/DailyMedia";
 const isDevelopment = process.env.NODE_ENV !== "production";
 const {ipcMain} = require("electron");
 const path = require("path");
-const sep = path.sep;
-const configDirPath = app.getPath('userData');
 const ConfigService = require("./lib/ConfigService");
 const VideoRenderer = require("./lib/VideoRenderer");
+const {Timeline, timelineLoader} = require("./lib/Timeline");
 
+let timeline = new Timeline("yeah");
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

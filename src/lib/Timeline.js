@@ -1,4 +1,6 @@
-export class Timeline {
+"use strict";
+
+class Timeline {
     /**
      *
      * @param {string} name
@@ -7,3 +9,8 @@ export class Timeline {
         this.name = name;
     }
 }
+const timeLineLoader = () => {
+    return "Year";
+}
+module.exports.Timeline = Timeline;
+module.exports.timelineLoader = timeLineLoader;

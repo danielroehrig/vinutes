@@ -12,6 +12,9 @@ module.exports = {
                     return args;
                 })
             },
+            builderOptions:{
+                extraResources: ['public/**'],
+            }
         }
     },
 }
