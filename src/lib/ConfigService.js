@@ -4,21 +4,20 @@ const path = require("path");
 const sep = path.sep;
 const fs = require("fs");
 const JasConfig = require("./JasConfig");
+const configFilePath = path.join(sep, app.getPath("userData"), "config.json");
 
 /**
  * Load config file from user data location.
  *
- * @param {string} configPath
  * @returns {JasConfig}
  */
-const loadConfig = (configPath) => {
-    const configFilePath = path.join(sep, app.getPath("userData"), "config.json");
+const loadConfig = () => {
     let jasConfig;
     if (fs.existsSync(configFilePath)) {
         jasConfig = loadConfigFromFile(configFilePath);
     }else{
         jasConfig = new JasConfig(app.getLocaleCountryCode());
-        writeConfig(jasConfig, configFilePath);
+        writeConfig();
     }
     return jasConfig;
 };
@@ -27,9 +26,8 @@ const loadConfig = (configPath) => {
  * Save config to disk
  *
  * @param jasConfig
- * @param configFilePath
  */
-const writeConfig = (jasConfig, configFilePath) => {
+const writeConfig = (jasConfig) => {
     fs.writeFile(configFilePath, JSON.stringify(jasConfig), (err) => {
         if (err) {
             //TODO: Display a warning that reads "Cannot write in your user directory"

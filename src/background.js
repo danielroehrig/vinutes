@@ -19,9 +19,6 @@ const VideoRenderer = require("./lib/VideoRenderer");
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
 
-//Load Presets
-let jasConfig = ConfigService.loadConfig(configDirPath);
-
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: "app", privileges: {secure: true, standard: true}}]);
 
@@ -112,6 +109,13 @@ if (isDevelopment) {
     }
 }
 
+//Load Presets
+let jasConfig;
+ipcMain.on('load-config', (event)=>{
+    jasConfig = ConfigService.loadConfig();
+    event.returnValue = jasConfig;
+});
+
 ipcMain.on("show-open-dialog", (event, year, month, day) => {
     console.log(`Open File Dialog for ${year} ${month} ${day}`);
     const filePaths = dialog.showOpenDialogSync({
@@ -135,3 +139,8 @@ ipcMain.on("create-video-screenshot", (event, dailyMedia, timeline) => {
     console.log(`Create screenshot for ${dailyMedia.filePath}`);
     VideoRenderer.createScreenshot(dailyMedia, timeline, event);
 });
+
+ipcMain.on('update-config', (event,key, value) =>{
+    jasConfig[key] = value;
+    ConfigService.writeConfig(jasConfig);
+})

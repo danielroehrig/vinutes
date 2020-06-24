@@ -27,6 +27,7 @@
             language: {
                 set(language) {
                     this.$store.commit("changeLanguage", language);
+                    ipcRenderer.send('update-config', "language", language);
                 },
                 get() {
                     return this.$store.state.language;
