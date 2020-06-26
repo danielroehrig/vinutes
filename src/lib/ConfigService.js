@@ -1,17 +1,16 @@
 "use strict";
 const {app} = require("electron");
-const path = require("path");
-const sep = path.sep;
 const fs = require("fs");
 const JasConfig = require("./JasConfig");
-const configFilePath = path.join(sep, app.getPath("userData"), "config.json");
+
 
 /**
  * Load config file from user data location.
+ * @param {string} configFilePath
  *
  * @returns {JasConfig}
  */
-const loadConfig = () => {
+const loadConfig = (configFilePath) => {
     let jasConfig;
     if (fs.existsSync(configFilePath)) {
         jasConfig = loadConfigFromFile(configFilePath);
@@ -25,9 +24,10 @@ const loadConfig = () => {
 /**
  * Save config to disk
  *
- * @param jasConfig
+ * @param {JasConfig} jasConfig
+ * @param {string} configFilePath
  */
-const writeConfig = (jasConfig) => {
+const writeConfig = (jasConfig, configFilePath) => {
     fs.writeFile(configFilePath, JSON.stringify(jasConfig), (err) => {
         if (err) {
             //TODO: Display a warning that reads "Cannot write in your user directory"

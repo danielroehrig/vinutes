@@ -9,9 +9,13 @@ import {DailyMedia} from "./lib/DailyMedia";
 const isDevelopment = process.env.NODE_ENV !== "production";
 const {ipcMain} = require("electron");
 const path = require("path");
+const sep = path.sep;
 const ConfigService = require("./lib/ConfigService");
 const VideoRenderer = require("./lib/VideoRenderer");
 const {Timeline, timelineLoader} = require("./lib/Timeline");
+
+/** Paths */
+const configFilePath = path.join(sep, app.getPath("userData"), "config.json");
 
 let timeline = new Timeline("yeah");
 
@@ -112,7 +116,7 @@ if (isDevelopment) {
 //Load Presets
 let jasConfig;
 ipcMain.on('load-config', (event)=>{
-    jasConfig = ConfigService.loadConfig();
+    jasConfig = ConfigService.loadConfig(configFilePath);
     event.returnValue = jasConfig;
 });
 
@@ -142,5 +146,5 @@ ipcMain.on("create-video-screenshot", (event, dailyMedia, timeline) => {
 
 ipcMain.on('update-config', (event,key, value) =>{
     jasConfig[key] = value;
-    ConfigService.writeConfig(jasConfig);
+    ConfigService.writeConfig(jasConfig, configFilePath);
 })
