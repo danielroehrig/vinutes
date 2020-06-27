@@ -17,7 +17,6 @@ class Timeline {
      * @param {Object} data
      */
     static from(data) {
-        let missingKeys = [];
         if(!data.name || typeof data.name !== "string" ){
             throw Error("No name given or name not a string");
         }
@@ -40,8 +39,7 @@ const timeLineLoader = (timelinesDirPath) => {
         try {
             const buffer = fs.readFileSync(filePath, {encoding: "utf8", flag: "r"});
             const timelineJsonData = JSON.parse(buffer.toString());
-            const timeline = Timeline.from(timelineJsonData);
-            return timeline;
+            return Timeline.from(timelineJsonData);
         } catch (e) {
             log.warn(e.message);
             return false;

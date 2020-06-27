@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import moment from "moment";
-import DailyMedia from "./lib/DailyMedia";
 
 Vue.use(Vuex)
 
@@ -12,6 +11,7 @@ export default new Vuex.Store({
     currentMonth: moment().month(),
     currentYear:  moment().year(),
     currentTimeline: null,
+    availableTimelinesNames: [],
     mediaFiles: {},
     language: "en",
     calendarTimeStampFormat: "ddd, D. MMM, Y",
@@ -67,6 +67,14 @@ export default new Vuex.Store({
      */
     changeTimestampFormat(state, format){
       state.calendarTimeStampFormat = format;
+    },
+    /**
+     * Change the current timeline
+     * @param state
+     * @param {object} timeline
+     */
+    changeTimeline(state, timeline){
+      state.currentTimeline = timeline;
     }
   },
   actions: {

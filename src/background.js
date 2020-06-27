@@ -9,15 +9,15 @@ import {DailyMedia} from "./lib/DailyMedia";
 const isDevelopment = process.env.NODE_ENV !== "production";
 const {ipcMain} = require("electron");
 const path = require("path");
-const sep = path.sep;
+const fs = require("fs");
+const log = require("electron-log");
 const ConfigService = require("./lib/ConfigService");
 const VideoRenderer = require("./lib/VideoRenderer");
 const {Timeline, timelineLoader} = require("./lib/Timeline");
 
 /** Paths */
-const configFilePath = path.join(sep, app.getPath("userData"), "config.json");
-
-let timeline = new Timeline("yeah");
+const configFilePath = path.join(app.getPath("userData"), "config.json");
+const timelineDir = path.join(app.getPath("userData"), "timelines");
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -27,6 +27,7 @@ let win;
 protocol.registerSchemesAsPrivileged([{scheme: "app", privileges: {secure: true, standard: true}}]);
 
 function createWindow() {
+    log.info("Window created");
     // Create the browser window.
     win = new BrowserWindow(
         {
@@ -118,6 +119,23 @@ let jasConfig;
 ipcMain.on('load-config', (event)=>{
     jasConfig = ConfigService.loadConfig(configFilePath);
     event.returnValue = jasConfig;
+});
+//Load Timelines
+ipcMain.on('load-timelines', event => {
+    if (!fs.existsSync(timelineDir)){
+        try{
+            fs.mkdirSync(timelineDir);
+        }catch (e) {
+            log.error(`Could not create directory ${timelineDir}`);
+            app.exit(1);
+        }
+    }
+    event.returnValue = timelineLoader(timelineDir);
+});
+
+ipcMain.on('create-timeline', (event, name) => {
+    let timeline = new Timeline(name);
+    event.returnValue = timeline;
 });
 
 ipcMain.on("show-open-dialog", (event, year, month, day) => {
