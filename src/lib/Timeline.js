@@ -1,6 +1,7 @@
 "use strict";
 const fs = require('fs');
 const path = require('path');
+const log = require('electron-log');
 
 class Timeline {
     /**
@@ -9,6 +10,14 @@ class Timeline {
      */
     constructor(name) {
         this.name = name;
+    }
+
+    /**
+     *
+     * @param {Object} data
+     */
+    static from(data) {
+        return new Timeline(data.name);
     }
 }
 
@@ -19,6 +28,18 @@ class Timeline {
  */
 const timeLineLoader = (timelinesDirPath) => {
     const timelinePaths = getTimelinePaths(timelinesDirPath);
+    let timelines = timelinePaths.map((filePath) => {
+        try {
+            const buffer = fs.readFileSync(filePath, {encoding: "utf8", flag: "r"});
+            const timelineJsonData = JSON.parse(buffer.toString());
+            const timeline = Timeline.from(timelineJsonData);
+            return timeline;
+        } catch (e) {
+            log.warn(e.message);
+            return false;
+        }
+    });
+    return timelines.filter((timeline)=>timeline);
 }
 
 /**
@@ -27,14 +48,14 @@ const timeLineLoader = (timelinesDirPath) => {
  * @returns {string[]}
  * @throws Error
  */
-const getTimelinePaths = (timelinesDirPath)=>{
+const getTimelinePaths = (timelinesDirPath) => {
     /** @type {fs.Dirent[]} */
     let filesInDir = fs.readdirSync(timelinesDirPath, {encoding: 'utf8', withFileTypes: true});
 
-    const timelines = filesInDir.filter((dirent)=>{
-        return dirent.isFile() && path.extname(dirent.name)==='.json';
+    const timelines = filesInDir.filter((dirent) => {
+        return dirent.isFile() && path.extname(dirent.name) === '.json';
     });
-    return timelines.map((dirent)=>{
+    return timelines.map((dirent) => {
         return path.join(timelinesDirPath, dirent.name);
     });
 }
