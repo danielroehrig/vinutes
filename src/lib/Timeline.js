@@ -12,11 +12,21 @@ class Timeline {
     }
 }
 
-
+/**
+ *
+ * @param {string}timelinesDirPath
+ * @throws Path not readable
+ */
 const timeLineLoader = (timelinesDirPath) => {
     const timelinePaths = getTimelinePaths(timelinesDirPath);
 }
 
+/**
+ *
+ * @param timelinesDirPath
+ * @returns {string[]}
+ * @throws Error
+ */
 const getTimelinePaths = (timelinesDirPath)=>{
     /** @type {fs.Dirent[]} */
     let filesInDir = fs.readdirSync(timelinesDirPath, {encoding: 'utf8', withFileTypes: true});
