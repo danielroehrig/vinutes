@@ -28,4 +28,11 @@ describe("Timelines Loading", () => {
             expect(timelines[0]).to.be.a('Timeline');
        });
     });
+    describe("give empty path", () => {
+        it("should return an empty array", () => {
+            const emptyFileDir = path.join(__dirname, "../../../data/timelines/empty");
+            const timelines = timelineLoader(emptyFileDir);
+            expect(timelines).to.be.empty;
+        });
+    });
 });
