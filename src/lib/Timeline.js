@@ -19,6 +19,10 @@ class Timeline {
     static from(data) {
         return new Timeline(data.name);
     }
+
+    get [Symbol.toStringTag]() {
+        return 'Timeline';
+    }
 }
 
 /**

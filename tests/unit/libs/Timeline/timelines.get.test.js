@@ -4,7 +4,7 @@ const expect = chai.expect;
 const rewire = require('rewire');
 const TimelineModule = rewire("../../../../src/lib/Timeline.js");
 
-const {Timeline, timelineLoader} = require("../../../../src/lib/Timeline");
+const {timelineLoader} = require("../../../../src/lib/Timeline");
 const timelineFilePathsGetter = TimelineModule.__get__('getTimelinePaths');
 const testTimelineDirPath = path.join(__dirname, "../../../data/timelines");
 
@@ -25,6 +25,7 @@ describe("Timelines", () => {
        it("should return two timeline objects", () => {
             const timelines = timelineLoader(testTimelineDirPath);
             expect(timelines).to.have.lengthOf(2);
+            expect(timelines[0]).to.be.a('Timeline');
        });
     });
 });
