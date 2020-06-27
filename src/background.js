@@ -27,6 +27,7 @@ let win;
 protocol.registerSchemesAsPrivileged([{scheme: "app", privileges: {secure: true, standard: true}}]);
 
 function createWindow() {
+    //TODO: Only when env variable set (debug mode) also delete old logs!
     log.info("Window created");
     // Create the browser window.
     win = new BrowserWindow(
