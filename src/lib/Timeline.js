@@ -65,6 +65,16 @@ const getTimelinePaths = (timelinesDirPath) => {
         return path.join(timelinesDirPath, dirent.name);
     });
 };
+/**
+ * Write a timeline to disc.
+ * @param {Timeline} timeline
+ * @param {string} timelinesDirPath
+ */
+const saveTimeline = (timeline, timelinesDirPath) =>{
+    //TODO check if file with that name exists(?) Or on rename? Or maybe don't use name but an id?
+    fs.writeFileSync(path.join(timelinesDirPath, (timeline.name+'.json')), JSON.stringify(timeline));
+}
 
 module.exports.Timeline = Timeline;
 module.exports.timelineLoader = timeLineLoader;
+module.exports.saveTimeline = saveTimeline;

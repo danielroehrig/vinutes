@@ -13,7 +13,7 @@ const fs = require("fs");
 const log = require("electron-log");
 const ConfigService = require("./lib/ConfigService");
 const VideoRenderer = require("./lib/VideoRenderer");
-const {Timeline, timelineLoader} = require("./lib/Timeline");
+const {Timeline, timelineLoader, saveTimeline} = require("./lib/Timeline");
 
 /** Paths */
 const configFilePath = path.join(app.getPath("userData"), "config.json");
@@ -136,7 +136,13 @@ ipcMain.on('load-timelines', event => {
 
 ipcMain.on('create-timeline', (event, name) => {
     let timeline = new Timeline(name);
-    event.returnValue = timeline;
+    try{
+        saveTimeline(timeline, timelineDir);
+        event.returnValue = timeline;
+    }catch (e) {
+        log.error(`Could not save timeline ${timeline.name} ${e.message}`);
+        event.returnValue = false;
+    }
 });
 
 ipcMain.on("show-open-dialog", (event, year, month, day) => {
