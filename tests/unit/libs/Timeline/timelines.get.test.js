@@ -8,11 +8,11 @@ const {timelineLoader} = require("../../../../src/lib/Timeline");
 const timelineFilePathsGetter = TimelineModule.__get__('getTimelinePaths');
 const testTimelineDirPath = path.join(__dirname, "../../../data/timelines");
 
-describe("Timelines", () => {
+describe("Timelines Loading", () => {
     describe("get timeline file paths", () => {
         it("should find two timelines in test path", () => {
             let timelinePaths = timelineFilePathsGetter(testTimelineDirPath);
-            expect(timelinePaths).to.have.lengthOf(2);
+            expect(timelinePaths).to.have.lengthOf(4);
         });
     });
     describe("give none existing path", () => {

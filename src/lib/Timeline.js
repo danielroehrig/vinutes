@@ -1,7 +1,7 @@
 "use strict";
-const fs = require('fs');
-const path = require('path');
-const log = require('electron-log');
+const fs = require("fs");
+const path = require("path");
+const log = require("electron-log");
 
 class Timeline {
     /**
@@ -13,15 +13,19 @@ class Timeline {
     }
 
     /**
-     *
+     * Create a new Timeline from an object
      * @param {Object} data
      */
     static from(data) {
+        let missingKeys = [];
+        if(!data.name || typeof data.name !== "string" ){
+            throw Error("No name given or name not a string");
+        }
         return new Timeline(data.name);
     }
 
     get [Symbol.toStringTag]() {
-        return 'Timeline';
+        return "Timeline";
     }
 }
 
@@ -43,8 +47,8 @@ const timeLineLoader = (timelinesDirPath) => {
             return false;
         }
     });
-    return timelines.filter((timeline)=>timeline);
-}
+    return timelines.filter((timeline) => timeline);
+};
 
 /**
  *
@@ -54,15 +58,15 @@ const timeLineLoader = (timelinesDirPath) => {
  */
 const getTimelinePaths = (timelinesDirPath) => {
     /** @type {fs.Dirent[]} */
-    let filesInDir = fs.readdirSync(timelinesDirPath, {encoding: 'utf8', withFileTypes: true});
+    let filesInDir = fs.readdirSync(timelinesDirPath, {encoding: "utf8", withFileTypes: true});
 
     const timelines = filesInDir.filter((dirent) => {
-        return dirent.isFile() && path.extname(dirent.name) === '.json';
+        return dirent.isFile() && path.extname(dirent.name) === ".json";
     });
     return timelines.map((dirent) => {
         return path.join(timelinesDirPath, dirent.name);
     });
-}
+};
 
 module.exports.Timeline = Timeline;
 module.exports.timelineLoader = timeLineLoader;
