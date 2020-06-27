@@ -17,6 +17,7 @@
     "bulma": "^0.8.2",
     "calendar": "^0.1.1",
     "chai-as-promised": "^7.1.1",
+    "electron-log": "^4.2.2",
     "fluent-ffmpeg": "^2.1.2",
     "mime": "^2.4.6",
     "moment": "^2.26.0",
