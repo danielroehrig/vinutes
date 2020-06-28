@@ -20,4 +20,21 @@ describe("DailyMedia parsing", () => {
             expect(dailyMedia.filePath).to.equal("/rand/path");
         });
     });
+    describe("Parse incorrect video media from object", () => {
+        it("should throw an parsing error if year is a string", () => {
+            expect(()=>DailyMedia.from({
+                "year": "2020", "month": 4, "day": 27, "filePath": "/rand/path",
+            })).to.Throw(Error, "data.year should be integer");
+        });
+        it("should throw an parsing error if timestamp is less than zero", () => {
+            expect(()=>DailyMedia.from({
+                "year": 2020, "month": 4, "day": 27, "filePath": "/rand/path", "timeStamp": -0.1
+            })).to.Throw(Error, "data.timeStamp should be >= 0");
+        });
+        it("should not throw an parsing error if timestamp is zero", () => {
+            expect(()=>DailyMedia.from({
+                "year": 2020, "month": 4, "day": 27, "filePath": "/rand/path", "timeStamp": 0.0
+            })).not.to.Throw();
+        });
+    });
 });

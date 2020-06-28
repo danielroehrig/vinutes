@@ -1,5 +1,45 @@
 const mime = require("mime");
 
+const dailyMediaSchema = {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "DailyMedia",
+    "description": "A media file for a certain date in the calendar",
+    "type": "object",
+    "properties": {
+        "year": {
+            "description": "The year for the media file",
+            "type": "integer",
+        },
+        "month": {
+            "description": "The month for the media file",
+            "type": "integer",
+        },
+        "day": {
+            "description": "The month for the media file",
+            "type": "integer",
+        },
+        "filePath": {
+            "description": "The file path of the media file",
+            "type": "string",
+            "minLength": 2,
+        },
+        "timeStamp": {
+            "description": "The starting point of the media file (if it is a video)",
+            "type": "number",
+            "minimum": 0.0
+        },
+        "screenshotPath": {
+            "description": "The path to an existing screenshot of the media file (if it is a video)",
+            "type": "string",
+            "minLength": 2,
+        },
+    },
+    "required": ["year", "month", "day", "filePath"],
+};
+const Ajv = require("ajv");
+const ajv = new Ajv();
+const jsonValidate = ajv.compile(dailyMediaSchema);
+
 /**
  * Class for a medium for one day
  */
@@ -35,7 +75,11 @@ class DailyMedia {
      * @param data
      * @returns {DailyMedia}
      */
-    static from(data){
+    static from(data) {
+        let isDataValid = jsonValidate(data);
+        if (!isDataValid) {
+            throw new Error(ajv.errorsText(jsonValidate.errors));
+        }
         return new DailyMedia(data.year, data.month, data.day, data.filePath);
     }
 }
@@ -49,7 +93,7 @@ class DailyMedia {
  */
 const fileTypeCategory = (dailyMedia) => {
     return mime.getType(dailyMedia.filePath).split("\/")[0];
-}
+};
 
 module.exports.DailyMedia = DailyMedia;
 module.exports.fileTypeCategory = fileTypeCategory;
