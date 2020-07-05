@@ -13,7 +13,7 @@ const store = new Vuex.Store({
         currentMonth: moment().month(),
         currentYear: moment().year(),
         timelines: {},
-        locale: "en",
+        language: "en",
         calendarTimeStampFormat: "ddd, D. MMM, Y",
         currentTimeline: 0,
     },
@@ -59,7 +59,7 @@ const store = new Vuex.Store({
          * @param {string} language
          */
         changeLanguage(state, language) {
-            state.locale = language;
+            state.language = language;
         },
         /**
          * Change the timestamp format displayed in the calendar
@@ -77,6 +77,17 @@ const store = new Vuex.Store({
         changeTimeline(state, timeline) {
             state.currentTimeline = timeline;
         },
+        applyConfig(state, databaseRows){
+            databaseRows.forEach((row) =>{
+               switch(row.key){
+                   case "language":
+                       state[row.key] = row.value;
+                       break;
+                   default:
+                       console.log(`Unknown config key ${row.key} with value ${row.value}`);
+               }
+            });
+        }
     },
     actions: {
         acceptVideo(context, timeStamp) {
@@ -89,7 +100,12 @@ const store = new Vuex.Store({
          * @param context
          */
         loadLastState(context) {
-            let lastState = loadLastState();
+            const setState = (err, rows) => {
+                //todo: catch err
+                context.commit('applyConfig', rows);
+            };
+            let lastState = loadLastState(setState);
+            console.log(lastState);
         },
     },
 });

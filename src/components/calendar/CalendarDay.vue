@@ -38,10 +38,11 @@
                 return this.$store.state.calendarTimeStampFormat;
             },
             dailyMedia() {
-                return this.mediaFiles[this.generateMediaFilesKey()];
+                //return this.mediaFiles[this.generateMediaFilesKey()];
+                return null;
             },
             styling() {
-                let mediaFile = this.mediaFiles[this.generateMediaFilesKey()];
+                /*let mediaFile = this.mediaFiles[this.generateMediaFilesKey()];
                 if (mediaFile) {
                     const currentFileType = fileTypeCategory(mediaFile);
                     if (currentFileType === "video" && mediaFile.screenshotPath !== null) {//TODO: Check if not yet deleted
@@ -53,7 +54,7 @@
                             backgroundImage: "url('file://" + mediaFile.filePath + "')",
                         };
                     }
-                }
+                }*/
                 return {};
             },
         },
