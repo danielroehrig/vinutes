@@ -9,15 +9,13 @@ import {DailyMedia} from "./lib/DailyMedia";
 const isDevelopment = process.env.NODE_ENV !== "production";
 const {ipcMain} = require("electron");
 const path = require("path");
+const fsPromised = require("fs").promises;
 const fs = require("fs");
 const log = require("electron-log");
-const ConfigService = require("./lib/ConfigService");
 const VideoRenderer = require("./lib/VideoRenderer");
-const {Timeline, timelineLoader, saveTimeline} = require("./lib/Timeline");
 
 /** Paths */
-const configFilePath = path.join(app.getPath("userData"), "config.json");
-const timelineDir = path.join(app.getPath("userData"), "timelines");
+const userDataPath = app.getPath("userData");
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -115,36 +113,6 @@ if (isDevelopment) {
     }
 }
 
-//Load Presets
-let jasConfig;
-ipcMain.on('load-config', (event)=>{
-    jasConfig = ConfigService.loadConfig(configFilePath);
-    event.returnValue = jasConfig;
-});
-//Load Timelines
-ipcMain.on('load-timelines', event => {
-    if (!fs.existsSync(timelineDir)){
-        try{
-            fs.mkdirSync(timelineDir);
-        }catch (e) {
-            log.error(`Could not create directory ${timelineDir}`);
-            app.exit(1);
-        }
-    }
-    event.returnValue = timelineLoader(timelineDir);
-});
-
-ipcMain.on('create-timeline', (event, name) => {
-    let timeline = new Timeline(name);
-    try{
-        saveTimeline(timeline, timelineDir);
-        event.returnValue = timeline;
-    }catch (e) {
-        log.error(`Could not save timeline ${timeline.name} ${e.message}`);
-        event.returnValue = false;
-    }
-});
-
 ipcMain.on("show-open-dialog", (event, year, month, day) => {
     console.log(`Open File Dialog for ${year} ${month} ${day}`);
     const filePaths = dialog.showOpenDialogSync({
@@ -164,12 +132,42 @@ ipcMain.on("show-open-dialog", (event, year, month, day) => {
     }
 });
 
+
+// Loading and Saving Files
+ipcMain.on("read-file-sync", (event, ...pathSegments) => {
+    try {
+        let filePath = path.join(userDataPath, ...pathSegments);
+        const buffer = fs.readFileSync(filePath, {encoding: "utf8", flag: "r"});
+        event.returnValue = JSON.parse(buffer.toString());
+    } catch (e) {
+        event.returnValue = e;
+    }
+});
+
+ipcMain.on("write-file", (event, dataObject, ...pathSegments) => {
+    let filePath = path.join(userDataPath, ...pathSegments);
+    let dirName = path.dirname(filePath);
+    console.log(`Writing to path ${filePath}`);
+    fsPromised
+        .mkdir(dirName, {recursive: true})
+        .then(() => fsPromised.writeFile(filePath, JSON.stringify(dataObject), {encoding: "utf8", flag: "w"}))
+        .then(() => event.reply("file-written", filePath))
+        .catch((error) => {
+            event.reply("file-writing-error", error);
+        });
+
+});
+
 ipcMain.on("create-video-screenshot", (event, dailyMedia, timeline) => {
     console.log(`Create screenshot for ${dailyMedia.filePath}`);
     VideoRenderer.createScreenshot(dailyMedia, timeline, event);
 });
 
-ipcMain.on('update-config', (event,key, value) =>{
-    jasConfig[key] = value;
-    ConfigService.writeConfig(jasConfig, configFilePath);
-})
+ipcMain.on("exit-app", (event, exitCode) => {
+    if (exitCode > 0) {
+        log.error("App exited abnormally!");
+    } else {
+        log.info("App exited normally!");
+    }
+    app.exit(exitCode);
+});

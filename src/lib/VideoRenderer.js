@@ -1,13 +1,12 @@
 const {app} = require("electron");
 const path = require("path");
-const sep = path.sep;
 const ffmpegPath = path.join(app.getAppPath(), '..', 'public', "bin", "amd64", "ffmpeg");
 const ffprobePath = path.join('public', "bin", "amd64", "ffmpeg");
 console.log(ffmpegPath);
 const FfmpegCommand = require("fluent-ffmpeg");
 FfmpegCommand.setFfmpegPath(ffmpegPath);
 FfmpegCommand.setFfprobePath(ffprobePath);
-const screenshotsFolder = path.join(sep, app.getPath("userData"), "screenshots");
+const screenshotsFolder = path.join(app.getPath("userData"), "screenshots");
 
 /**
  * Create screenshot at the given time stamp from file path

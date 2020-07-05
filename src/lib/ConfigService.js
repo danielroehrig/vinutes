@@ -1,52 +1,36 @@
-"use strict";
-const {app} = require("electron");
-const fs = require("fs");
-const JasConfig = require("./JasConfig");
+import Ajv from "ajv";
 
-
-/**
- * Load config file from user data location.
- * @param {string} configFilePath
- *
- * @returns {JasConfig}
- */
-const loadConfig = (configFilePath) => {
-    let jasConfig;
-    if (fs.existsSync(configFilePath)) {
-        jasConfig = loadConfigFromFile(configFilePath);
-    }else{
-        jasConfig = new JasConfig(app.getLocaleCountryCode());
-        writeConfig();
-    }
-    return jasConfig;
+const configSchema = {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "JasConfig",
+    "description": "All config params for Just-A-Sec",
+    "type": "object",
+    "properties": {
+        "locale": {
+            "description": "The two char country code",
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2,
+        },
+        "currentTimeline": {
+            "description": "The current timeline id",
+            "type": "integer",
+            "minimum": 1,
+        },
+    },
+    "required": [],
 };
 
-/**
- * Save config to disk
- *
- * @param {JasConfig} jasConfig
- * @param {string} configFilePath
- */
-const writeConfig = (jasConfig, configFilePath) => {
-    fs.writeFile(configFilePath, JSON.stringify(jasConfig), (err) => {
-        if (err) {
-            //TODO: Display a warning that reads "Cannot write in your user directory"
-            console.log(err);
-            app.exit(1);
-        }
-    });
-};
+const ajv = new Ajv();
 
 /**
- * Load config file from path.
  *
- * @param {string} configFilePath
+ * @param {object} config
+ * @param {Store} store
  */
-function loadConfigFromFile(configFilePath) {
-    const buffer = fs.readFileSync(configFilePath, {encoding: "utf8", flag: "r"});
-    const jsonConfigData = JSON.parse(buffer.toString());
-    return JasConfig.from(jsonConfigData);
+export const applyConfig = (config, store) => {
+
 }
 
-exports.loadConfig = loadConfig;
-exports.writeConfig = writeConfig;
+export const configValidate = ajv.compile(configSchema);
+

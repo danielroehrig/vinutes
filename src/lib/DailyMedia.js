@@ -32,7 +32,7 @@ const dailyMediaSchema = {
             "description": "The path to an existing screenshot of the media file (if it is a video)",
             "type": "string",
             "minLength": 2,
-        },
+       },
     },
     "required": ["year", "month", "day", "filePath"],
 };
