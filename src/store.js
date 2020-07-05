@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import moment from "moment";
 import {configValidate} from "./lib/ConfigService";
-import {handleStoreMutation, loadLastState} from "./lib/PersistenceService";
+import {handleStoreMutation, initDBStructure, loadLastState} from "./lib/PersistenceService";
 
 Vue.use(Vuex);
 
@@ -77,16 +77,8 @@ const store = new Vuex.Store({
         changeTimeline(state, timeline) {
             state.currentTimeline = timeline;
         },
-        applyConfig(state, databaseRows){
-            databaseRows.forEach((row) =>{
-               switch(row.key){
-                   case "language":
-                       state[row.key] = row.value;
-                       break;
-                   default:
-                       console.log(`Unknown config key ${row.key} with value ${row.value}`);
-               }
-            });
+        applyConfig(state, databaseRow){
+            state.language = databaseRow.language ? databaseRow.language : 'en';
         }
     },
     actions: {
@@ -100,9 +92,10 @@ const store = new Vuex.Store({
          * @param context
          */
         loadLastState(context) {
-            const setState = (err, rows) => {
+            initDBStructure();
+            const setState = (err, row) => {
                 //todo: catch err
-                context.commit('applyConfig', rows);
+                context.commit('applyConfig', row);
             };
             let lastState = loadLastState(setState);
             console.log(lastState);
