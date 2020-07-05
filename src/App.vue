@@ -55,7 +55,7 @@
         //TODO: Might not exist, on first boot e.g
         let timeline = getCurrentTimeline(config);
         store.commit("changeTimeline", timeline);
-        store.subscribe(configWriter);
+
     };
     const currentTimelinePath = (config) => {
         return config.currentTimeline.path;

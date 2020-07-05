@@ -5,7 +5,7 @@ import {configValidate} from "./lib/ConfigService";
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
     state: {
         isVideoPlayerVisible: false,
         currentDailyMediaShown: null,
@@ -110,3 +110,7 @@ export default new Vuex.Store({
         },
     },
 });
+// All changes to the state are relayed to the PersistenceService
+store.subscribe(configWriter);
+
+export default store;
