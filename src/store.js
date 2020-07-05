@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import moment from "moment";
 import {configValidate} from "./lib/ConfigService";
+import {handleStoreMutation, loadLastState} from "./lib/PersistenceService";
 
 Vue.use(Vuex);
 
@@ -76,9 +77,6 @@ const store = new Vuex.Store({
         changeTimeline(state, timeline) {
             state.currentTimeline = timeline;
         },
-        overwriteState(state, newState){
-            Vue.set(state, newState);
-        }
     },
     actions: {
         acceptVideo(context, timeStamp) {
@@ -89,28 +87,13 @@ const store = new Vuex.Store({
         /**
          *
          * @param context
-         * @param {object} config
          */
-        applyConfig(context, config) {
-            const isValid = configValidate(config);
-            if (!isValid) {
-                ipcRenderer.send("app-exit", 1);
-            }
-            context.commit("overwriteState", config);
-        },
-        /**
-         *
-         * @param context
-         * @param {Timeline} timeline
-         */
-        changeTimeline(context, timeline) {
-            /*      context.commit('changeTimeline', timeline);
-                  //TODO: Load timeline*/
-            //ipcRenderer.send('update-config', 'lastTimeline', timeline.name);
+        loadLastState(context) {
+            let lastState = loadLastState();
         },
     },
 });
 // All changes to the state are relayed to the PersistenceService
-store.subscribe(configWriter);
+store.subscribe(handleStoreMutation);
 
 export default store;
