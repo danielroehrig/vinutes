@@ -92,11 +92,8 @@ const store = new Vuex.Store({
          */
         loadLastState(context) {
             initDBStructure();
-            const setState = (err, row) => {
-                //todo: catch err
-                context.commit('applyConfig', row);
-            };
-            let lastState = loadLastState(setState);
+            let lastState = loadLastState();
+            context.commit('applyConfig', lastState);
             console.log(lastState);
         },
     },
