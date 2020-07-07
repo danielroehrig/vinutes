@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import moment from "moment";
-import {configValidate} from "./lib/ConfigService";
 import {handleStoreMutation, initDBStructure, loadLastState} from "./lib/PersistenceService";
 
 Vue.use(Vuex);
