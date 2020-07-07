@@ -91,7 +91,7 @@ const store = new Vuex.Store({
          * @param context
          */
         loadLastState(context) {
-            initDBStructure();
+
             let lastState = loadLastState();
             context.commit('applyConfig', lastState);
             console.log(lastState);

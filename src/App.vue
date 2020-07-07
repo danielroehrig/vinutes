@@ -29,6 +29,7 @@
 </style>
 <script>
     import Navbar from "./components/Navbar";
+    import {initDBStructure} from "./lib/PersistenceService";
 
     export default {
         components: {Navbar},
@@ -36,6 +37,7 @@
             ipcRenderer.on("screenshot-created", (event, dailyMedia) => {
                 this.$store.commit("changeMediaFile", dailyMedia);
             });
+            initDBStructure();
             this.$store.dispatch('loadLastState');
         },
     };
