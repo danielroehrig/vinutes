@@ -38,7 +38,22 @@
         <div class="modal" :class="{'is-active': isTimelineCreationModalShown }">
             <div class="modal-background"></div>
             <div class="modal-content">
-                <!-- Any other Bulma elements you want -->
+                <div class="box">
+                    <div class="field">
+                        <label class="label">Name</label>
+                        <div class="control">
+                            <input class="input" type="text" placeholder="Enter name of the timeline">
+                        </div>
+                    </div>
+                    <div class="field is-grouped">
+                        <div class="control">
+                            <button class="button is-link">Submit</button>
+                        </div>
+                        <div class="control">
+                            <button class="button is-link is-light" @click="cancelTimelineCreation">Cancel</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <button class="modal-close is-large" aria-label="close" @click="cancelTimelineCreation"></button>
         </div>
@@ -54,7 +69,7 @@
         data: function () {
             return {
                 isTimelineCreationModalShown: false,
-            }
+            };
         },
         computed: {
             timelines() {
