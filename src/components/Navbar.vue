@@ -42,12 +42,12 @@
                     <div class="field">
                         <label class="label">Name</label>
                         <div class="control">
-                            <input class="input" type="text" placeholder="Enter name of the timeline">
+                            <input v-model="newTimelineName" class="input" type="text" placeholder="Enter name of the timeline">
                         </div>
                     </div>
                     <div class="field is-grouped">
                         <div class="control">
-                            <button class="button is-link">Submit</button>
+                            <button class="button is-link" @click="createNewTimeline">Submit</button>
                         </div>
                         <div class="control">
                             <button class="button is-link is-light" @click="cancelTimelineCreation">Cancel</button>
@@ -69,6 +69,7 @@
         data: function () {
             return {
                 isTimelineCreationModalShown: false,
+                newTimelineName: null,
             };
         },
         computed: {
@@ -78,13 +79,21 @@
         },
         methods: {
             showTimelineCreationModal: function () {
-                console.log("Yes");
                 this.isTimelineCreationModalShown = true;
             },
             cancelTimelineCreation: function () {
-                console.log("Yes");
+                this.newTimelineName = null;
+                this.hideTimelineCreationModal();
+            },
+            hideTimelineCreationModal: function() {
                 this.isTimelineCreationModalShown = false;
             },
+            createNewTimeline: function () {
+                console.log("create new timeline");
+                //TODO: Saving the timeline
+                this.newTimelineName = null;
+                this.hideTimelineCreationModal();
+            }
         },
     };
 </script>
