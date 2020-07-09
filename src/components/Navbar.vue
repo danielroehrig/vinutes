@@ -62,7 +62,7 @@
 </template>
 
 <script>
-    import {getAllTimelines} from "../lib/TimelineService";
+    import {createNewTimeline, getAllTimelines} from "../lib/TimelineService";
 
     export default {
         name: "Navbar",
@@ -90,6 +90,7 @@
             },
             createNewTimeline: function () {
                 console.log("create new timeline");
+                let timeline = createNewTimeline(this.newTimelineName);
                 //TODO: Saving the timeline
                 this.newTimelineName = null;
                 this.hideTimelineCreationModal();
