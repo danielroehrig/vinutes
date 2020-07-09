@@ -4,8 +4,8 @@
  */
 export const initDBStructure = () => {
     db.prepare("CREATE TABLE IF NOT EXISTS timeline (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE);").run();
-    db.prepare("CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY, language TEXT, lastTimeline INTEGER, FOREIGN KEY(lastTimeLine) REFERENCES timeline (id));").run();
-    db.prepare("INSERT INTO state(id, language, lastTimeline) VALUES(1, 'en', null) ON CONFLICT(id) DO NOTHING").run();
+    db.prepare("CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY, language TEXT, currentTimeline INTEGER, FOREIGN KEY(currentTimeline) REFERENCES timeline (id));").run();
+    db.prepare("INSERT INTO state(id, language, currentTimeline) VALUES(1, null, null) ON CONFLICT(id) DO NOTHING").run();
 }
 
 /**
@@ -16,8 +16,6 @@ export const loadLastState = () => {
     console.log("Loading last State");
     return db.prepare("SELECT * FROM state WHERE id = 1;").get();
 };
-
-
 
 /**
  * Handle a store mutation.

@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import moment from "moment";
 import {handleStoreMutation, initDBStructure, loadLastState} from "./lib/PersistenceService";
+import {loadTimeline} from "./lib/TimelineService";
 
 Vue.use(Vuex);
 
@@ -27,7 +28,6 @@ const store = new Vuex.Store({
         },
         setTimeStampForVideo(state, timeStamp) {
             state.currentDailyMediaShown.timeStamp = timeStamp;
-            console.log(state.mediaFiles);
         },
         moveToPreviousMonth(state) {
             let currentMoment = moment({year: state.currentYear, month: state.currentMonth});
@@ -77,24 +77,22 @@ const store = new Vuex.Store({
             state.currentTimeline = timeline;
         },
         applyConfig(state, databaseRow){
-            state.language = databaseRow.language ? databaseRow.language : 'en';
+            state.language = databaseRow.language ? databaseRow.language : 'en';//TODO: Use system default language
+            state.currentTimeline = databaseRow.currentTimeline ? loadTimeline(databaseRow.currentTimeline) : null;
         }
     },
     actions: {
         acceptVideo(context, timeStamp) {
             context.commit("setTimeStampForVideo", timeStamp);
             context.commit("hideVideoPlayer");
-            writeCurrentTimeline(context.state);
         },
         /**
          *
          * @param context
          */
         loadLastState(context) {
-
             let lastState = loadLastState();
             context.commit('applyConfig', lastState);
-            console.log(lastState);
         },
     },
 });
