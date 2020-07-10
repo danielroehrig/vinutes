@@ -13,8 +13,12 @@ export const getAllTimelines = () => {
  * @param {string} name
  * @return {int}
  */
-export const createNewTimeline = (name)=>{
+export const createNewTimeline = (name) => {
     //TODO: Handle Exceptions like non-unique names
     let insertResult = db.prepare("INSERT INTO timeline (name) VALUES ($name);").run({name: name});
     return insertResult.lastInsertRowid;
-}
+};
+
+export const loadDailyMediaForTiomline = (id) => {
+    return db.prepare("SELECT * FROM timeline ORDER BY name ASC;").all();
+};

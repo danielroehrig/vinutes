@@ -6,6 +6,7 @@ export const initDBStructure = () => {
     db.prepare("CREATE TABLE IF NOT EXISTS timeline (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE);").run();
     db.prepare("CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY, language TEXT, currentTimeline INTEGER, FOREIGN KEY(currentTimeline) REFERENCES timeline (id));").run();
     db.prepare("INSERT INTO state(id, language, currentTimeline) VALUES(1, null, null) ON CONFLICT(id) DO NOTHING").run();
+    db.prepare("CREATE TABLE IF NOT EXISTS media (timelineId INTEGER NOT NULL, mediaDate DATE NOT NULL, path TEXT NOT NULL, videoTimestamp REAL, currentTimeline INTEGER, FOREIGN KEY(timelineId) REFERENCES timeline (id) ON DELETE CASCADE, PRIMARY KEY(timelineId, mediaDate));").run();
 }
 
 /**
