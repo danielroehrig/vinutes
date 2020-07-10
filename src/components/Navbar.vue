@@ -31,12 +31,13 @@
                         </div>
                     </div>
                     <div v-else class="navbar-item has-dropdown is-hoverable">
-                        <a class="navbar-link" v-bind:key="timelines[0].id">
-                            {{ timelines[0].name }}
+                        <a class="navbar-link">
+                            {{ currentTimeline.name }}
                         </a>
                         <div class="navbar-dropdown">
-                            <a v-for="n in timelines.length - 1"  v-bind:key="timelines[n].id" class="navbar-item">
-                                {{ timelines[n].name }}
+                            <a v-for="timeline in selectableTimelines" v-bind:key="timeline.id" class="navbar-item"
+                               @click="setTimeline(timeline.id)">
+                                {{ timeline.name }}
                             </a>
                             <hr class="navbar-divider">
                             <a class="navbar-item" @click="showTimelineCreationModal">
@@ -67,7 +68,8 @@
                     <div class="field">
                         <label class="label">Name</label>
                         <div class="control">
-                            <input v-model="newTimelineName" class="input" type="text" placeholder="Enter name of the timeline">
+                            <input v-model="newTimelineName" class="input" type="text"
+                                   placeholder="Enter name of the timeline">
                         </div>
                     </div>
                     <div class="field is-grouped">
@@ -87,7 +89,7 @@
 </template>
 
 <script>
-    import {createNewTimeline, getAllTimelines} from "../lib/TimelineService";
+    import {createNewTimeline, getAllTimelines, loadTimeline} from "../lib/TimelineService";
 
     export default {
         name: "Navbar",
@@ -95,11 +97,17 @@
             return {
                 isTimelineCreationModalShown: false,
                 newTimelineName: null,
+                timelines: getAllTimelines(),
             };
         },
         computed: {
-            timelines() {
-                return getAllTimelines();
+            currentTimeline: function () {
+                return loadTimeline(this.$store.state.currentTimeline);
+            },
+            selectableTimelines: function () {
+                return this.timelines.filter((timeline) => {
+                    return timeline.id !== this.currentTimeline.id;
+                });
             },
         },
         methods: {
@@ -110,16 +118,21 @@
                 this.newTimelineName = null;
                 this.hideTimelineCreationModal();
             },
-            hideTimelineCreationModal: function() {
+            hideTimelineCreationModal: function () {
                 this.isTimelineCreationModalShown = false;
             },
             createNewTimeline: function () {
                 console.log("create new timeline");
                 let timelineId = createNewTimeline(this.newTimelineName);
-                //TODO: Saving the timeline
+                this.timelines = getAllTimelines();
+                this.$store.commit("changeTimeline", timelineId);
                 this.newTimelineName = null;
                 this.hideTimelineCreationModal();
-            }
+                //TODO: Saving the timeline
+            },
+            setTimeline: function (id) {
+                this.$store.commit("changeTimeline", id);
+            },
         },
     };
 </script>

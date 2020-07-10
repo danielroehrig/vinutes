@@ -15,7 +15,7 @@ const store = new Vuex.Store({
         timelines: {},
         language: "en",
         calendarTimeStampFormat: "ddd, D. MMM, Y",
-        currentTimeline: 0,
+        currentTimeline: null,
     },
     mutations: {
         showVideoPlayer(state, dailyMedia) {
@@ -74,6 +74,7 @@ const store = new Vuex.Store({
          * @param {int} timeline
          */
         changeTimeline(state, timeline) {
+            console.log("Change Timline");
             state.currentTimeline = timeline;
         },
         applyConfig(state, databaseRow){

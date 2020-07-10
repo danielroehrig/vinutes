@@ -30,6 +30,9 @@ export const handleStoreMutation = (mutation, state) => {
         case "changeLanguage":
             updateStatement = db.prepare("UPDATE state set language=$payload;");
             break;
+        case "changeTimeline":
+            updateStatement = db.prepare("UPDATE state set currentTimeline=$payload;")
+            break;
         default:
             console.log("Unknown mutation");
             return;
