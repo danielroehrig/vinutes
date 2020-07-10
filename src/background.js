@@ -163,6 +163,10 @@ ipcMain.on("create-video-screenshot", (event, dailyMedia, timeline) => {
     VideoRenderer.createScreenshot(dailyMedia, timeline, event);
 });
 
+ipcMain.on("get-user-path",  (event) =>{
+    event.returnValue = app.getPath("userData");
+});
+
 ipcMain.on("exit-app", (event, exitCode) => {
     if (exitCode > 0) {
         log.error("App exited abnormally!");

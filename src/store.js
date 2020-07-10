@@ -1,20 +1,21 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import moment from "moment";
-import {configValidate} from "./lib/ConfigService";
+import {handleStoreMutation, initDBStructure, loadLastState} from "./lib/PersistenceService";
+import {loadTimeline} from "./lib/TimelineService";
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
     state: {
         isVideoPlayerVisible: false,
         currentDailyMediaShown: null,
         currentMonth: moment().month(),
         currentYear: moment().year(),
         timelines: {},
-        locale: "en",
+        language: "en",
         calendarTimeStampFormat: "ddd, D. MMM, Y",
-        currentTimeline: 0,
+        currentTimeline: null,
     },
     mutations: {
         showVideoPlayer(state, dailyMedia) {
@@ -27,7 +28,6 @@ export default new Vuex.Store({
         },
         setTimeStampForVideo(state, timeStamp) {
             state.currentDailyMediaShown.timeStamp = timeStamp;
-            console.log(state.mediaFiles);
         },
         moveToPreviousMonth(state) {
             let currentMoment = moment({year: state.currentYear, month: state.currentMonth});
@@ -58,7 +58,7 @@ export default new Vuex.Store({
          * @param {string} language
          */
         changeLanguage(state, language) {
-            state.locale = language;
+            state.language = language;
         },
         /**
          * Change the timestamp format displayed in the calendar
@@ -74,39 +74,30 @@ export default new Vuex.Store({
          * @param {int} timeline
          */
         changeTimeline(state, timeline) {
+            console.log("Change Timline");
             state.currentTimeline = timeline;
         },
-        overwriteState(state, newState){
-            Vue.set(state, newState);
+        applyConfig(state, databaseRow){
+            state.language = databaseRow.language ? databaseRow.language : 'en';//TODO: Use system default language
+            state.currentTimeline = databaseRow.currentTimeline ? loadTimeline(databaseRow.currentTimeline) : null;
         }
     },
     actions: {
         acceptVideo(context, timeStamp) {
             context.commit("setTimeStampForVideo", timeStamp);
             context.commit("hideVideoPlayer");
-            writeCurrentTimeline(context.state);
         },
         /**
          *
          * @param context
-         * @param {object} config
          */
-        applyConfig(context, config) {
-            const isValid = configValidate(config);
-            if (!isValid) {
-                ipcRenderer.send("app-exit", 1);
-            }
-            context.commit("overwriteState", config);
-        },
-        /**
-         *
-         * @param context
-         * @param {Timeline} timeline
-         */
-        changeTimeline(context, timeline) {
-            /*      context.commit('changeTimeline', timeline);
-                  //TODO: Load timeline*/
-            //ipcRenderer.send('update-config', 'lastTimeline', timeline.name);
+        loadLastState(context) {
+            let lastState = loadLastState();
+            context.commit('applyConfig', lastState);
         },
     },
 });
+// All changes to the state are relayed to the PersistenceService
+store.subscribe(handleStoreMutation);
+
+export default store;
