@@ -14,10 +14,35 @@
                 </a>
             </div>
 
-            <div id="navbarBasicExample" class="navbar-menu">
+            <div id="navbar" class="navbar-menu">
+
                 <div class="navbar-start">
-                    <div class="navbar-item">
+                    <div v-if="timelines.length === 0" class="navbar-item">
                         <button class="button" @click="showTimelineCreationModal">Create new Timeline</button>
+                    </div>
+                    <div v-else-if="timelines.length === 1" class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link" v-bind:key="timelines[0].id">
+                            {{ timelines[0].name }}
+                        </a>
+                        <div class="navbar-dropdown">
+                            <a class="navbar-item" @click="showTimelineCreationModal">
+                                Create new Timeline
+                            </a>
+                        </div>
+                    </div>
+                    <div v-else class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link" v-bind:key="timelines[0].id">
+                            {{ timelines[0].name }}
+                        </a>
+                        <div class="navbar-dropdown">
+                            <a v-for="n in timelines.length - 1"  v-bind:key="timelines[n].id" class="navbar-item">
+                                {{ timelines[n].name }}
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item" @click="showTimelineCreationModal">
+                                Create new Timeline
+                            </a>
+                        </div>
                     </div>
                 </div>
 
