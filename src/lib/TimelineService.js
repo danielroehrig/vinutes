@@ -9,12 +9,12 @@ export const getAllTimelines = () => {
 };
 
 /**
- * Create a new timeline with the given name.
+ * Create a new timeline with the given name and return the id.
  * @param {string} name
+ * @return {int}
  */
 export const createNewTimeline = (name)=>{
     //TODO: Handle Exceptions like non-unique names
-    let timeline = db.prepare("INSERT INTO timeline (name) VALUES ($name);").run({name: name});
-    console.log(timeline);
-    return timeline;
+    let insertResult = db.prepare("INSERT INTO timeline (name) VALUES ($name);").run({name: name});
+    return insertResult.lastInsertRowid;
 }

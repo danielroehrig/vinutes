@@ -90,7 +90,7 @@
             },
             createNewTimeline: function () {
                 console.log("create new timeline");
-                let timeline = createNewTimeline(this.newTimelineName);
+                let timelineId = createNewTimeline(this.newTimelineName);
                 //TODO: Saving the timeline
                 this.newTimelineName = null;
                 this.hideTimelineCreationModal();
