@@ -74,12 +74,17 @@ const store = new Vuex.Store({
          * @param {int} timeline
          */
         changeTimeline(state, timeline) {
-            console.log("Change Timline");
-            state.currentTimeline = timeline;
+            console.log("Change Timeline");
+            let currentTimeline = loadTimeline(timeline)
+            state.currentTimeline = currentTimeline.id;
+                //TODO: Load all mediafiles
         },
         applyConfig(state, databaseRow){
             state.language = databaseRow.language ? databaseRow.language : 'en';//TODO: Use system default language
-            state.currentTimeline = databaseRow.currentTimeline ? loadTimeline(databaseRow.currentTimeline) : null;
+            if(databaseRow.currentTimeline){
+                state.currentTimeline = databaseRow.currentTimeline;
+                //TODO: Load all mediafiles
+            }
         }
     },
     actions: {
