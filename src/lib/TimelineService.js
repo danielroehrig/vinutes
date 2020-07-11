@@ -19,6 +19,17 @@ export const createNewTimeline = (name) => {
     return insertResult.lastInsertRowid;
 };
 
-export const loadDailyMediaForTiomline = (id) => {
-    return db.prepare("SELECT * FROM timeline ORDER BY name ASC;").all();
+export const loadDailyMediaForTimeline = (id, startDate, endDate) => {
+    return db.prepare("SELECT * FROM media WHERE timelineId=$id AND mediaDate >= startDate AND mediaDate <= endDate;").all();
+};
+
+export const safeDailyMediaForTimeline = (timelineId, DailyMedia) => {
+    //TODO: Date is one month off
+    db.prepare("INSERT INTO media (timelineId, mediaDate, path, videoTimestamp) VALUES ($timelineId, $mediaDate, $path, $videoTimestamp);")
+        .run({
+            timelineId: timelineId,
+            mediaDate: `${DailyMedia.year}-${DailyMedia.month}-${DailyMedia.day}`,
+            path: DailyMedia.filePath,
+            videoTimestamp: DailyMedia.timeStamp,
+        });
 };

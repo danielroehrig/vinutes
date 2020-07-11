@@ -12,10 +12,10 @@ const store = new Vuex.Store({
         currentDailyMediaShown: null,
         currentMonth: moment().month(),
         currentYear: moment().year(),
-        timelines: {},
         language: "en",
         calendarTimeStampFormat: "ddd, D. MMM, Y",
         currentTimeline: null,
+        mediaFiles: {},
     },
     mutations: {
         showVideoPlayer(state, dailyMedia) {
@@ -45,8 +45,7 @@ const store = new Vuex.Store({
         },
         changeMediaFile(state, dailyMedia) {
             let dayAsMoment = moment({year: dailyMedia.year, month: dailyMedia.month, day: dailyMedia.day});
-            let key = "k" + dayAsMoment.format("YYYYMMDD");
-            Vue.set(state[state.currentTimeline].mediaFiles, key, dailyMedia);
+            Vue.set(state.mediaFiles, dailyMedia.day, dailyMedia);
         },
         removeMediaFile(state, moment) {
             Vue.delete(state.mediaFiles, "k" + moment.format("YYYYMMDD"));
