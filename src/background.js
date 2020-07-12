@@ -4,7 +4,7 @@ import {
     createProtocol,
     /* installVueDevtools */
 } from "vue-cli-plugin-electron-builder/lib";
-import {DailyMedia} from "./lib/DailyMedia";
+import DailyMedia from "./lib/DailyMedia";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 const {ipcMain} = require("electron");

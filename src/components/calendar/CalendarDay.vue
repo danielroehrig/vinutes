@@ -13,7 +13,6 @@
 <script>
     import moment from "moment";
     import {mapMutations, mapState} from "vuex";
-    import {fileTypeCategory} from "../../lib/DailyMedia";
 
     export default {
         name: "CalendarDay",
