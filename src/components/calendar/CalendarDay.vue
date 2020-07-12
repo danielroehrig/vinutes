@@ -37,7 +37,7 @@
                 return this.$store.state.calendarTimeStampFormat;
             },
             dailyMedia() {
-                //return this.mediaFiles[this.generateMediaFilesKey()];
+                return this.mediaFiles[this.day];
                 return null;
             },
             styling() {
@@ -74,9 +74,6 @@
                     "month": this.currentMonth,
                     "day": this.day,
                 });
-            },
-            generateMediaFilesKey: function () {
-                return "k" + this.currentMoment().format("YYYYMMDD");
             },
         },
     };
