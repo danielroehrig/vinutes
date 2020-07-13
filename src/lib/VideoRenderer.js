@@ -6,7 +6,6 @@ console.log(ffmpegPath);
 const FfmpegCommand = require("fluent-ffmpeg");
 FfmpegCommand.setFfmpegPath(ffmpegPath);
 FfmpegCommand.setFfprobePath(ffprobePath);
-const screenshotsFolder = path.join(app.getPath("userData"), "screenshots");
 
 /**
  * Create screenshot at the given time stamp from file path
@@ -16,13 +15,17 @@ const screenshotsFolder = path.join(app.getPath("userData"), "screenshots");
  * @param {IpcMainEvent} event
  */
 const createScreenshot = (dailyMedia, timeline, event) => {
+
     new FfmpegCommand(dailyMedia.filePath).screenshots({
         timestamps: [dailyMedia.timeStamp],
         filename: "test.jpg",
-        folder: "/tmp",
-        size: "320x240",
+        folder: "/tmp",//TODO: Get user temp folder
+        size: "320x180",
     }).on("end", function () {
-        console.log("screenshot created?");
+        console.log("screenshot created");
+        let buff = fs.readFileSync('stack-abuse-logo.png');
+        let base64data = buff.toString('base64');
+
         dailyMedia.screenshotPath = "/tmp/test.jpg";
         event.reply("screenshot-created", dailyMedia);
     });

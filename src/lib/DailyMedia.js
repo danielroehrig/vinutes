@@ -12,15 +12,15 @@ export default class DailyMedia {
      * @param {int} day
      * @param {string} filePath Full path to file
      * @param {number} timeStamp
-     * @param {?string} screenshotPath
+     * @param {?string} videoStill
      */
-    constructor(year, month, day, filePath, timeStamp = 0.0, screenshotPath = null) {
+    constructor(year, month, day, filePath, timeStamp = 0.0, videoStill = null) {
         this.year = year;
         this.month = month;
         this.day = day;
         this.filePath = filePath;
         this.timeStamp = 0.0;
-        this.screenshotPath = null;
+        this.videoStill = videoStill;
     }
 
     get dateAsIso(){
