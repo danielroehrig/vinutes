@@ -38,7 +38,6 @@
             },
             dailyMedia() {
                 return this.mediaFiles[this.day];
-                return null;
             },
             styling() {
                 /*let mediaFile = this.mediaFiles[this.generateMediaFilesKey()];

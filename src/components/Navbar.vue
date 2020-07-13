@@ -129,13 +129,12 @@
                 console.log("create new timeline");
                 let timelineId = createNewTimeline(this.newTimelineName);
                 this.timelines = getAllTimelines();
-                this.$store.commit("changeTimeline", timelineId);
+                this.$store.dispatch("changeTimeline", timelineId);
                 this.newTimelineName = null;
                 this.hideTimelineCreationModal();
-                //TODO: Saving the timeline
             },
             setTimeline: function (id) {
-                this.$store.commit("changeTimeline", id);
+                this.$store.dispatch("changeTimeline", id);
             },
         },
     };

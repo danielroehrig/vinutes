@@ -22,7 +22,11 @@ export const createNewTimeline = (name) => {
 };
 
 export const loadDailyMediaForTimeline = (id, startDate, endDate) => {
-    return db.prepare("SELECT * FROM media WHERE timelineId=$id AND mediaDate >= startDate AND mediaDate <= endDate;").all();
+    return db.prepare("SELECT * FROM media WHERE timelineId=$id AND mediaDate >= $startDate AND mediaDate <= $endDate;").all({
+        id: id,
+        startDate: startDate,
+        endDate: endDate
+    });
 };
 
 export const safeDailyMediaForTimeline = (timelineId, dailyMedia) => {

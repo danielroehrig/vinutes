@@ -1,8 +1,9 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import moment from "moment";
-import {handleStoreMutation, initDBStructure, loadLastState} from "./lib/PersistenceService";
-import {loadTimeline} from "./lib/TimelineService";
+import DailyMedia from "./lib/DailyMedia";
+import {handleStoreMutation, loadLastState} from "./lib/PersistenceService";
+import {loadDailyMediaForTimeline, loadTimeline} from "./lib/TimelineService";
 
 Vue.use(Vuex);
 
@@ -44,7 +45,6 @@ const store = new Vuex.Store({
             }
         },
         changeMediaFile(state, dailyMedia) {
-            let dayAsMoment = moment({year: dailyMedia.year, month: dailyMedia.month, day: dailyMedia.day});
             Vue.set(state.mediaFiles, dailyMedia.day, dailyMedia);
         },
         removeMediaFile(state, moment) {
@@ -67,26 +67,36 @@ const store = new Vuex.Store({
         changeTimestampFormat(state, format) {
             state.calendarTimeStampFormat = format;
         },
-        /**
-         * Change the current timeline
-         * @param state
-         * @param {int} timeline
-         */
         changeTimeline(state, timeline) {
-            console.log("Change Timeline");
-            let currentTimeline = loadTimeline(timeline)
-            state.currentTimeline = currentTimeline.id;
-                //TODO: Load all mediafiles
+            state.currentTimeline = timeline;
         },
-        applyConfig(state, databaseRow){
-            state.language = databaseRow.language ? databaseRow.language : 'en';//TODO: Use system default language
-            if(databaseRow.currentTimeline){
-                state.currentTimeline = databaseRow.currentTimeline;
-                //TODO: Load all mediafiles
-            }
-        }
+        loadDailyMedia(state) {
+            let startPoint = moment({year: state.currentYear, month: state.currentMonth, day: 1});
+            let endPoint = moment(startPoint).endOf("month");
+            let allMedia = loadDailyMediaForTimeline(state.currentTimeline, startPoint.format("YYYY-MM-DD"), endPoint.format("YYYY-MM-DD"));
+            state.mediaFiles = {};
+            allMedia.forEach((row) => {
+                let mediaMoment = moment(row.mediaDate);
+                Vue.set(state.mediaFiles, mediaMoment.date(), new DailyMedia(mediaMoment.year, mediaMoment.month(), mediaMoment.date(), row.path, row.videoTimestamp));
+            });
+        },
+        applyConfig(state, databaseRow) {
+            state.language = databaseRow.language ? databaseRow.language : "en";//TODO: Use system default language
+
+        },
     },
     actions: {
+        /**
+         * Change the current timeline
+         * @param context
+         * @param {int} timeline
+         */
+        changeTimeline(context, timeline) {
+            console.log("Change Timeline");
+            let currentTimeline = loadTimeline(timeline);
+            context.commit("changeTimeline", currentTimeline.id);
+            context.commit("loadDailyMedia");
+        },
         acceptVideo(context, timeStamp) {
             context.commit("setTimeStampForVideo", timeStamp);
             context.commit("hideVideoPlayer");
@@ -97,7 +107,18 @@ const store = new Vuex.Store({
          */
         loadLastState(context) {
             let lastState = loadLastState();
-            context.commit('applyConfig', lastState);
+            context.commit("applyConfig", lastState);
+            if (lastState.currentTimeline) {
+                context.dispatch("changeTimeline", lastState.currentTimeline);
+            }
+        },
+        moveToPreviousMonth(context) {
+            context.commit('moveToPreviousMonth');
+            context.commit("loadDailyMedia");
+        },
+        moveToNextMonth(context) {
+            context.commit('moveToNextMonth');
+            context.commit("loadDailyMedia");
         },
     },
 });
