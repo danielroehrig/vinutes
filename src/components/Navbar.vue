@@ -17,7 +17,7 @@
             <div id="navbar" class="navbar-menu">
 
                 <div class="navbar-start">
-                    <div v-if="timelines.length === 0" class="navbar-item">
+                    <div v-if="(timelines.length === 0 || currentTimeline === null)" class="navbar-item">
                         <button class="button" @click="showTimelineCreationModal">Create new Timeline</button>
                     </div>
                     <div v-else-if="timelines.length === 1" class="navbar-item has-dropdown is-hoverable">
@@ -102,7 +102,11 @@
         },
         computed: {
             currentTimeline: function () {
-                return loadTimeline(this.$store.state.currentTimeline);
+                let currentTimeline = this.$store.state.currentTimeline;
+                if(null === currentTimeline){
+                    return null;
+                }
+                return loadTimeline(currentTimeline);
             },
             selectableTimelines: function () {
                 return this.timelines.filter((timeline) => {
@@ -125,13 +129,12 @@
                 console.log("create new timeline");
                 let timelineId = createNewTimeline(this.newTimelineName);
                 this.timelines = getAllTimelines();
-                this.$store.commit("changeTimeline", timelineId);
+                this.$store.dispatch("changeTimeline", timelineId);
                 this.newTimelineName = null;
                 this.hideTimelineCreationModal();
-                //TODO: Saving the timeline
             },
             setTimeline: function (id) {
-                this.$store.commit("changeTimeline", id);
+                this.$store.dispatch("changeTimeline", id);
             },
         },
     };

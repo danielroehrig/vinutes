@@ -13,7 +13,6 @@
 <script>
     import moment from "moment";
     import {mapMutations, mapState} from "vuex";
-    import {fileTypeCategory} from "../../lib/DailyMedia";
 
     export default {
         name: "CalendarDay",
@@ -38,8 +37,7 @@
                 return this.$store.state.calendarTimeStampFormat;
             },
             dailyMedia() {
-                //return this.mediaFiles[this.generateMediaFilesKey()];
-                return null;
+                return this.mediaFiles[this.day];
             },
             styling() {
                 /*let mediaFile = this.mediaFiles[this.generateMediaFilesKey()];
@@ -75,9 +73,6 @@
                     "month": this.currentMonth,
                     "day": this.day,
                 });
-            },
-            generateMediaFilesKey: function () {
-                return "k" + this.currentMoment().format("YYYYMMDD");
             },
         },
     };
