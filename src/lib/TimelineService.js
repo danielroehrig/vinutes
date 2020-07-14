@@ -25,16 +25,33 @@ export const loadDailyMediaForTimeline = (id, startDate, endDate) => {
     return db.prepare("SELECT * FROM media WHERE timelineId=$id AND mediaDate >= $startDate AND mediaDate <= $endDate;").all({
         id: id,
         startDate: startDate,
-        endDate: endDate
+        endDate: endDate,
     });
 };
 
 export const safeDailyMediaForTimeline = (timelineId, dailyMedia) => {
-    db.prepare("INSERT INTO media (timelineId, mediaDate, path, videoTimestamp) VALUES ($timelineId, $mediaDate, $path, $videoTimestamp);")
-        .run({
-            timelineId: timelineId,
-            mediaDate: dateAsIso(dailyMedia),
-            path: dailyMedia.filePath,
-            videoTimestamp: dailyMedia.timeStamp,
-        });
+    console.log("Saving Timeline to database!");
+    const replaceDailyMedia = db.transaction(() => {
+        db.prepare("INSERT INTO media (timelineId, mediaDate, path, videoTimestamp) VALUES ($timelineId, $mediaDate, $path, $videoTimestamp) ON CONFLICT(timelineId, mediaDate) DO UPDATE SET path=$path, videoTimestamp=$videoTimestamp;")
+            .run({
+                timelineId: timelineId,
+                mediaDate: dateAsIso(dailyMedia),
+                path: dailyMedia.filePath,
+                videoTimestamp: dailyMedia.timeStamp,
+            });
+        db.prepare("DELETE FROM videoStills WHERE timelineId=$timelineId AND mediaDate=$mediaDate;")
+            .run({
+                timelineId: timelineId,
+                mediaDate: dateAsIso(dailyMedia),
+            });
+        if (dailyMedia.videoStill) {
+            db.prepare("INSERT INTO videoStills(timelineId, mediaDate, data) VALUES($timelineId, $mediaDate, $data);")
+                .run({
+                    timelineId: timelineId,
+                    mediaDate: dateAsIso(dailyMedia),
+                    data: dailyMedia.videoStill,
+                });
+        }
+    });
+    replaceDailyMedia();
 };
