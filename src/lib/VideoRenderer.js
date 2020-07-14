@@ -1,5 +1,6 @@
 const {app} = require("electron");
 const path = require("path");
+const fs = require("fs");
 const ffmpegPath = path.join(app.getAppPath(), '..', 'public', "bin", "amd64", "ffmpeg");
 const ffprobePath = path.join('public', "bin", "amd64", "ffmpeg");
 console.log(ffmpegPath);
@@ -15,18 +16,16 @@ FfmpegCommand.setFfprobePath(ffprobePath);
  * @param {IpcMainEvent} event
  */
 const createScreenshot = (dailyMedia, timeline, event) => {
-
+    let screenshotName = `justasec-${dailyMedia.year}${dailyMedia.month}${dailyMedia.day}.jpg`;
     new FfmpegCommand(dailyMedia.filePath).screenshots({
         timestamps: [dailyMedia.timeStamp],
-        filename: "test.jpg",
-        folder: "/tmp",//TODO: Get user temp folder
+        filename: screenshotName,
+        folder: app.getPath('temp'),
         size: "320x180",
     }).on("end", function () {
         console.log("screenshot created");
-        let buff = fs.readFileSync('stack-abuse-logo.png');
-        let base64data = buff.toString('base64');
-
-        dailyMedia.screenshotPath = "/tmp/test.jpg";
+        let buff = fs.readFileSync(path.join(app.getPath('temp'), screenshotName));
+        dailyMedia.videoStill = buff.toString('base64');
         event.reply("screenshot-created", dailyMedia);
     });
 };
