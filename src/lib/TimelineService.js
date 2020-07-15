@@ -22,7 +22,7 @@ export const createNewTimeline = (name) => {
 };
 
 export const loadDailyMediaForTimeline = (id, startDate, endDate) => {
-    return db.prepare("SELECT * FROM media WHERE timelineId=$id AND mediaDate >= $startDate AND mediaDate <= $endDate;").all({
+    return db.prepare("SELECT m.*, vS.data AS videoStill FROM media AS m LEFT JOIN videoStills vS ON m.timelineId = vS.timelineId AND m.mediaDate = vS.mediaDate WHERE m.timelineId=$id AND m.mediaDate >= $startDate AND m.mediaDate <= $endDate;").all({
         id: id,
         startDate: startDate,
         endDate: endDate,
