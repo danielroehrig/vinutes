@@ -32,6 +32,7 @@ export const loadDailyMediaForTimeline = (id, startDate, endDate) => {
 export const safeDailyMediaForTimeline = (timelineId, dailyMedia) => {
     console.log("Saving Timeline to database!");
     const replaceDailyMedia = db.transaction(() => {
+        console.log(dateAsIso(dailyMedia));
         db.prepare("INSERT INTO media (timelineId, mediaDate, path, videoTimestamp) VALUES ($timelineId, $mediaDate, $path, $videoTimestamp) ON CONFLICT(timelineId, mediaDate) DO UPDATE SET path=$path, videoTimestamp=$videoTimestamp;")
             .run({
                 timelineId: timelineId,
