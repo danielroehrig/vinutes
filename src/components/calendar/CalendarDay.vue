@@ -40,19 +40,12 @@
                 return this.mediaFiles[this.day];
             },
             styling() {
-                /*let mediaFile = this.mediaFiles[this.generateMediaFilesKey()];
-                if (mediaFile) {
-                    const currentFileType = fileTypeCategory(mediaFile);
-                    if (currentFileType === "video" && mediaFile.screenshotPath !== null) {//TODO: Check if not yet deleted
-                        return {
-                            backgroundImage: "url('file://" + mediaFile.screenshotPath + "')",
-                        };
-                    } else if (currentFileType === "image") {
-                        return {
-                            backgroundImage: "url('file://" + mediaFile.filePath + "')",
-                        };
-                    }
-                }*/
+                let mediaFile = this.mediaFiles[this.day];
+                if (mediaFile && mediaFile.videoStill) {
+                    return {
+                        backgroundImage: "url('data:image/jpeg;charset=utf-8;base64,"+mediaFile.videoStill+"')",
+                    };
+                }
                 return {};
             },
         },

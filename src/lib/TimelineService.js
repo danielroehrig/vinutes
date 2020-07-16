@@ -22,19 +22,37 @@ export const createNewTimeline = (name) => {
 };
 
 export const loadDailyMediaForTimeline = (id, startDate, endDate) => {
-    return db.prepare("SELECT * FROM media WHERE timelineId=$id AND mediaDate >= $startDate AND mediaDate <= $endDate;").all({
+    return db.prepare("SELECT m.*, vS.data AS videoStill FROM media AS m LEFT JOIN videoStills vS ON m.timelineId = vS.timelineId AND m.mediaDate = vS.mediaDate WHERE m.timelineId=$id AND m.mediaDate >= $startDate AND m.mediaDate <= $endDate;").all({
         id: id,
         startDate: startDate,
-        endDate: endDate
+        endDate: endDate,
     });
 };
 
 export const safeDailyMediaForTimeline = (timelineId, dailyMedia) => {
-    db.prepare("INSERT INTO media (timelineId, mediaDate, path, videoTimestamp) VALUES ($timelineId, $mediaDate, $path, $videoTimestamp);")
-        .run({
-            timelineId: timelineId,
-            mediaDate: dateAsIso(dailyMedia),
-            path: dailyMedia.filePath,
-            videoTimestamp: dailyMedia.timeStamp,
-        });
+    console.log("Saving Timeline to database!");
+    const replaceDailyMedia = db.transaction(() => {
+        console.log(dateAsIso(dailyMedia));
+        db.prepare("INSERT INTO media (timelineId, mediaDate, path, videoTimestamp) VALUES ($timelineId, $mediaDate, $path, $videoTimestamp) ON CONFLICT(timelineId, mediaDate) DO UPDATE SET path=$path, videoTimestamp=$videoTimestamp;")
+            .run({
+                timelineId: timelineId,
+                mediaDate: dateAsIso(dailyMedia),
+                path: dailyMedia.filePath,
+                videoTimestamp: dailyMedia.timeStamp,
+            });
+        db.prepare("DELETE FROM videoStills WHERE timelineId=$timelineId AND mediaDate=$mediaDate;")
+            .run({
+                timelineId: timelineId,
+                mediaDate: dateAsIso(dailyMedia),
+            });
+        if (dailyMedia.videoStill) {
+            db.prepare("INSERT INTO videoStills(timelineId, mediaDate, data) VALUES($timelineId, $mediaDate, $data);")
+                .run({
+                    timelineId: timelineId,
+                    mediaDate: dateAsIso(dailyMedia),
+                    data: dailyMedia.videoStill,
+                });
+        }
+    });
+    replaceDailyMedia();
 };
