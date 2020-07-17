@@ -143,7 +143,7 @@
             },
             renderCurrentTimeline: function () {
                 let mediaFiles = getDailyMediaForTimeline(this.$store.state.currentTimeline);
-                ipcRenderer.send('render-daily-media-array', mediaFiles);
+                this.$store.dispatch('startRenderQueue', mediaFiles);
             }
         },
     };

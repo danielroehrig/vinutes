@@ -175,7 +175,12 @@ ipcMain.on("render-video", (event, dailyMedia)=>{
     }catch (e) {
         console.log("path exists presumably")
     }
-    VideoRenderer.renderVideo(dailyMedia, renderedTempPath);
+    VideoRenderer.renderVideo(dailyMedia, renderedTempPath, event);
+});
+
+ipcMain.on("merge-videos", (event, filePaths)=>{
+    console.log("start merging videos");
+    VideoRenderer.mergeVideos(filePaths, path.join(renderedTempPath, "mergetest.mp4"), event);
 });
 
 

@@ -1,4 +1,5 @@
-const {ipcRenderer, app} = require("electron");
+const {app} = require("electron");
+const moment = require("moment");
 const path = require("path");
 const fs = require("fs");
 const ffmpegPath = path.join(app.getAppPath(), '..', 'public', "bin", "amd64", "ffmpeg");
@@ -34,6 +35,7 @@ const createScreenshot = (dailyMedia, timeline, event) => {
 const renderVideo = (dailyMedia, tmpFolder, event) => {
     const dateName = moment(dailyMedia.mediaDate).format('LL');
     const ffmpeg =  new FfmpegCommand().addInput(dailyMedia.path);
+    const tmpFileName = path.join(tmpFolder, dailyMedia.mediaDate + ".mp4");
     ffmpeg.seekInput(dailyMedia.videoTimestamp).duration(1.5);
     ffmpeg
         .videoFilters({
@@ -51,16 +53,38 @@ const renderVideo = (dailyMedia, tmpFolder, event) => {
         })
         .size('1920x1080')
         .autopad('black')
-        .output(path.join(tmpFolder, dailyMedia.mediaDate + ".mp4"))
+        .output(tmpFileName)
         .on('start', function() {
             console.log("Rendering started");
         })
         .on('end', function () {
-            console.log('Finished processing ' + vid.date);
+            console.log('Finished processing ' + dailyMedia.mediaDate);
+            dailyMedia.tmpFilePath=tmpFileName;
             event.reply("video-rendered", dailyMedia);
         })
         .run();
 }
+const mergeVideos = (videoPaths, outputPath, event) => {
+    console.log("Merging Videos"+JSON.stringify(videoPaths)+outputPath);
+    const mergeCommand = new FfmpegCommand();
+    videoPaths.forEach((path) => {
+        try {
+            fs.statSync(path);
+        } catch (e) {
+            console.log("File does not exist.");
+            return;
+        }
+        console.log("path: "+path);
+        mergeCommand.addInput(path);
+    });
+    mergeCommand
+        .on('end', function () {
+            console.log('Finished merging');
+            event.reply("video-merged")
+        }).mergeToFile(outputPath, "/tmp");
+}
+
 
 module.exports.createScreenshot = createScreenshot;
 module.exports.renderVideo = renderVideo;
+module.exports.mergeVideos = mergeVideos;
