@@ -17,6 +17,8 @@ const store = new Vuex.Store({
         calendarTimeStampFormat: "ddd, D. MMM, Y",
         currentTimeline: null,
         mediaFiles: {},
+        renderQueue: [],
+        renderedQueue: [],
     },
     mutations: {
         showVideoPlayer(state, dailyMedia) {
@@ -82,8 +84,21 @@ const store = new Vuex.Store({
         },
         applyConfig(state, databaseRow) {
             state.language = databaseRow.language ? databaseRow.language : "en";//TODO: Use system default language
-
         },
+        clearRenderQueues(state) {
+            state.renderQueue = [];
+            state.renderedQueue = [];
+        },
+        setRenderQueue(state, elements){
+            state.renderQueue = elements;
+        },
+        addToRenderedQueue(state, element){
+            state.renderedQueue.push(element);
+        },
+        removeFirstElementFromRenderQueue(state){
+            state.renderQueue.shift();
+        }
+
     },
     actions: {
         /**
@@ -120,6 +135,21 @@ const store = new Vuex.Store({
             context.commit('moveToNextMonth');
             context.commit("loadDailyMedia");
         },
+        startRenderQueue(context, dailyMediaObjects) {
+            context.commit('clearRenderQueues');
+            context.commit('setRenderQueue', dailyMediaObjects);
+            context.dispatch('renderNextInQueue', null);
+        },
+        renderNextInQueue(context, lastElement) {
+            if(null !== lastElement){
+                context.commit('addToRenderedQueue', lastElement);
+            }
+            if(context.state.renderQueue.length>0){
+                let nextElement = context.state.renderQueue[0];
+                context.commit('removeFirstElementFromRenderQueue');
+                ipcRenderer.send('render-video', nextElement);
+            }//else glue files
+        }
     },
 });
 // All changes to the state are relayed to the PersistenceService

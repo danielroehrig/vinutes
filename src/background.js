@@ -167,6 +167,18 @@ ipcMain.on("get-user-path",  (event) =>{
     event.returnValue = app.getPath("userData");
 });
 
+const renderedTempPath = path.join(app.getPath("temp"),"justasec-rendered");
+ipcMain.on("render-video", (event, dailyMedia)=>{
+    console.log("start render file");
+    try{
+        fs.mkdirSync(renderedTempPath);
+    }catch (e) {
+        console.log("path exists presumably")
+    }
+    VideoRenderer.renderVideo(dailyMedia, renderedTempPath);
+});
+
+
 ipcMain.on("exit-app", (event, exitCode) => {
     if (exitCode > 0) {
         log.error("App exited abnormally!");
