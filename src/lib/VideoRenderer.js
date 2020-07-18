@@ -3,10 +3,8 @@ const moment = require("moment");
 const path = require("path");
 const fs = require("fs");
 const ffmpegPath = path.join(app.getAppPath(), '..', 'public', "bin", "amd64", "ffmpeg");
-const ffprobePath = path.join('public', "bin", "amd64", "ffmpeg");//TODO: might be unnecessary
 const FfmpegCommand = require("fluent-ffmpeg");
 FfmpegCommand.setFfmpegPath(ffmpegPath);
-FfmpegCommand.setFfprobePath(ffprobePath);
 
 
 
@@ -81,7 +79,7 @@ const mergeVideos = (videoPaths, outputPath, event) => {
         .on('end', function () {
             console.log('Finished merging');
             event.reply("video-merged")
-        }).mergeToFile(outputPath, "/tmp");
+        }).mergeToFile(outputPath, app.getPath('temp'));
 }
 
 
