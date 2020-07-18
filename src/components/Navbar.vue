@@ -50,7 +50,7 @@
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <div class="buttons">
-                            <a class="button is-primary">
+                            <a class="button is-primary" @click="renderCurrentTimeline()">
                                 <strong>Render</strong>
                             </a>
                             <router-link to="/preferences">
@@ -89,7 +89,12 @@
 </template>
 
 <script>
-    import {createNewTimeline, getAllTimelines, loadTimeline} from "../lib/TimelineService";
+    import {
+        createNewTimeline,
+        getAllTimelines,
+        getDailyMediaForTimeline,
+        loadTimeline,
+    } from "../lib/TimelineService";
 
     export default {
         name: "Navbar",
@@ -136,6 +141,16 @@
             setTimeline: function (id) {
                 this.$store.dispatch("changeTimeline", id);
             },
+            renderCurrentTimeline: function () {
+                let filePath = ipcRenderer.sendSync("show-save-dialog");
+                if(null === filePath){
+                    return;
+                }
+                console.log("PATH: "+filePath);
+                this.$store.commit('setRenderOutputPath', filePath);
+                let mediaFiles = getDailyMediaForTimeline(this.$store.state.currentTimeline);
+                this.$store.dispatch('startRenderQueue', mediaFiles);
+            }
         },
     };
 </script>

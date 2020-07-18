@@ -34,9 +34,6 @@
     export default {
         components: {Navbar},
         mounted() {
-            ipcRenderer.on("screenshot-created", (event, dailyMedia) => {
-                this.$store.commit("changeMediaFile", dailyMedia);
-            });
             initDBStructure();
             this.$store.dispatch('loadLastState');
         },

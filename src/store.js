@@ -17,6 +17,9 @@ const store = new Vuex.Store({
         calendarTimeStampFormat: "ddd, D. MMM, Y",
         currentTimeline: null,
         mediaFiles: {},
+        renderQueue: [],
+        renderedQueue: [],
+        renderOutputPath: null,
     },
     mutations: {
         showVideoPlayer(state, dailyMedia) {
@@ -82,8 +85,24 @@ const store = new Vuex.Store({
         },
         applyConfig(state, databaseRow) {
             state.language = databaseRow.language ? databaseRow.language : "en";//TODO: Use system default language
-
         },
+        clearRenderQueues(state) {
+            state.renderQueue = [];
+            state.renderedQueue = [];
+        },
+        setRenderOutputPath(state, path){
+            state.renderOutputPath = path;
+        },
+        setRenderQueue(state, elements) {
+            state.renderQueue = elements;
+        },
+        addToRenderedQueue(state, element) {
+            state.renderedQueue.push(element);
+        },
+        removeFirstElementFromRenderQueue(state) {
+            state.renderQueue.shift();
+        },
+
     },
     actions: {
         /**
@@ -113,16 +132,47 @@ const store = new Vuex.Store({
             }
         },
         moveToPreviousMonth(context) {
-            context.commit('moveToPreviousMonth');
+            context.commit("moveToPreviousMonth");
             context.commit("loadDailyMedia");
         },
         moveToNextMonth(context) {
-            context.commit('moveToNextMonth');
+            context.commit("moveToNextMonth");
             context.commit("loadDailyMedia");
+        },
+        startRenderQueue(context, dailyMediaObjects) {
+            context.commit("clearRenderQueues");
+            context.commit("setRenderQueue", dailyMediaObjects);
+            context.dispatch("renderNextInQueue", null);
+        },
+        renderNextInQueue(context, lastElement) {
+            if (null !== lastElement) {
+                context.commit("addToRenderedQueue", lastElement);
+            }
+            if (context.state.renderQueue.length > 0) {
+                let nextElement = context.state.renderQueue[0];
+                context.commit("removeFirstElementFromRenderQueue");
+                ipcRenderer.send("render-video", nextElement);
+            }else{
+                let mediaFilePaths = context.state.renderedQueue.map((mediaFile)=>{
+                    return mediaFile.tmpFilePath;
+                });
+                ipcRenderer.send("merge-videos", mediaFilePaths, context.state.renderOutputPath);
+            }
         },
     },
 });
 // All changes to the state are relayed to the PersistenceService
 store.subscribe(handleStoreMutation);
-
+ipcRenderer.on("screenshot-created", (event, dailyMedia) => {
+    store.commit("changeMediaFile", dailyMedia);
+});
+ipcRenderer.on("video-rendered", (event, dailyMedia) => {
+    console.log("Store says, render next!");
+    store.dispatch("renderNextInQueue", dailyMedia);
+});
+ipcRenderer.on("video-merged", (event, dailyMedia) => {
+    console.log("Store says, everything is merged!");
+    store.commit('setRenderOutputPath', null);
+    store.commit("clearRenderQueues");
+});
 export default store;

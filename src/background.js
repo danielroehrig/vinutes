@@ -132,30 +132,16 @@ ipcMain.on("show-open-dialog", (event, year, month, day) => {
     }
 });
 
-
-// Loading and Saving Files
-ipcMain.on("read-file-sync", (event, ...pathSegments) => {
-    try {
-        let filePath = path.join(userDataPath, ...pathSegments);
-        const buffer = fs.readFileSync(filePath, {encoding: "utf8", flag: "r"});
-        event.returnValue = JSON.parse(buffer.toString());
-    } catch (e) {
-        event.returnValue = e;
+ipcMain.on("show-save-dialog", (event) => {
+    const filePath = dialog.showSaveDialogSync({
+        title: "Choose a video or image",
+        defaultPath: app.getPath('home'),
+    });
+    if (filePath) {
+        event.returnValue = filePath;
+    } else {
+        event.returnValue = null;
     }
-});
-
-ipcMain.on("write-file", (event, dataObject, ...pathSegments) => {
-    let filePath = path.join(userDataPath, ...pathSegments);
-    let dirName = path.dirname(filePath);
-    console.log(`Writing to path ${filePath}`);
-    fsPromised
-        .mkdir(dirName, {recursive: true})
-        .then(() => fsPromised.writeFile(filePath, JSON.stringify(dataObject), {encoding: "utf8", flag: "w"}))
-        .then(() => event.reply("file-written", filePath))
-        .catch((error) => {
-            event.reply("file-writing-error", error);
-        });
-
 });
 
 ipcMain.on("create-video-screenshot", (event, dailyMedia, timeline) => {
@@ -166,6 +152,23 @@ ipcMain.on("create-video-screenshot", (event, dailyMedia, timeline) => {
 ipcMain.on("get-user-path",  (event) =>{
     event.returnValue = app.getPath("userData");
 });
+
+const renderedTempPath = path.join(app.getPath("temp"),"justasec-rendered");
+ipcMain.on("render-video", (event, dailyMedia)=>{
+    console.log("start render file");
+    try{
+        fs.mkdirSync(renderedTempPath);
+    }catch (e) {
+        console.log("path exists presumably")
+    }
+    VideoRenderer.renderVideo(dailyMedia, renderedTempPath, event);
+});
+
+ipcMain.on("merge-videos", (event, filePaths, outputPath)=>{
+    console.log("start merging videos to "+outputPath);
+    VideoRenderer.mergeVideos(filePaths, outputPath, event);
+});
+
 
 ipcMain.on("exit-app", (event, exitCode) => {
     if (exitCode > 0) {

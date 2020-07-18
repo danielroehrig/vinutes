@@ -29,6 +29,12 @@ export const loadDailyMediaForTimeline = (id, startDate, endDate) => {
     });
 };
 
+export const getDailyMediaForTimeline = (timelineId) => {
+    return db.prepare("SELECT mediaDate, path, videoTimestamp FROM media WHERE timelineId=$id ORDER BY mediaDate ASC;").all({
+        id: timelineId,
+    });
+}
+
 export const safeDailyMediaForTimeline = (timelineId, dailyMedia) => {
     console.log("Saving Timeline to database!");
     const replaceDailyMedia = db.transaction(() => {
