@@ -63,7 +63,8 @@ const renderVideo = (dailyMedia, tmpFolder, event) => {
         .run();
 }
 const mergeVideos = (videoPaths, outputPath, event) => {
-    console.log("Merging Videos"+JSON.stringify(videoPaths)+outputPath);
+    let outputPathObject = path.parse(outputPath);
+    outputPath = path.join(outputPathObject.dir, outputPathObject.name+'.mp4');
     const mergeCommand = new FfmpegCommand();
     videoPaths.forEach((path) => {
         try {
@@ -72,12 +73,10 @@ const mergeVideos = (videoPaths, outputPath, event) => {
             console.log("File does not exist.");
             return;
         }
-        console.log("path: "+path);
         mergeCommand.addInput(path);
     });
     mergeCommand
         .on('end', function () {
-            console.log('Finished merging');
             event.reply("video-merged")
         }).mergeToFile(outputPath, app.getPath('temp'));
 }

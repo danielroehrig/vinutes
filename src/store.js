@@ -19,6 +19,7 @@ const store = new Vuex.Store({
         mediaFiles: {},
         renderQueue: [],
         renderedQueue: [],
+        renderOutputPath: null,
     },
     mutations: {
         showVideoPlayer(state, dailyMedia) {
@@ -89,6 +90,9 @@ const store = new Vuex.Store({
             state.renderQueue = [];
             state.renderedQueue = [];
         },
+        setRenderOutputPath(state, path){
+            state.renderOutputPath = path;
+        },
         setRenderQueue(state, elements) {
             state.renderQueue = elements;
         },
@@ -152,7 +156,7 @@ const store = new Vuex.Store({
                 let mediaFilePaths = context.state.renderedQueue.map((mediaFile)=>{
                     return mediaFile.tmpFilePath;
                 });
-                ipcRenderer.send("merge-videos", mediaFilePaths);
+                ipcRenderer.send("merge-videos", mediaFilePaths, context.state.renderOutputPath);
             }
         },
     },
@@ -168,6 +172,7 @@ ipcRenderer.on("video-rendered", (event, dailyMedia) => {
 });
 ipcRenderer.on("video-merged", (event, dailyMedia) => {
     console.log("Store says, everything is merged!");
+    store.commit('setRenderOutputPath', null);
     store.commit("clearRenderQueues");
 });
 export default store;

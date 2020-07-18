@@ -142,6 +142,12 @@
                 this.$store.dispatch("changeTimeline", id);
             },
             renderCurrentTimeline: function () {
+                let filePath = ipcRenderer.sendSync("show-save-dialog");
+                if(null === filePath){
+                    return;
+                }
+                console.log("PATH: "+filePath);
+                this.$store.commit('setRenderOutputPath', filePath);
                 let mediaFiles = getDailyMediaForTimeline(this.$store.state.currentTimeline);
                 this.$store.dispatch('startRenderQueue', mediaFiles);
             }
