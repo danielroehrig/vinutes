@@ -1,4 +1,6 @@
 import {dateAsIso, fileTypeCategory} from "./DailyMedia";
+import DailyMedia from "./DailyMedia";
+import moment from "moment";
 
 export const loadTimeline = (id) => {
     console.log(`Loading timeline ${id}`);
@@ -30,8 +32,15 @@ export const loadDailyMediaForTimeline = (id, startDate, endDate) => {
 };
 
 export const getDailyMediaForTimeline = (timelineId) => {
-    return db.prepare("SELECT mediaDate, path, videoTimestamp FROM media WHERE timelineId=$id ORDER BY mediaDate ASC;").all({
+    //TODO: Turn into DailyMedia Objects to avoid confusion
+    let dbResults = db.prepare("SELECT mediaDate, path, videoTimestamp, mediaType FROM media WHERE timelineId=$id ORDER BY mediaDate ASC;").all({
         id: timelineId,
+    });
+
+    return dbResults.map(row=>{
+        console.log(JSON.stringify(row));
+        let mediaDate = moment(row.mediaDate);
+        return new DailyMedia(mediaDate.year(), mediaDate.month(), mediaDate.date(), row.path, row.mediaType, row.videoTimestamp);
     });
 }
 

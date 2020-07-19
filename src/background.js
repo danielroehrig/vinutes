@@ -4,7 +4,7 @@ import {
     createProtocol,
     /* installVueDevtools */
 } from "vue-cli-plugin-electron-builder/lib";
-import DailyMedia from "./lib/DailyMedia";
+import DailyMedia, {fileTypeCategory} from "./lib/DailyMedia";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 const {ipcMain} = require("electron");
@@ -126,7 +126,7 @@ ipcMain.on("show-open-dialog", (event, year, month, day) => {
     });
     if (filePaths) {
         let filePath = filePaths[0];
-        event.returnValue = new DailyMedia(year, month, day, filePath);
+        event.returnValue = new DailyMedia(year, month, day, filePath, fileTypeCategory(filePath));
     } else {
         event.returnValue = null;
     }

@@ -13,7 +13,6 @@
 <script>
     import moment from "moment";
     import {mapMutations, mapState} from "vuex";
-    import {fileTypeCategory} from "../../lib/DailyMedia";
 
     export default {
         name: "CalendarDay",
@@ -60,7 +59,7 @@
                 if (null === dailyMedia) {
                     return;
                 }
-                if(fileTypeCategory(dailyMedia) === 'image'){
+                if(dailyMedia.mediaType === 'image'){
                     ipcRenderer.send('render-image-preview', dailyMedia);
                     return;
                 }
