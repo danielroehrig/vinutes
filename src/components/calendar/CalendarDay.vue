@@ -13,6 +13,7 @@
 <script>
     import moment from "moment";
     import {mapMutations, mapState} from "vuex";
+    import {fileTypeCategory} from "../../lib/DailyMedia";
 
     export default {
         name: "CalendarDay",
@@ -56,9 +57,14 @@
             ]),
             openMediaFileDialog: function () {
                 let dailyMedia = ipcRenderer.sendSync("show-open-dialog", this.currentYear, this.currentMonth, this.day);
-                if (null !== dailyMedia) {
-                    this.showVideoPlayer(dailyMedia);
+                if (null === dailyMedia) {
+                    return;
                 }
+                if(fileTypeCategory(dailyMedia) === 'image'){
+                    ipcRenderer.send('render-image-preview', dailyMedia);
+                    return;
+                }
+                this.showVideoPlayer(dailyMedia);
             },
             currentMoment: function () {
                 return moment({

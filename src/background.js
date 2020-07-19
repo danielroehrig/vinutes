@@ -169,6 +169,11 @@ ipcMain.on("merge-videos", (event, filePaths, outputPath)=>{
     VideoRenderer.mergeVideos(filePaths, outputPath, event);
 });
 
+ipcMain.on("render-image-preview", (event, dailyMedia)=>{
+   console.log("creating image preview");
+   VideoRenderer.createImagePreview(dailyMedia, event);
+});
+
 
 ipcMain.on("exit-app", (event, exitCode) => {
     if (exitCode > 0) {

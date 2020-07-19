@@ -4,6 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const ffmpegPath = path.join(app.getAppPath(), '..', 'public', "bin", "amd64", "ffmpeg");
 const FfmpegCommand = require("fluent-ffmpeg");
+const sharp = require("sharp");
 FfmpegCommand.setFfmpegPath(ffmpegPath);
 
 
@@ -29,6 +30,19 @@ const createScreenshot = (dailyMedia, timeline, event) => {
         event.reply("screenshot-created", dailyMedia);
     });
 };
+
+const createImagePreview = (dailyMedia, event) => {
+    sharp(dailyMedia.filePath)
+        .resize(320,180, {
+            fit: 'cover',
+        })
+        .jpeg()
+        .toBuffer()
+        .then((outputBuffer)=>{
+            dailyMedia.videoStill = outputBuffer.toString('base64');
+            event.reply("screenshot-created", dailyMedia);
+        })
+}
 
 const renderVideo = (dailyMedia, tmpFolder, event) => {
     const dateName = moment(dailyMedia.mediaDate).format('LL');
@@ -85,3 +99,4 @@ const mergeVideos = (videoPaths, outputPath, event) => {
 module.exports.createScreenshot = createScreenshot;
 module.exports.renderVideo = renderVideo;
 module.exports.mergeVideos = mergeVideos;
+module.exports.createImagePreview = createImagePreview;
