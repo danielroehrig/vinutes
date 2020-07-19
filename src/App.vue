@@ -33,8 +33,10 @@
 
     export default {
         components: {Navbar},
-        mounted() {
+        beforeCreate() {
             initDBStructure();
+        },
+        mounted() {
             this.$store.dispatch('loadLastState');
         },
     };
