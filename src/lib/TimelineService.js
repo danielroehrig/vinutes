@@ -1,4 +1,4 @@
-import {dateAsIso} from "./DailyMedia";
+import {dateAsIso, fileTypeCategory} from "./DailyMedia";
 
 export const loadTimeline = (id) => {
     console.log(`Loading timeline ${id}`);
@@ -39,12 +39,13 @@ export const safeDailyMediaForTimeline = (timelineId, dailyMedia) => {
     console.log("Saving Timeline to database!");
     const replaceDailyMedia = db.transaction(() => {
         console.log(dateAsIso(dailyMedia));
-        db.prepare("INSERT INTO media (timelineId, mediaDate, path, videoTimestamp) VALUES ($timelineId, $mediaDate, $path, $videoTimestamp) ON CONFLICT(timelineId, mediaDate) DO UPDATE SET path=$path, videoTimestamp=$videoTimestamp;")
+        db.prepare("INSERT INTO media (timelineId, mediaDate, path, videoTimestamp, mediaType) VALUES ($timelineId, $mediaDate, $path, $videoTimestamp, $mediaType) ON CONFLICT(timelineId, mediaDate) DO UPDATE SET path=$path, videoTimestamp=$videoTimestamp;")
             .run({
                 timelineId: timelineId,
                 mediaDate: dateAsIso(dailyMedia),
                 path: dailyMedia.filePath,
                 videoTimestamp: dailyMedia.timeStamp,
+                mediaType: fileTypeCategory(dailyMedia),
             });
         db.prepare("DELETE FROM videoStills WHERE timelineId=$timelineId AND mediaDate=$mediaDate;")
             .run({
