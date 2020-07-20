@@ -85,6 +85,7 @@
             <button class="modal-close is-large" aria-label="close" @click="cancelTimelineCreation"></button>
         </div>
 
+    <RenderProgress v-if="this.$store.state.renderQueue.length>0 || this.$store.state.renderedQueue.length>0" :progress="renderProgress"></RenderProgress>
     </div>
 </template>
 
@@ -95,9 +96,11 @@
         getDailyMediaForTimeline,
         loadTimeline,
     } from "../lib/TimelineService";
+    import RenderProgress from "./RenderProgress";
 
     export default {
         name: "Navbar",
+        components: {RenderProgress},
         data: function () {
             return {
                 isTimelineCreationModalShown: false,
@@ -117,6 +120,12 @@
                 return this.timelines.filter((timeline) => {
                     return timeline.id !== this.currentTimeline.id;
                 });
+            },
+            renderProgress: function () {
+                const renderQueueCount = this.$store.state.renderQueue.length + this.$store.state.renderedQueue.length;
+                if(renderQueueCount>0){
+                    return this.$store.state.renderedQueue.length / renderQueueCount * 100;
+                }
             },
         },
         methods: {
@@ -146,7 +155,6 @@
                 if(null === filePath){
                     return;
                 }
-                console.log("PATH: "+filePath);
                 this.$store.commit('setRenderOutputPath', filePath);
                 let mediaFiles = getDailyMediaForTimeline(this.$store.state.currentTimeline);
                 this.$store.dispatch('startRenderQueue', mediaFiles);
