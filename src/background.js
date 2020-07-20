@@ -4,7 +4,7 @@ import {
     createProtocol,
     /* installVueDevtools */
 } from "vue-cli-plugin-electron-builder/lib";
-import DailyMedia from "./lib/DailyMedia";
+import DailyMedia, {fileTypeCategory} from "./lib/DailyMedia";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 const {ipcMain} = require("electron");
@@ -126,7 +126,7 @@ ipcMain.on("show-open-dialog", (event, year, month, day) => {
     });
     if (filePaths) {
         let filePath = filePaths[0];
-        event.returnValue = new DailyMedia(year, month, day, filePath);
+        event.returnValue = new DailyMedia(year, month, day, filePath, fileTypeCategory(filePath));
     } else {
         event.returnValue = null;
     }
@@ -167,6 +167,11 @@ ipcMain.on("render-video", (event, dailyMedia)=>{
 ipcMain.on("merge-videos", (event, filePaths, outputPath)=>{
     console.log("start merging videos to "+outputPath);
     VideoRenderer.mergeVideos(filePaths, outputPath, event);
+});
+
+ipcMain.on("render-image-preview", (event, dailyMedia)=>{
+   console.log("creating image preview");
+   VideoRenderer.createImagePreview(dailyMedia, event);
 });
 
 

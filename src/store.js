@@ -80,7 +80,7 @@ const store = new Vuex.Store({
             state.mediaFiles = {};
             allMedia.forEach((row) => {
                 let mediaMoment = moment(row.mediaDate);
-                Vue.set(state.mediaFiles, mediaMoment.date(), new DailyMedia(mediaMoment.year, mediaMoment.month(), mediaMoment.date(), row.path, row.videoTimestamp, row.videoStill));
+                Vue.set(state.mediaFiles, mediaMoment.date(), new DailyMedia(mediaMoment.year(), mediaMoment.month(), mediaMoment.date(), row.path, row.mediaType, row.videoTimestamp, row.videoStill));
             });
         },
         applyConfig(state, databaseRow) {

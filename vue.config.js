@@ -15,6 +15,7 @@ module.exports = {
             },
             builderOptions:{
                 extraResources: ['public/**'],
+                asarUnpack: [ '**/node_modules/sharp/**/*' ],
             }
         }
     },
