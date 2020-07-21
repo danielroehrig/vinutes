@@ -9,7 +9,6 @@ import DailyMedia, {fileTypeCategory} from "./lib/DailyMedia";
 const isDevelopment = process.env.NODE_ENV !== "production";
 const {ipcMain} = require("electron");
 const path = require("path");
-const fsPromised = require("fs").promises;
 const fs = require("fs");
 const log = require("electron-log");
 const VideoRenderer = require("./lib/VideoRenderer");
@@ -30,7 +29,9 @@ function createWindow() {
     // Create the browser window.
     win = new BrowserWindow(
         {
-            width: 1024, height: 800, minWidth: 1024, webPreferences: {
+            width: 1024, height: 800, minWidth: 1024,
+            icon: path.join(__static, 'icon.png'),
+            webPreferences: {
                 nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
                 preload: path.join(__dirname, "preload.js"),
                 webSecurity: false,
