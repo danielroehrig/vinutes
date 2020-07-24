@@ -27,11 +27,7 @@
             ]),
             momentToday() {
                 moment.locale(this.$store.state.language);
-                return moment({
-                    "year": this.currentYear,
-                    "month": this.currentMonth,
-                    "day": this.day,
-                });
+                return this.currentMoment();
             },
             timestampFormatting() {
                 return this.$store.state.calendarTimeStampFormat;
