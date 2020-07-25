@@ -81,23 +81,4 @@ describe("CalendarDay.vue", () => {
         store.state.currentMonth=9;
         expect(wrapper.vm.currentMoment().format()).to.equal(moment({year: 2018, month: 9, day: 7}).format());
     });
-    it("opens file dialog on click", () => {
-        const store = new Vuex.Store({
-                state: {
-                    mediaFiles: {},
-                },
-            },
-        );
-        const day = 7;
-        const spy = sinon.spy();
-        const wrapper = shallowMount(CalendarDay, {
-            store: store,
-            propsData: {day},
-            methods: {
-                openMediaFileDialog: spy,
-            }
-        });
-        wrapper.find('div.box').trigger('click');
-        expect(spy.called).to.be.true;
-    });
 });
