@@ -5,10 +5,9 @@
   "scripts": {
     "build": "vue-cli-service electron:build",
     "serve": "vue-cli-service electron:serve",
-    "test:unit": "vue-cli-service test:unit --ui=bdd tests/unit --recursive",
-    "test:components": "vue-cli-service test:unit --ui=bdd tests/components --recursive",
-    "test:e2e": "vue-cli-service test:unit -ui=bdd tests/e2e --recursive",
-    "test:e2e2": "env NODE_ENV=test vue-cli-service test:unit -ui=bdd tests/e2e --recursive",
+    "test:unit": "env NODE_ENV=test vue-cli-service test:unit --ui=bdd tests/unit --recursive",
+    "test:components": "env NODE_ENV=test vue-cli-service test:unit --ui=bdd tests/components --recursive",
+    "test:e2e": "env NODE_ENV=test vue-cli-service test:unit -ui=bdd tests/e2e --recursive",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
     "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten"
