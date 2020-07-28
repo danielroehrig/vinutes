@@ -3,7 +3,6 @@ import {shallowMount} from "@vue/test-utils";
 import CalendarDay from "@/components/calendar/CalendarDay.vue";
 import Vuex from "vuex";
 import moment from "moment";
-import sinon from "sinon";
 import Vue from "vue";
 
 Vue.use(Vuex);
