@@ -29,29 +29,15 @@
 </style>
 <script>
     import Navbar from "./components/Navbar";
+    import {initDBStructure} from "./lib/PersistenceService";
 
     export default {
         components: {Navbar},
+        beforeCreate() {
+            initDBStructure();
+        },
         mounted() {
-            ipcRenderer.on("screenshot-created", (event, dailyMedia) => {
-                this.$store.commit("changeMediaFile", dailyMedia);
-            });
-            let config = ipcRenderer.sendSync("load-config");
-            this.$store.commit("changeLanguage", config.language.toLowerCase());
-            let timeslines = ipcRenderer.sendSync("load-timelines");
-            if(timeslines.length === 0){
-                let timeline = ipcRenderer.sendSync('create-timeline', 'default');
-                this.$store.commit("changeTimeline", timeline);
-            }else{
-                let currentTimeline = timeslines.find(timeline=>timeline.name === config.lastTimeline);
-                if(!currentTimeline){
-                    currentTimeline = timeslines[0];
-                }
-                this.$store.commit("changeTimeline", currentTimeline);
-                //TODO: write any changes to config back to disk
-                //TODO: Test App.vue
-
-            }
+            this.$store.dispatch('loadLastState');
         },
     };
 </script>

@@ -13,7 +13,6 @@
 <script>
     import moment from "moment";
     import {mapMutations, mapState} from "vuex";
-    import {fileTypeCategory} from "../../lib/DailyMedia";
 
     export default {
         name: "CalendarDay",
@@ -28,31 +27,20 @@
             ]),
             momentToday() {
                 moment.locale(this.$store.state.language);
-                return moment({
-                    "year": this.currentYear,
-                    "month": this.currentMonth,
-                    "day": this.day,
-                });
+                return this.currentMoment();
             },
             timestampFormatting() {
                 return this.$store.state.calendarTimeStampFormat;
             },
             dailyMedia() {
-                return this.mediaFiles[this.generateMediaFilesKey()];
+                return this.mediaFiles[this.day];
             },
             styling() {
-                let mediaFile = this.mediaFiles[this.generateMediaFilesKey()];
-                if (mediaFile) {
-                    const currentFileType = fileTypeCategory(mediaFile);
-                    if (currentFileType === "video" && mediaFile.screenshotPath !== null) {//TODO: Check if not yet deleted
-                        return {
-                            backgroundImage: "url('file://" + mediaFile.screenshotPath + "')",
-                        };
-                    } else if (currentFileType === "image") {
-                        return {
-                            backgroundImage: "url('file://" + mediaFile.filePath + "')",
-                        };
-                    }
+                let mediaFile = this.mediaFiles[this.day];
+                if (mediaFile && mediaFile.videoStill) {
+                    return {
+                        backgroundImage: "url('data:image/jpeg;charset=utf-8;base64,"+mediaFile.videoStill+"')",
+                    };
                 }
                 return {};
             },
@@ -64,9 +52,14 @@
             ]),
             openMediaFileDialog: function () {
                 let dailyMedia = ipcRenderer.sendSync("show-open-dialog", this.currentYear, this.currentMonth, this.day);
-                if (null !== dailyMedia) {
-                    this.showVideoPlayer(dailyMedia);
+                if (null === dailyMedia) {
+                    return;
                 }
+                if(dailyMedia.mediaType === 'image'){
+                    ipcRenderer.send('render-image-preview', dailyMedia);
+                    return;
+                }
+                this.showVideoPlayer(dailyMedia);
             },
             currentMoment: function () {
                 return moment({
@@ -74,9 +67,6 @@
                     "month": this.currentMonth,
                     "day": this.day,
                 });
-            },
-            generateMediaFilesKey: function () {
-                return "k" + this.currentMoment().format("YYYYMMDD");
             },
         },
     };

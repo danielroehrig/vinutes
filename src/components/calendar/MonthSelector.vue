@@ -28,10 +28,10 @@
         },
         methods: {
             moveToPreviousMonth: function () {
-                this.$store.commit('moveToPreviousMonth');
+                this.$store.dispatch('moveToPreviousMonth');
             },
             moveToNextMonth: function () {
-                this.$store.commit('moveToNextMonth');
+                this.$store.dispatch('moveToNextMonth');
             }
         }
     }

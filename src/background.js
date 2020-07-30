@@ -4,20 +4,17 @@ import {
     createProtocol,
     /* installVueDevtools */
 } from "vue-cli-plugin-electron-builder/lib";
-import {DailyMedia} from "./lib/DailyMedia";
+import DailyMedia, {fileTypeCategory} from "./lib/DailyMedia";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 const {ipcMain} = require("electron");
 const path = require("path");
 const fs = require("fs");
 const log = require("electron-log");
-const ConfigService = require("./lib/ConfigService");
 const VideoRenderer = require("./lib/VideoRenderer");
-const {Timeline, timelineLoader, saveTimeline} = require("./lib/Timeline");
 
 /** Paths */
-const configFilePath = path.join(app.getPath("userData"), "config.json");
-const timelineDir = path.join(app.getPath("userData"), "timelines");
+const userDataPath = app.getPath("userData");
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -32,7 +29,9 @@ function createWindow() {
     // Create the browser window.
     win = new BrowserWindow(
         {
-            width: 1024, height: 800, minWidth: 1024, webPreferences: {
+            width: 1024, height: 800, minWidth: 1024,
+            icon: path.join(__static, 'icon.png'),
+            webPreferences: {
                 nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
                 preload: path.join(__dirname, "preload.js"),
                 webSecurity: false,
@@ -115,36 +114,6 @@ if (isDevelopment) {
     }
 }
 
-//Load Presets
-let jasConfig;
-ipcMain.on('load-config', (event)=>{
-    jasConfig = ConfigService.loadConfig(configFilePath);
-    event.returnValue = jasConfig;
-});
-//Load Timelines
-ipcMain.on('load-timelines', event => {
-    if (!fs.existsSync(timelineDir)){
-        try{
-            fs.mkdirSync(timelineDir);
-        }catch (e) {
-            log.error(`Could not create directory ${timelineDir}`);
-            app.exit(1);
-        }
-    }
-    event.returnValue = timelineLoader(timelineDir);
-});
-
-ipcMain.on('create-timeline', (event, name) => {
-    let timeline = new Timeline(name);
-    try{
-        saveTimeline(timeline, timelineDir);
-        event.returnValue = timeline;
-    }catch (e) {
-        log.error(`Could not save timeline ${timeline.name} ${e.message}`);
-        event.returnValue = false;
-    }
-});
-
 ipcMain.on("show-open-dialog", (event, year, month, day) => {
     console.log(`Open File Dialog for ${year} ${month} ${day}`);
     const filePaths = dialog.showOpenDialogSync({
@@ -158,7 +127,19 @@ ipcMain.on("show-open-dialog", (event, year, month, day) => {
     });
     if (filePaths) {
         let filePath = filePaths[0];
-        event.returnValue = new DailyMedia(year, month, day, filePath);
+        event.returnValue = new DailyMedia(year, month, day, filePath, fileTypeCategory(filePath));
+    } else {
+        event.returnValue = null;
+    }
+});
+
+ipcMain.on("show-save-dialog", (event) => {
+    const filePath = dialog.showSaveDialogSync({
+        title: "Choose a video or image",
+        defaultPath: app.getPath('home'),
+    });
+    if (filePath) {
+        event.returnValue = filePath;
     } else {
         event.returnValue = null;
     }
@@ -169,7 +150,37 @@ ipcMain.on("create-video-screenshot", (event, dailyMedia, timeline) => {
     VideoRenderer.createScreenshot(dailyMedia, timeline, event);
 });
 
-ipcMain.on('update-config', (event,key, value) =>{
-    jasConfig[key] = value;
-    ConfigService.writeConfig(jasConfig, configFilePath);
-})
+ipcMain.on("get-user-path",  (event) =>{
+    event.returnValue = app.getPath("userData");
+});
+
+const renderedTempPath = path.join(app.getPath("temp"),"justasec-rendered");
+ipcMain.on("render-video", (event, dailyMedia)=>{
+    console.log("start render file");
+    try{
+        fs.mkdirSync(renderedTempPath);
+    }catch (e) {
+        console.log("path exists presumably")
+    }
+    VideoRenderer.renderVideo(dailyMedia, renderedTempPath, event);
+});
+
+ipcMain.on("merge-videos", (event, filePaths, outputPath)=>{
+    console.log("start merging videos to "+outputPath);
+    VideoRenderer.mergeVideos(filePaths, outputPath, event);
+});
+
+ipcMain.on("render-image-preview", (event, dailyMedia)=>{
+   console.log("creating image preview");
+   VideoRenderer.createImagePreview(dailyMedia, event);
+});
+
+
+ipcMain.on("exit-app", (event, exitCode) => {
+    if (exitCode > 0) {
+        log.error("App exited abnormally!");
+    } else {
+        log.info("App exited normally!");
+    }
+    app.exit(exitCode);
+});

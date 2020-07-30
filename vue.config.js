@@ -5,6 +5,7 @@ module.exports = {
     },
     pluginOptions: {
         electronBuilder: {
+            externals: ['better-sqlite3'],
             preload: 'src/preload.js',
             chainWebpackMainProcess: config => {
                 config.plugin('define').tap(args => {
@@ -14,6 +15,7 @@ module.exports = {
             },
             builderOptions:{
                 extraResources: ['public/**'],
+                asarUnpack: [ '**/node_modules/sharp/**/*' ],
             }
         }
     },
