@@ -1,4 +1,4 @@
-# justasec-vue
+# Vinutes
 
 ## Project setup
 ```

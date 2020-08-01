@@ -17,7 +17,7 @@ FfmpegCommand.setFfmpegPath(ffmpegPath);
  * @param {IpcMainEvent} event
  */
 const createScreenshot = (dailyMedia, timeline, event) => {
-    let screenshotName = `justasec-${dailyMedia.year}${dailyMedia.month}${dailyMedia.day}.jpg`;
+    let screenshotName = `vinutes-${dailyMedia.year}${dailyMedia.month}${dailyMedia.day}.jpg`;
     new FfmpegCommand(dailyMedia.filePath).screenshots({
         timestamps: [dailyMedia.timeStamp],
         filename: screenshotName,

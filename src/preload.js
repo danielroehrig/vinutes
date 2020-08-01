@@ -2,10 +2,11 @@ import {ipcRenderer} from "electron";
 import path from "path";
 
 const userPath = ipcRenderer.sendSync('get-user-path');
-const dbPath = path.join(userPath, "justasec.db");
+const dbPath = path.join(userPath, "vinutes.db");
 const Database = require('better-sqlite3');
 const db = new Database(dbPath, { verbose: console.log });
 
+// We need require to run our tests
 if (process.env.NODE_ENV === 'test') {
     window.electronRequire = require
 }

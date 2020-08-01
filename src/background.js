@@ -154,7 +154,7 @@ ipcMain.on("get-user-path",  (event) =>{
     event.returnValue = app.getPath("userData");
 });
 
-const renderedTempPath = path.join(app.getPath("temp"),"justasec-rendered");
+const renderedTempPath = path.join(app.getPath("temp"),"vinutes-rendered");
 ipcMain.on("render-video", (event, dailyMedia)=>{
     console.log("start render file");
     try{
