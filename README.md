@@ -1,26 +1,16 @@
 # Vinutes
 
+Chose one video or image for every of your life (or maybe your cat's life, we are not judging) and combine them to a video.
+Powered by ffmpeg and electron and inspired by the android app 1-second-every-day but free and on the desktop.
+
 ## Project setup
 ```
 yarn install
 ```
 
-### Compiles and hot-reloads for development
-```
-yarn run serve
-```
+## Troubleshooting
 
-### Compiles and minifies for production
+### Better-Sqlite complains about wrong node.js version
 ```
-yarn run build
-```
-
-### Run your unit tests
-```
-yarn run test:unit
-```
-
-### Run your end-to-end tests
-```
-yarn run test:e2e
-```
+./node_modules/.bin/electron-rebuild -f -w better-sqlite3
+``
