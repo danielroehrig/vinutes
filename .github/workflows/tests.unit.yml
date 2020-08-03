@@ -21,6 +21,8 @@ jobs:
       with:
         node-version: '12.x'
     - run: yarn install
+    - name: Install vue-cli
+      run:  yarn global add @vue/cli 
     - name: Run Unit Tests
       run: vue-cli-service test:unit --ui=bdd tests/unit --recursive
       env:
