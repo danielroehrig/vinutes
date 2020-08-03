@@ -8,22 +8,19 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-env:
-  NODE_ENV: test
 jobs:
   build:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [12.x]
-
     steps:
+    - name: Install dependencies
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+    - uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm ci
+        node-version: '12.x'
+    - run: yarn install
+    - name: Run Unit Tests
     - run: vue-cli-service test:unit --ui=bdd tests/unit --recursive
+      env:
+        NODE_ENV: test
