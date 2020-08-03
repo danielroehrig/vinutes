@@ -22,6 +22,6 @@ jobs:
         node-version: '12.x'
     - run: yarn install
     - name: Run Unit Tests
-    - run: vue-cli-service test:unit --ui=bdd tests/unit --recursive
+      run: vue-cli-service test:unit --ui=bdd tests/unit --recursive
       env:
         NODE_ENV: test
