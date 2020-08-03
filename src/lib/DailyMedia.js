@@ -49,5 +49,5 @@ export const fileTypeCategory = (filePath) => {
 };
 
 export const dateAsIso = (dailyMedia) => {
-    return moment({year: dailyMedia.year, month: dailyMedia.month, day: dailyMedia.day}).format('YYYY-MM-DD');
+    return moment({year: dailyMedia.year, month: dailyMedia.month-1, day: dailyMedia.day}).format('YYYY-MM-DD');
 }
