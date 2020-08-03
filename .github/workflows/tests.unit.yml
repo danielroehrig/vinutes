@@ -16,14 +16,10 @@ jobs:
     steps:
     - name: Install dependencies
       uses: actions/checkout@v2
-    - name: Run yarn install
+    - name: Prepare yarn install
       uses: actions/setup-node@v1
       with:
         node-version: '12.x'
     - run: yarn install
-    - name: Install vue-cli
-      run:  yarn global add @vue/cli 
     - name: Run Unit Tests
-      run: vue-cli-service test:unit --ui=bdd tests/unit --recursive
-      env:
-        NODE_ENV: test
+      run: yarn run test:unit
