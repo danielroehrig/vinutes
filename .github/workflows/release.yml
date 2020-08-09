@@ -24,15 +24,15 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-      - name: Prepare yarn install
-        uses: actions/setup-node@v1
-        with:
-          node-version: '12.x'
-      - run: yarn install --frozen-lockfile
-      - name: Build linux builds
-        run: yarn run build
-      - uses: ncipollo/release-action@v1
-        with:
-          artifacts: "./dist_electron/vinutes-*.AppImage, ./dist_electron/vinutes-*.snap"
-          bodyFile: "RELEASE.md"
-          token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Prepare yarn install
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - run: yarn install --frozen-lockfile
+    - name: Build linux builds
+      run: yarn run build
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "./dist_electron/vinutes-*.AppImage, ./dist_electron/vinutes-*.snap"
+        bodyFile: "RELEASE.md"
+        token: ${{ secrets.GITHUB_TOKEN }}
