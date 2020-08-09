@@ -35,5 +35,3 @@ jobs:
       run: yarn run test:unit
     - name: Run components Tests
       run: yarn run test:components
-    - name: Run EndToEnd Tests
-      run: yarn run test:e2e
