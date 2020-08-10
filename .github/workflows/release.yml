@@ -36,3 +36,4 @@ jobs:
         artifacts: "./dist_electron/vinutes-*.AppImage, ./dist_electron/vinutes-*.snap"
         bodyFile: "RELEASE.md"
         token: ${{ secrets.GITHUB_TOKEN }}
+        commit: "master"
