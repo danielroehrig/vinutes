@@ -32,7 +32,7 @@ jobs:
       run: yarn run build
     - uses: ncipollo/release-action@v1
       with:
-        artifacts: "./dist_electron/vinutes-*.AppImage, ./dist_electron/vinutes-*.snap"
+        artifacts: "./dist_electron/vinutes-*.AppImage, ./dist_electron/vinutes_*.snap"
         bodyFile: "RELEASE.md"
         token: ${{ secrets.GITHUB_TOKEN }}
         commit: "master"
