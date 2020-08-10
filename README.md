@@ -1,6 +1,6 @@
 # Vinutes
 
-Chose one video or image for every of your life (or maybe your cat's life, we are not judging) and combine them to a video.
+Chose one video or image for every day of your life (or maybe your cat's life, we are not judging) and combine them to a video.
 Powered by ffmpeg and electron and inspired by the android app 1-second-every-day but free and on the desktop.
 
 ## Project setup
