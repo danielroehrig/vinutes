@@ -5,9 +5,8 @@ name: Release Binaries
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    tags:
+    - 'v*'
 jobs:
   build:
     runs-on: ubuntu-latest
