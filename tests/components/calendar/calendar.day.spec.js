@@ -80,4 +80,22 @@ describe("CalendarDay.vue", () => {
         store.state.currentMonth=9;
         expect(wrapper.vm.currentMoment().format()).to.equal(moment({year: 2018, month: 9, day: 7}).format());
     });
+    it("click on day emmits action", () => {
+        const store = new Vuex.Store({
+                state: {
+                    mediaFiles: {},
+                    currentMonth: 11,
+                    currentYear: 2018,
+                },
+            },
+        );
+        const day = 7;
+        const wrapper = shallowMount(CalendarDay, {
+            store: store,
+            propsData: {day},
+        });
+        wrapper.find('div.box').trigger('click');
+        expect(wrapper.emitted().calendarDayClicked).to.be.not.false;
+        expect(wrapper.emitted().calendarDayClicked[0][0]).to.equal(7);
+    });
 });
