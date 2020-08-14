@@ -1,5 +1,5 @@
 <template>
-  <div class="modal" :class="{'is-active': isTimelineCreationModalShown }">
+  <div class="modal" :class="{'is-active': isTimelineCreationModalShown }" id="timelineCreationDialog">
     <div class="modal-background"></div>
     <div class="modal-content">
       <div class="box">
