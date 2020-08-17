@@ -38,6 +38,7 @@
     "electron-rebuild": "^1.11.0",
     "rewire": "^5.0.0",
     "sinon": "^9.0.2",
+    "sinon-chai": "^3.5.0",
     "spectron": "^11.1.0",
     "vue-cli-plugin-electron-builder": "^2.0.0-rc.1",
     "vue-template-compiler": "^2.6.11",

@@ -13,6 +13,7 @@ const store = new Vuex.Store({
         currentDailyMediaShown: null,
         currentMonth: moment().month(),
         currentYear: moment().year(),
+        currentDaySelected: null,
         language: "en",
         calendarTimeStampFormat: "ddd, D. MMM, Y",
         currentTimeline: null,
@@ -102,6 +103,9 @@ const store = new Vuex.Store({
         removeFirstElementFromRenderQueue(state) {
             state.renderQueue.shift();
         },
+        setCurrentDaySelected(state, day){
+            state.currentDaySelected = day;
+        }
 
     },
     actions: {

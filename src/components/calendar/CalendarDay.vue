@@ -1,7 +1,7 @@
 <template>
     <div class="column" style="padding: 5px;">
         <div class="box" :class="{'inactive': (day === 0), 'withMedia': (dailyMedia) }" :style="styling"
-             @click="$emit('calendarDayClicked', day)">
+             @click="$store.commit('setCurrentDaySelected')">
             <div class="date">
                 {{ (day !== 0) ?
                 momentToday.format(timestampFormatting) : "" }}
