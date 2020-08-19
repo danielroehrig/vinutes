@@ -37,12 +37,7 @@
               'currentMonth',
             ])
         },
-        methods: {
-            calendarDayClicked: function (day) {
-                console.log("On month day " + day + " clicked");
-                this.$emit('calendarDayClicked', day);
-            }
-        }
+
     }
 </script>
 

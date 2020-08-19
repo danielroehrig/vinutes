@@ -92,7 +92,7 @@ describe("CalendarDay.vue", () => {
         expect(wrapper.vm.currentMoment().format()).to.equal(moment({year: 2018, month: 9, day: 7}).format());
     });
     it("click on day triggers current day mutation", () => {
-        const fakeCurrentDaySelected = sinon.fake();
+        const fakeCalendarDayClicked = sinon.fake();
         const store = new Vuex.Store({
                 state: {
                     mediaFiles: {},
@@ -100,8 +100,8 @@ describe("CalendarDay.vue", () => {
                     currentYear: 2018,
                     currentDaySelected: null,
                 },
-                mutations: {
-                    setCurrentDaySelected: fakeCurrentDaySelected,
+                actions: {
+                    calendarDayClicked: fakeCalendarDayClicked,
                 }
             },
         );
@@ -111,6 +111,6 @@ describe("CalendarDay.vue", () => {
             propsData: {day},
         });
         wrapper.find('div.box').trigger('click');
-        expect(fakeCurrentDaySelected).to.have.been.calledWith(store.state, 7);
+        expect(fakeCalendarDayClicked).to.have.been.calledWith(sinon.match.any, 7);
     });
 });

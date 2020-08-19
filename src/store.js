@@ -4,6 +4,7 @@ import moment from "moment";
 import DailyMedia from "./lib/DailyMedia";
 import {handleStoreMutation, loadLastState} from "./lib/PersistenceService";
 import {loadDailyMediaForTimeline, loadTimeline} from "./lib/TimelineService";
+import * as sc from "./store-constants";
 
 Vue.use(Vuex);
 
@@ -21,6 +22,7 @@ const store = new Vuex.Store({
         renderQueue: [],
         renderedQueue: [],
         renderOutputPath: null,
+        appState: sc.APP_STATE_UNKNOWN,
     },
     mutations: {
         showVideoPlayer(state, dailyMedia) {
@@ -103,10 +105,9 @@ const store = new Vuex.Store({
         removeFirstElementFromRenderQueue(state) {
             state.renderQueue.shift();
         },
-        setCurrentDaySelected(state, day){
-            state.currentDaySelected = day;
+        changeAppState(state, appState){
+            state.appState = appState;
         }
-
     },
     actions: {
         /**
@@ -163,6 +164,13 @@ const store = new Vuex.Store({
                 ipcRenderer.send("merge-videos", mediaFilePaths, context.state.renderOutputPath);
             }
         },
+        calendarDayClicked(context, day){
+            if(null === context.state.currentTimeline){
+                context.commit('changeAppState', sc.APP_STATE_CREATE_TIMELINE);
+                return;
+            }
+
+        }
     },
 });
 // All changes to the state are relayed to the PersistenceService
