@@ -111,6 +111,6 @@ describe("CalendarDay.vue", () => {
             propsData: {day},
         });
         wrapper.find('div.box').trigger('click');
-        expect(fakeCurrentDaySelected).to.be.calledOnceWith(store.state, sinon.match.any, 7);
+        expect(fakeCurrentDaySelected).to.have.been.calledWith(store.state, 7);
     });
 });
