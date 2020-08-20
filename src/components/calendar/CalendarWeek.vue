@@ -1,7 +1,6 @@
 <template>
     <div class="columns">
-        <CalendarDay v-for="(day, index) in days" v-bind:day="day" v-bind:key="isoWeek+'-'+index"
-                     @calendarDayClicked="calendarDayClicked"></CalendarDay>
+        <CalendarDay v-for="(day, index) in days" v-bind:day="day" v-bind:key="isoWeek+'-'+index"></CalendarDay>
     </div>
 </template>
 
@@ -15,12 +14,6 @@
             days: Array,
             isoWeek: Number,
         },
-      methods: {
-        calendarDayClicked: function (day){
-          console.log("Day "+day+" clicked");
-        }
-      }
-
     }
 </script>
 

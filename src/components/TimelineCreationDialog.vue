@@ -24,13 +24,23 @@
   </div>
 </template>
 <script>
+import * as sc from "@/store-constants";
 export default {
   name: "TimelineCreationDialog",
   props: {
     cancelTimelineCreation: {},
     createNewTimeline: {},
-    isTimelineCreationModalShown: {},
     newTimelineName: {},
   },
+  computed: {
+    isTimelineCreationModalShown() {
+      return this.$store.state.appState === sc.APP_STATE_CREATE_TIMELINE;
+    }
+  },
+  methods: {
+    cancelTimelineCreation: function() {
+      this.$store.commit('changeAppState', sc.APP_STATE_UNKNOWN); //TODO: Not unknown
+    }
+  }
 };
 </script>
