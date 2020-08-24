@@ -5,6 +5,7 @@ import DailyMedia from "./lib/DailyMedia";
 import {handleStoreMutation, loadLastState} from "./lib/PersistenceService";
 import {loadDailyMediaForTimeline, loadTimeline} from "./lib/TimelineService";
 import * as sc from "./store-constants";
+import {getAllTimelines} from "@/lib/TimelineService";
 
 Vue.use(Vuex);
 
@@ -23,6 +24,7 @@ const store = new Vuex.Store({
         renderedQueue: [],
         renderOutputPath: null,
         appState: sc.APP_STATE_UNKNOWN,
+        timelines: [],
     },
     mutations: {
         showVideoPlayer(state, dailyMedia) {
@@ -107,6 +109,9 @@ const store = new Vuex.Store({
         },
         changeAppState(state, appState){
             state.appState = appState;
+        },
+        setTimelines(state, timelines){
+            state.timelines = timelines;
         }
     },
     actions: {
@@ -120,6 +125,7 @@ const store = new Vuex.Store({
             let currentTimeline = loadTimeline(timeline);
             context.commit("changeTimeline", currentTimeline.id);
             context.commit("loadDailyMedia");
+            context.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW);
         },
         acceptVideo(context, timeStamp) {
             context.commit("setTimeStampForVideo", timeStamp);
@@ -170,6 +176,10 @@ const store = new Vuex.Store({
                 return;
             }
 
+        },
+        loadTimelines(context){
+            let timelines = getAllTimelines();
+            context.commit('setTimelines', timelines);
         }
     },
 });
