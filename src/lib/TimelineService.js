@@ -54,7 +54,7 @@ export const safeDailyMediaForTimeline = (timelineId, dailyMedia) => {
                 mediaDate: dateAsIso(dailyMedia),
                 path: dailyMedia.filePath,
                 videoTimestamp: dailyMedia.timeStamp,
-                mediaType: fileTypeCategory(dailyMedia),
+                mediaType: fileTypeCategory(dailyMedia.filePath),
             });
         db.prepare("DELETE FROM videoStills WHERE timelineId=$timelineId AND mediaDate=$mediaDate;")
             .run({

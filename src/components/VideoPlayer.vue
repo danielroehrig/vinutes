@@ -1,5 +1,5 @@
 <template>
-    <div class="modal is-active" v-if="this.$store.state.isVideoPlayerVisible">
+    <div class="modal is-active" v-if="isVisible">
         <div class="modal-background"></div>
         <div class="modal-content">
             <div class="columns">
@@ -19,16 +19,20 @@
 </template>
 
 <script>
+    import * as sc from "@/store-constants";
     export default {
         name: "VideoPlayer",
         computed: {
             videoSrc() {
                 return "file://" + this.$store.state.currentDailyMediaShown.filePath;
             },
+          isVisible() {
+            return this.$store.state.appState === sc.APP_STATE_VIDEO_PLAYER;
+          }
         },
         methods: {
             closeVideoPlayer: function () {
-                this.$store.commit("hideVideoPlayer");
+                this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW);
             },
             acceptVideo: function () {
                 const videoPreviewPlayer = document.getElementById('videoPreviewPlayer');

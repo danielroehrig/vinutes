@@ -27,9 +27,8 @@ const store = new Vuex.Store({
         timelines: [],
     },
     mutations: {
-        showVideoPlayer(state, dailyMedia) {
+        setCurrentDailyMedia(state, dailyMedia) {
             state.currentDailyMediaShown = dailyMedia;
-            state.isVideoPlayerVisible = true;
         },
         hideVideoPlayer(state) {
             state.currentDailyMediaShown = null;
@@ -112,6 +111,14 @@ const store = new Vuex.Store({
         },
         setTimelines(state, timelines){
             state.timelines = timelines;
+        },
+        /**
+         * Set the currently selected day
+         * @param state
+         * @param {int} day
+         */
+        setCurrentDaySelected(state, day){
+          state.currentDaySelected = day;
         }
     },
     actions: {
@@ -170,12 +177,18 @@ const store = new Vuex.Store({
                 ipcRenderer.send("merge-videos", mediaFilePaths, context.state.renderOutputPath);
             }
         },
+        /**
+         * Event: Day in calendar view was clicked.
+         * @param context
+         * @param {int} day
+         */
         calendarDayClicked(context, day){
             if(null === context.state.currentTimeline){
                 context.commit('changeAppState', sc.APP_STATE_CREATE_TIMELINE);
                 return;
             }
-
+            context.commit('setCurrentDaySelected', day);
+            context.commit('changeAppState', sc.APP_STATE_CHOOSE_MEDIA_FILE);
         },
         loadTimelines(context){
             let timelines = getAllTimelines();

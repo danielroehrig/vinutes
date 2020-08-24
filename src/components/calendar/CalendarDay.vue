@@ -52,18 +52,6 @@
                 "removeMediaFile",
                 "showVideoPlayer",
             ]),
-            openMediaFileDialog: function () {
-
-                let dailyMedia = ipcRenderer.sendSync("show-open-dialog", this.currentYear, this.currentMonth, this.day);
-                if (null === dailyMedia) {
-                    return;
-                }
-                if(dailyMedia.mediaType === 'image'){
-                    ipcRenderer.send('render-image-preview', dailyMedia);
-                    return;
-                }
-                this.showVideoPlayer(dailyMedia);
-            },
             currentMoment: function () {
                 return moment({
                     "year": this.currentYear,
