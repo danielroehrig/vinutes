@@ -1,43 +1,58 @@
 <template>
-    <div id="app">
-        <Navbar></Navbar>
-        <router-view/>
-    </div>
+  <div id="app">
+    <Navbar></Navbar>
+    <router-view/>
+  </div>
 </template>
 
 <style>
-    #app {
-        font-family: 'Avenir', Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-align: center;
-        color: #2c3e50;
-    }
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
 
-    #nav {
-        padding: 30px;
-    }
-
-    #nav a {
-        font-weight: bold;
-        color: #2c3e50;
-    }
-
-    #nav a.router-link-exact-active {
-        color: #42b983;
-    }
 </style>
 <script>
-    import Navbar from "./components/Navbar";
-    import {initDBStructure} from "./lib/PersistenceService";
+import Navbar from "./components/Navbar";
+import {initDBStructure} from "./lib/PersistenceService";
+import {mapState} from "vuex";
+import * as sc from "@/store-constants";
 
-    export default {
-        components: {Navbar},
-        beforeCreate() {
-            initDBStructure();
-        },
-        mounted() {
-            this.$store.dispatch('loadLastState');
-        },
-    };
+export default {
+  components: {Navbar},
+  //Before any window is created, load database structure
+  beforeCreate() {
+    //TODO Migration comes here
+    initDBStructure();
+  },
+  computed: mapState(["appState", "currentYear", "currentMonth", "currentDaySelected"]),
+  //As soon as app is ready, load the last saved state
+  mounted() {
+    this.$store.dispatch("loadTimelines");
+    this.$store.dispatch("loadLastState");
+  },
+  watch: {
+    appState(newState, oldState) {
+      switch (newState){
+        case sc.APP_STATE_CHOOSE_MEDIA_FILE:
+          let dailyMedia = ipcRenderer.sendSync("show-open-dialog", this.currentYear, this.currentMonth, this.currentDaySelected);
+          if (null === dailyMedia) {
+            return;
+          }
+          if (dailyMedia.mediaType === "image") {
+            ipcRenderer.send("render-image-preview", dailyMedia);
+            return;
+          }
+          this.$store.commit('setCurrentDailyMedia', dailyMedia);
+          this.$store.commit('changeAppState', sc.APP_STATE_VIDEO_PLAYER);
+          break;
+        default:
+          console.log("State changed unknown");
+      }
+    },
+  },
+};
 </script>

@@ -1,7 +1,7 @@
 <template>
     <div class="column" style="padding: 5px;">
         <div class="box" :class="{'inactive': (day === 0), 'withMedia': (dailyMedia) }" :style="styling"
-             @click="openMediaFileDialog">
+             @click="$store.dispatch('calendarDayClicked', day)">
             <div class="date">
                 {{ (day !== 0) ?
                 momentToday.format(timestampFormatting) : "" }}
@@ -24,13 +24,15 @@
                 "currentYear",
                 "currentMonth",
                 "mediaFiles",
+                "language",
+                "calendarTimeStampFormat",
             ]),
             momentToday() {
-                moment.locale(this.$store.state.language);
+                moment.locale(this.language);
                 return this.currentMoment();
             },
             timestampFormatting() {
-                return this.$store.state.calendarTimeStampFormat;
+                return this.calendarTimeStampFormat;
             },
             dailyMedia() {
                 return this.mediaFiles[this.day];
@@ -50,17 +52,6 @@
                 "removeMediaFile",
                 "showVideoPlayer",
             ]),
-            openMediaFileDialog: function () {
-                let dailyMedia = ipcRenderer.sendSync("show-open-dialog", this.currentYear, this.currentMonth, this.day);
-                if (null === dailyMedia) {
-                    return;
-                }
-                if(dailyMedia.mediaType === 'image'){
-                    ipcRenderer.send('render-image-preview', dailyMedia);
-                    return;
-                }
-                this.showVideoPlayer(dailyMedia);
-            },
             currentMoment: function () {
                 return moment({
                     "year": this.currentYear,

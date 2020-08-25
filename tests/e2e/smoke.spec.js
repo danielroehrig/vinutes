@@ -31,4 +31,10 @@ describe('Application launch', function () {
             .getWindowCount()
             .should.eventually.have.at.least(1);
     })
+
+    it('does not have the developer tools open', function () {
+        const devToolsAreOpen = this.app.client
+            .browserWindow.isDevToolsOpened();
+        return devToolsAreOpen.should.eventually.be.false;
+    });
 })
