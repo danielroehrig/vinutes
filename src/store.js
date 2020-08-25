@@ -30,10 +30,6 @@ const store = new Vuex.Store({
         setCurrentDailyMedia(state, dailyMedia) {
             state.currentDailyMediaShown = dailyMedia;
         },
-        hideVideoPlayer(state) {
-            state.currentDailyMediaShown = null;
-            state.isVideoPlayerVisible = false;
-        },
         setTimeStampForVideo(state, timeStamp) {
             state.currentDailyMediaShown.timeStamp = timeStamp;
         },
@@ -106,6 +102,11 @@ const store = new Vuex.Store({
         removeFirstElementFromRenderQueue(state) {
             state.renderQueue.shift();
         },
+        /**
+         * Change the current state of the app
+         * @param state
+         * @param {int} appState
+         */
         changeAppState(state, appState){
             state.appState = appState;
         },
