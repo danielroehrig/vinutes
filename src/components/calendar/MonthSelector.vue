@@ -12,29 +12,27 @@
 </template>
 
 <script>
-    import moment from "moment";
-    export default {
-        name: "MonthSelector",
-        computed: {
-            formattedDate ()
-            {
-                return moment({year: this.$store.state.currentYear, month: this.$store.state.currentMonth}).format('MMMM, Y');
-            },
-            isNextMonthFuture()
-            {
-                let nextMonth = moment({year: this.$store.state.currentYear, month: this.$store.state.currentMonth}).add(1, 'month');
-                return nextMonth>moment();
-            }
-        },
-        methods: {
-            moveToPreviousMonth: function () {
-                this.$store.dispatch('moveToPreviousMonth');
-            },
-            moveToNextMonth: function () {
-                this.$store.dispatch('moveToNextMonth');
-            }
-        }
+import moment from 'moment'
+export default {
+  name: 'MonthSelector',
+  computed: {
+    formattedDate () {
+      return moment({ year: this.$store.state.currentYear, month: this.$store.state.currentMonth }).format('MMMM, Y')
+    },
+    isNextMonthFuture () {
+      const nextMonth = moment({ year: this.$store.state.currentYear, month: this.$store.state.currentMonth }).add(1, 'month')
+      return nextMonth > moment()
     }
+  },
+  methods: {
+    moveToPreviousMonth: function () {
+      this.$store.dispatch('moveToPreviousMonth')
+    },
+    moveToNextMonth: function () {
+      this.$store.dispatch('moveToNextMonth')
+    }
+  }
+}
 </script>
 
 <style scoped>

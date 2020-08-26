@@ -26,33 +26,33 @@
   </div>
 </template>
 <script>
-import * as sc from "@/store-constants";
-import {createNewTimeline, getAllTimelines} from "@/lib/TimelineService";
+import * as sc from '@/store-constants'
+import { createNewTimeline, getAllTimelines } from '@/lib/TimelineService'
 export default {
-  name: "TimelineCreationDialog",
-  data: function() {
+  name: 'TimelineCreationDialog',
+  data: function () {
     return {
-      newTimelineName: null,
+      newTimelineName: null
     }
   },
   computed: {
-    isTimelineCreationModalShown() {
-      return this.$store.state.appState === sc.APP_STATE_CREATE_TIMELINE;
+    isTimelineCreationModalShown () {
+      return this.$store.state.appState === sc.APP_STATE_CREATE_TIMELINE
     }
   },
   methods: {
-    hide: function() {
-      this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW); //TODO: Not unknown
+    hide: function () {
+      this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW) // TODO: Not unknown
     },
-    cancelTimelineCreation: function() {
-      this.hide();
+    cancelTimelineCreation: function () {
+      this.hide()
     },
     createNewTimeline: function () {
-      let timelineId = createNewTimeline(this.newTimelineName);
-      this.$store.dispatch('loadTimelines');
-      this.$store.dispatch("changeTimeline", timelineId);
-      this.newTimelineName = null;
-    },
+      const timelineId = createNewTimeline(this.newTimelineName)
+      this.$store.dispatch('loadTimelines')
+      this.$store.dispatch('changeTimeline', timelineId)
+      this.newTimelineName = null
+    }
   }
-};
+}
 </script>

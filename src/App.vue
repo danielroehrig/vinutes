@@ -16,43 +16,43 @@
 
 </style>
 <script>
-import Navbar from "./components/Navbar";
-import {initDBStructure} from "./lib/PersistenceService";
-import {mapState} from "vuex";
-import * as sc from "@/store-constants";
+import Navbar from './components/Navbar'
+import { initDBStructure } from './lib/PersistenceService'
+import { mapState } from 'vuex'
+import * as sc from '@/store-constants'
 
 export default {
-  components: {Navbar},
-  //Before any window is created, load database structure
-  beforeCreate() {
-    //TODO Migration comes here
-    initDBStructure();
+  components: { Navbar },
+  // Before any window is created, load database structure
+  beforeCreate () {
+    // TODO Migration comes here
+    initDBStructure()
   },
-  computed: mapState(["appState", "currentYear", "currentMonth", "currentDaySelected"]),
-  //As soon as app is ready, load the last saved state
-  mounted() {
-    this.$store.dispatch("loadTimelines");
-    this.$store.dispatch("loadLastState");
+  computed: mapState(['appState', 'currentYear', 'currentMonth', 'currentDaySelected']),
+  // As soon as app is ready, load the last saved state
+  mounted () {
+    this.$store.dispatch('loadTimelines')
+    this.$store.dispatch('loadLastState')
   },
   watch: {
-    appState(newState, oldState) {
-      switch (newState){
+    appState (newState, oldState) {
+      switch (newState) {
         case sc.APP_STATE_CHOOSE_MEDIA_FILE:
-          let dailyMedia = ipcRenderer.sendSync("show-open-dialog", this.currentYear, this.currentMonth, this.currentDaySelected);
-          if (null === dailyMedia) {
-            return;
+          const dailyMedia = ipcRenderer.sendSync('show-open-dialog', this.currentYear, this.currentMonth, this.currentDaySelected)
+          if (dailyMedia === null) {
+            return
           }
-          if (dailyMedia.mediaType === "image") {
-            ipcRenderer.send("render-image-preview", dailyMedia);
-            return;
+          if (dailyMedia.mediaType === 'image') {
+            ipcRenderer.send('render-image-preview', dailyMedia)
+            return
           }
-          this.$store.commit('setCurrentDailyMedia', dailyMedia);
-          this.$store.commit('changeAppState', sc.APP_STATE_VIDEO_PLAYER);
-          break;
+          this.$store.commit('setCurrentDailyMedia', dailyMedia)
+          this.$store.commit('changeAppState', sc.APP_STATE_VIDEO_PLAYER)
+          break
         default:
-          console.log("State changed unknown");
+          console.log('State changed unknown')
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
