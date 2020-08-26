@@ -5,6 +5,8 @@
   "scripts": {
     "build": "vue-cli-service electron:build",
     "serve": "vue-cli-service electron:serve",
+    "lint": "eslint 'src/**' --fix",
+    "lint-fix": "eslint 'src/**'",
     "test:unit": "env NODE_ENV=test vue-cli-service test:unit --ui=bdd tests/unit --recursive",
     "test:components": "env NODE_ENV=test vue-cli-service test:unit --ui=bdd tests/components --recursive",
     "test:e2e": "env NODE_ENV=test vue-cli-service test:unit -ui=bdd tests/e2e --recursive",
