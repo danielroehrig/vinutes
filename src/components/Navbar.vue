@@ -69,56 +69,56 @@
 </template>
 
 <script>
-import {getAllTimelines, getDailyMediaForTimeline, loadTimeline} from "@/lib/TimelineService";
-import RenderProgress from "./RenderProgress";
-import TimelineCreationDialog from "@/components/TimelineCreationDialog";
-import * as sc from "@/store-constants";
+import { getDailyMediaForTimeline, loadTimeline } from '@/lib/TimelineService'
+import RenderProgress from './RenderProgress'
+import TimelineCreationDialog from '@/components/TimelineCreationDialog'
+import * as sc from '@/store-constants'
 
 export default {
-  name: "Navbar",
-  components: {TimelineCreationDialog, RenderProgress},
+  name: 'Navbar',
+  components: { TimelineCreationDialog, RenderProgress },
   computed: {
     timelines: function () {
-      let timelines = this.$store.state.timelines;
-      console.log(timelines);
-      return timelines;
+      const timelines = this.$store.state.timelines
+      console.log(timelines)
+      return timelines
     },
     currentTimeline: function () {
-      let currentTimeline = this.$store.state.currentTimeline;
-      if (null === currentTimeline) {
-        return null;
+      const currentTimeline = this.$store.state.currentTimeline
+      if (currentTimeline === null) {
+        return null
       }
-      return loadTimeline(currentTimeline);
+      return loadTimeline(currentTimeline)
     },
     selectableTimelines: function () {
       return this.timelines.filter((timeline) => {
-        return timeline.id !== this.currentTimeline.id;
-      });
+        return timeline.id !== this.currentTimeline.id
+      })
     },
     renderProgress: function () {
-      const renderQueueCount = this.$store.state.renderQueue.length + this.$store.state.renderedQueue.length;
-      if (renderQueueCount > 0) {
-        return this.$store.state.renderedQueue.length / renderQueueCount * 100;
+      const renderQueueCount = this.$store.state.renderQueue.length + this.$store.state.renderedQueue.length
+      if (renderQueueCount <= 0) {
+        return 0
       }
-    },
+      return this.$store.state.renderedQueue.length / renderQueueCount * 100
+    }
   },
   methods: {
     setTimeline: function (id) {
-      this.$store.dispatch("changeTimeline", id);
+      this.$store.dispatch('changeTimeline', id)
     },
     renderCurrentTimeline: function () {
-      let filePath = ipcRenderer.sendSync("show-save-dialog");
-      if (null === filePath) {
-        return;
+      const filePath = ipcRenderer.sendSync('show-save-dialog')
+      if (filePath === null) {
+        return
       }
-      this.$store.commit("setRenderOutputPath", filePath);
-      let mediaFiles = getDailyMediaForTimeline(this.$store.state.currentTimeline);
-      this.$store.dispatch("startRenderQueue", mediaFiles);
+      this.$store.commit('setRenderOutputPath', filePath)
+      const mediaFiles = getDailyMediaForTimeline(this.$store.state.currentTimeline)
+      this.$store.dispatch('startRenderQueue', mediaFiles)
     },
     showTimelineCreationModal: function () {
-      this.$store.commit("changeAppState", sc.APP_STATE_CREATE_TIMELINE);
-    },
-  },
-};
+      this.$store.commit('changeAppState', sc.APP_STATE_CREATE_TIMELINE)
+    }
+  }
+}
 </script>
-

@@ -11,56 +11,56 @@
 </template>
 
 <script>
-    import moment from "moment";
-    import {mapMutations, mapState} from "vuex";
+import moment from 'moment'
+import { mapMutations, mapState } from 'vuex'
 
-    export default {
-        name: "CalendarDay",
-        props: {
-            day: Number,
-        },
-        computed: {
-            ...mapState([
-                "currentYear",
-                "currentMonth",
-                "mediaFiles",
-                "language",
-                "calendarTimeStampFormat",
-            ]),
-            momentToday() {
-                moment.locale(this.language);
-                return this.currentMoment();
-            },
-            timestampFormatting() {
-                return this.calendarTimeStampFormat;
-            },
-            dailyMedia() {
-                return this.mediaFiles[this.day];
-            },
-            styling() {
-                let mediaFile = this.mediaFiles[this.day];
-                if (mediaFile && mediaFile.videoStill) {
-                    return {
-                        backgroundImage: "url('data:image/jpeg;charset=utf-8;base64,"+mediaFile.videoStill+"')",
-                    };
-                }
-                return {};
-            },
-        },
-        methods: {
-            ...mapMutations([
-                "removeMediaFile",
-                "showVideoPlayer",
-            ]),
-            currentMoment: function () {
-                return moment({
-                    "year": this.currentYear,
-                    "month": this.currentMonth,
-                    "day": this.day,
-                });
-            },
-        },
-    };
+export default {
+  name: 'CalendarDay',
+  props: {
+    day: Number
+  },
+  computed: {
+    ...mapState([
+      'currentYear',
+      'currentMonth',
+      'mediaFiles',
+      'language',
+      'calendarTimeStampFormat'
+    ]),
+    momentToday () {
+      moment.locale(this.language)
+      return this.currentMoment()
+    },
+    timestampFormatting () {
+      return this.calendarTimeStampFormat
+    },
+    dailyMedia () {
+      return this.mediaFiles[this.day]
+    },
+    styling () {
+      const mediaFile = this.mediaFiles[this.day]
+      if (mediaFile && mediaFile.videoStill) {
+        return {
+          backgroundImage: "url('data:image/jpeg;charset=utf-8;base64," + mediaFile.videoStill + "')"
+        }
+      }
+      return {}
+    }
+  },
+  methods: {
+    ...mapMutations([
+      'removeMediaFile',
+      'showVideoPlayer'
+    ]),
+    currentMoment: function () {
+      return moment({
+        year: this.currentYear,
+        month: this.currentMonth,
+        day: this.day
+      })
+    }
+  }
+}
 </script>
 
 <style scoped>

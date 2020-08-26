@@ -5,16 +5,16 @@
 </template>
 
 <script>
-    import CalendarDay from "./CalendarDay";
+import CalendarDay from './CalendarDay'
 
-    export default {
-        name: "CalendarWeek",
-        components: {CalendarDay},
-        props: {
-            days: Array,
-            isoWeek: Number,
-        },
-    }
+export default {
+  name: 'CalendarWeek',
+  components: { CalendarDay },
+  props: {
+    days: Array,
+    isoWeek: Number
+  }
+}
 </script>
 
 <style scoped>

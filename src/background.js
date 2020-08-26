@@ -13,9 +13,6 @@ const fs = require('fs')
 const log = require('electron-log')
 const VideoRenderer = require('./lib/VideoRenderer')
 
-/** Paths */
-const userDataPath = app.getPath('userData')
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
