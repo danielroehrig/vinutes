@@ -38,6 +38,7 @@ export default {
     appState (newState, oldState) {
       switch (newState) {
         case sc.APP_STATE_CHOOSE_MEDIA_FILE:
+        {
           const dailyMedia = ipcRenderer.sendSync('show-open-dialog', this.currentYear, this.currentMonth, this.currentDaySelected)
           if (dailyMedia === null) {
             return
@@ -49,6 +50,7 @@ export default {
           this.$store.commit('setCurrentDailyMedia', dailyMedia)
           this.$store.commit('changeAppState', sc.APP_STATE_VIDEO_PLAYER)
           break
+        }
         default:
           console.log('State changed unknown')
       }

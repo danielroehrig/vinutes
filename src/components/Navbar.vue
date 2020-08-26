@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { getAllTimelines, getDailyMediaForTimeline, loadTimeline } from '@/lib/TimelineService'
+import { getDailyMediaForTimeline, loadTimeline } from '@/lib/TimelineService'
 import RenderProgress from './RenderProgress'
 import TimelineCreationDialog from '@/components/TimelineCreationDialog'
 import * as sc from '@/store-constants'
@@ -97,9 +97,10 @@ export default {
     },
     renderProgress: function () {
       const renderQueueCount = this.$store.state.renderQueue.length + this.$store.state.renderedQueue.length
-      if (renderQueueCount > 0) {
-        return this.$store.state.renderedQueue.length / renderQueueCount * 100
+      if (renderQueueCount <= 0) {
+        return 0
       }
+      return this.$store.state.renderedQueue.length / renderQueueCount * 100
     }
   },
   methods: {

@@ -27,7 +27,7 @@
 </template>
 <script>
 import * as sc from '@/store-constants'
-import { createNewTimeline, getAllTimelines } from '@/lib/TimelineService'
+import { createNewTimeline } from '@/lib/TimelineService'
 export default {
   name: 'TimelineCreationDialog',
   data: function () {
