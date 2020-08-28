@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app">{{ $t('hello') }}
     <Navbar></Navbar>
     <router-view/>
   </div>
@@ -58,3 +58,11 @@ export default {
   }
 }
 </script>
+
+<i18n>
+{
+"en": {
+"hello": "Hello i18n in SFC!"
+}
+}
+</i18n>
