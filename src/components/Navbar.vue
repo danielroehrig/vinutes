@@ -1,5 +1,6 @@
 <template>
   <div>
+    {{ $t('message') }}
     <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <div class="navbar-item">

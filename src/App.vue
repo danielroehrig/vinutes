@@ -1,5 +1,5 @@
 <template>
-  <div id="app">{{ $t('hello') }}
+  <div id="app">
     <Navbar></Navbar>
     <router-view/>
   </div>
@@ -28,13 +28,16 @@ export default {
     // TODO Migration comes here
     initDBStructure()
   },
-  computed: mapState(['appState', 'currentYear', 'currentMonth', 'currentDaySelected']),
+  computed: mapState(['appState', 'currentYear', 'currentMonth', 'currentDaySelected', 'language']),
   // As soon as app is ready, load the last saved state
   mounted () {
     this.$store.dispatch('loadTimelines')
     this.$store.dispatch('loadLastState')
   },
   watch: {
+    language (newState, oldState) {
+      this.$i18n.locale = newState
+    },
     appState (newState, oldState) {
       switch (newState) {
         case sc.APP_STATE_CHOOSE_MEDIA_FILE:
@@ -58,11 +61,3 @@ export default {
   }
 }
 </script>
-
-<i18n>
-{
-"en": {
-"hello": "Hello i18n in SFC!"
-}
-}
-</i18n>
