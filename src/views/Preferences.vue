@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="field has-text-left">
-            <label class="label">Language</label>
+            <label class="label">{{ $t('language') }}</label>
             <div class="control">
                 <div class="select">
                     <select v-model="language">
