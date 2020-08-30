@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <div class="navbar-item">
@@ -26,7 +27,7 @@
             </a>
             <div class="navbar-dropdown">
               <a class="navbar-item" @click="showTimelineCreationModal">
-                Create new Timeline
+                {{ $t('action.create-new-project') }}
               </a>
             </div>
           </div>
@@ -41,7 +42,7 @@
               </a>
               <hr class="navbar-divider">
               <a class="navbar-item" @click="showTimelineCreationModal">
-                Create new Timeline
+                {{ $t('action.create-new-project') }}
               </a>
             </div>
           </div>

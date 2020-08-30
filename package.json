@@ -3,17 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "vue-cli-service electron:build",
     "serve": "vue-cli-service electron:serve",
-    "lint": "eslint 'src/**' --fix",
-    "lint-fix": "eslint 'src/**'",
+    "build": "vue-cli-service electron:build",
     "test:unit": "env NODE_ENV=test vue-cli-service test:unit --ui=bdd tests/unit --recursive",
-    "test:components": "env NODE_ENV=test vue-cli-service test:unit --ui=bdd tests/components --recursive",
     "test:e2e": "env NODE_ENV=test vue-cli-service test:unit -ui=bdd tests/e2e --recursive",
+    "lint": "eslint 'src/**' --fix",
+    "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten",
+    "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'",
+    "lint-fix": "eslint 'src/**'",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
-    "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten"
+    "test:components": "env NODE_ENV=test vue-cli-service test:unit --ui=bdd tests/components --recursive"
   },
+  "main": "background.js",
   "dependencies": {
     "@mdi/font": "^5.3.45",
     "better-sqlite3": "^7.1.0",
@@ -25,10 +27,12 @@
     "moment": "^2.26.0",
     "sharp": "^0.25.4",
     "vue": "^2.6.11",
+    "vue-i18n": "^8.17.3",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
+    "@intlify/vue-i18n-loader": "^1.0.0",
     "@vue/cli-plugin-e2e-cypress": "^4.3.1",
     "@vue/cli-plugin-unit-mocha": "~4.3.1",
     "@vue/cli-service": "^4.3.1",
@@ -50,8 +54,8 @@
     "sinon-chai": "^3.5.0",
     "spectron": "^11.1.0",
     "vue-cli-plugin-electron-builder": "^2.0.0-rc.1",
+    "vue-cli-plugin-i18n": "~1.0.1",
     "vue-template-compiler": "^2.6.11",
     "webpack": "^4.43.0"
-  },
-  "main": "background.js"
+  }
 }

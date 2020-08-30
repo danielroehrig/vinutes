@@ -28,13 +28,16 @@ export default {
     // TODO Migration comes here
     initDBStructure()
   },
-  computed: mapState(['appState', 'currentYear', 'currentMonth', 'currentDaySelected']),
+  computed: mapState(['appState', 'currentYear', 'currentMonth', 'currentDaySelected', 'language']),
   // As soon as app is ready, load the last saved state
   mounted () {
     this.$store.dispatch('loadTimelines')
     this.$store.dispatch('loadLastState')
   },
   watch: {
+    language (newState, oldState) {
+      this.$i18n.locale = newState
+    },
     appState (newState, oldState) {
       switch (newState) {
         case sc.APP_STATE_CHOOSE_MEDIA_FILE:
