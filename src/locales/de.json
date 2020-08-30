@@ -1,3 +1,6 @@
 {
-  "message": "hallo i18n !!"
+  "action":{
+    "create-new-project": "Neues Projekt erstellen"
+  },
+  "language": "Sprache"
 }

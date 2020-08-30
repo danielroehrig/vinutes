@@ -4,7 +4,7 @@
     <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <div class="navbar-item">
-          <router-link to="/"><img src="img/shutterIcon.png" width="28" height="28"></router-link>
+          <router-link to="/"><img src="img/heartlogo.png" width="28" height="28"></router-link>
         </div>
 
         <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
