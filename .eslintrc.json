@@ -6,7 +6,8 @@
   },
   "extends": [
     "plugin:vue/essential",
-    "standard"
+    "standard",
+    "plugin:json/recommended"
   ],
   "parserOptions": {
     "ecmaVersion": 2020,
