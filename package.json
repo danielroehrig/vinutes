@@ -7,10 +7,10 @@
     "build": "vue-cli-service electron:build",
     "test:unit": "env NODE_ENV=test vue-cli-service test:unit --ui=bdd tests/unit --recursive",
     "test:e2e": "env NODE_ENV=test vue-cli-service test:unit -ui=bdd tests/e2e --recursive",
-    "lint": "eslint 'src/**' --fix",
+    "lint-fix": "eslint 'src/**' --fix",
     "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten",
     "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'",
-    "lint-fix": "eslint 'src/**'",
+    "lint": "eslint 'src/**'",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
     "test:components": "env NODE_ENV=test vue-cli-service test:unit --ui=bdd tests/components --recursive"
