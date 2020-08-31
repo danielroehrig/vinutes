@@ -4,11 +4,11 @@
     <div class="modal-content">
       <div class="box">
         <div class="field">
-          <label class="label">Create a new timeline</label>
+          <label class="label">{{ $t('action.create-new-project') }}</label>
           <div class="control">
-            <label>Enter a unique name for the new timeline
+            <label>{{ $t('text.enter-unique-name-for-timeline')}}
               <input v-model="newTimelineName" class="input" type="text"
-                     placeholder="Enter name of the timeline">
+                     :placeholder="$t('placeholder.enter-new-timeline-name')">
             </label>
           </div>
         </div>
@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     hide: function () {
-      this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW) // TODO: Not unknown
+      this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
     },
     cancelTimelineCreation: function () {
       this.hide()

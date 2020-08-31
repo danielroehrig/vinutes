@@ -1,6 +1,12 @@
 {
   "action":{
-    "create-new-project": "Create new project"
+    "create-new-project": "Create new timeline"
+  },
+  "text": {
+    "enter-unique-name-for-timeline": "Enter a unique name for the new timeline"
+  },
+  "placeholder": {
+    "enter-new-timeline-name": "Name timeline"
   },
   "language": "Language"
 }
