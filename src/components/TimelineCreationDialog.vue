@@ -14,10 +14,10 @@
         </div>
         <div class="field is-grouped">
           <div class="control">
-            <button class="button is-link" @click="createNewTimeline" id="timelineCreationDialogButtonSubmit">Submit</button>
+            <button class="button is-link" @click="createNewTimeline" id="timelineCreationDialogButtonSubmit">{{ $t('button.accept') }}</button>
           </div>
           <div class="control">
-            <button class="button is-link is-light" @click="cancelTimelineCreation" id="timelineCreationDialogButtonCancel">Cancel</button>
+            <button class="button is-link is-light" @click="cancelTimelineCreation" id="timelineCreationDialogButtonCancel">{{ $t('button.cancel') }}</button>
           </div>
         </div>
       </div>

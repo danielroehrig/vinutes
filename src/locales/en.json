@@ -8,5 +8,9 @@
   "placeholder": {
     "enter-new-timeline-name": "Name timeline"
   },
+  "button": {
+    "accept": "Accept",
+    "cancel": "Cancel"
+  },
   "language": "Language"
 }

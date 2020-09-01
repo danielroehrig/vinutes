@@ -8,5 +8,9 @@
   "placeholder": {
     "enter-new-timeline-name": "Name der Zeitlinie"
   },
+  "button": {
+    "accept": "Bestätigen",
+    "cancel": "Abbrechen"
+  },
   "language": "Sprache"
 }
