@@ -7,22 +7,22 @@
           <label class="label">{{ $t('action.create-new-project') }}</label>
           <div class="control">
             <label>{{ $t('text.enter-unique-name-for-timeline')}}
-              <input v-model="newTimelineName" class="input" type="text"
+              <input v-model="newTimelineName" class="input" type="text" ref="inputName" id="timelineCreationDialogInputTimelineName"
                      :placeholder="$t('placeholder.enter-new-timeline-name')">
             </label>
           </div>
         </div>
         <div class="field is-grouped">
           <div class="control">
-            <button class="button is-link" @click="createNewTimeline">Submit</button>
+            <button class="button is-link" @click="createNewTimeline" id="timelineCreationDialogButtonSubmit">Submit</button>
           </div>
           <div class="control">
-            <button class="button is-link is-light" @click="cancelTimelineCreation">Cancel</button>
+            <button class="button is-link is-light" @click="cancelTimelineCreation" id="timelineCreationDialogButtonCancel">Cancel</button>
           </div>
         </div>
       </div>
     </div>
-    <button class="modal-close is-large" aria-label="close" @click="cancelTimelineCreation"></button>
+    <button class="modal-close is-large" aria-label="close" @click="cancelTimelineCreation" id="timelineCreationDialogButtonClose"></button>
   </div>
 </template>
 <script>
@@ -52,6 +52,17 @@ export default {
       this.$store.dispatch('loadTimelines')
       this.$store.dispatch('changeTimeline', timelineId)
       this.newTimelineName = null
+    }
+  },
+  watch: {
+    isTimelineCreationModalShown (isVisible, wasVisible) {
+      if (isVisible && !wasVisible) {
+        console.log('setting focus')
+        this.$nextTick(() => {
+          console.log('waited a tick')
+          this.$refs.inputName.focus()
+        })
+      }
     }
   }
 }
