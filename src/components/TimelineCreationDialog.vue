@@ -44,14 +44,18 @@ export default {
     hide: function () {
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
     },
+    clearTimelineName: function () {
+      this.newTimelineName = null
+    },
     cancelTimelineCreation: function () {
+      this.clearTimelineName()
       this.hide()
     },
     createNewTimeline: function () {
       const timelineId = createNewTimeline(this.newTimelineName)
       this.$store.dispatch('loadTimelines')
       this.$store.dispatch('changeTimeline', timelineId)
-      this.newTimelineName = null
+      this.clearTimelineName()
     }
   },
   watch: {
