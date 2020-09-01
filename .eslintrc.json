@@ -21,6 +21,8 @@
   "globals": {
     "db": "readonly",
     "ipcRenderer": "readonly",
-    "__static": "readonly"
+    "__static": "readonly",
+    "describe": "readonly",
+    "it": "readonly"
   }
 }
