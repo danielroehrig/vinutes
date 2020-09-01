@@ -3,6 +3,7 @@ import TimelineCreationDialog from '@/components/TimelineCreationDialog.vue'
 import Vuex from 'vuex'
 import Vue from 'vue'
 import chai from 'chai'
+import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import i18n from '@/i18n'
 
@@ -12,7 +13,7 @@ Vue.use(Vuex)
 const expect = chai.expect
 
 describe('TimelineCreationDialog.vue', () => {
-  it('empty name disables submit button', () => {
+  it('empty name disables submit button', async () => {
     const store = new Vuex.Store({
       state: {
         mediaFiles: {},
@@ -26,13 +27,14 @@ describe('TimelineCreationDialog.vue', () => {
       store: store,
       i18n
     })
-    wrapper.setData({ newTimelineName: null })
+    await wrapper.setData({ newTimelineName: null })
     const submitButton = wrapper.get('#timelineCreationDialogButtonSubmit')
     const input = wrapper.get('#timelineCreationDialogInputTimelineName')
-    expect(submitButton.attributes()).has.property('disabled')
-    input.setValue('a')
+    expect(submitButton.attributes()).has.property('disabled', 'disabled')
+    await input.setValue('a')
+    expect(wrapper.vm.$data.newTimelineName).equals('a')
     expect(submitButton.attributes()).has.not.property('disabled')
-    input.setValue(' ')
+    await input.setValue(' ')
     expect(submitButton.attributes()).has.property('disabled')
   })
   it('cancel clears name', () => {
@@ -42,6 +44,9 @@ describe('TimelineCreationDialog.vue', () => {
         currentMonth: 11,
         currentYear: 2018,
         currentDaySelected: null
+      },
+      mutations: {
+        changeAppState: sinon.fake()
       }
     }
     )
@@ -54,10 +59,10 @@ describe('TimelineCreationDialog.vue', () => {
     const cancelButton = wrapper.get('#timelineCreationDialogButtonCancel')
     input.setValue('New Timeline Name')
     wrapper.vm.$nextTick()
-    expect(input.element.value).equals('New Timeline Name')
+    expect(wrapper.vm.$data.newTimelineName).equals('New Timeline Name')
     cancelButton.trigger('click')
     wrapper.vm.$nextTick()
-    expect(input.element.value).equals('hallo')
+    expect(wrapper.vm.$data.newTimelineName).equals(null)
   })
   // TODO Return submits timeline
   // it('cancel clears name', () => {

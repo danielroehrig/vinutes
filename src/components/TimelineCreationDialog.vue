@@ -8,13 +8,13 @@
           <div class="control">
             <label>{{ $t('text.enter-unique-name-for-timeline')}}
               <input v-model="newTimelineName" class="input" type="text" ref="inputName" id="timelineCreationDialogInputTimelineName"
-                     :placeholder="$t('placeholder.enter-new-timeline-name')">
+                     :placeholder="$t('placeholder.enter-new-timeline-name')" v-on:keyup.enter="createNewTimeline">
             </label>
           </div>
         </div>
         <div class="field is-grouped">
           <div class="control">
-            <button class="button is-link" @click="createNewTimeline" id="timelineCreationDialogButtonSubmit">{{ $t('button.accept') }}</button>
+            <button class="button is-link" @click="createNewTimeline" id="timelineCreationDialogButtonSubmit" :disabled="!isNameAcceptable">{{ $t('button.accept') }}</button>
           </div>
           <div class="control">
             <button class="button is-link is-light" @click="cancelTimelineCreation" id="timelineCreationDialogButtonCancel">{{ $t('button.cancel') }}</button>
@@ -38,6 +38,13 @@ export default {
   computed: {
     isTimelineCreationModalShown () {
       return this.$store.state.appState === sc.APP_STATE_CREATE_TIMELINE
+    },
+    isNameAcceptable () {
+      // TODO: check for timelines with the same name
+      if (this.newTimelineName === null) {
+        return false
+      }
+      return this.newTimelineName.trim().length > 0
     }
   },
   methods: {
@@ -52,6 +59,11 @@ export default {
       this.hide()
     },
     createNewTimeline: function () {
+      if (!this.isNameAcceptable) {
+        // TODO: show error
+        return
+      }
+      this.newTimelineName = this.newTimelineName.trim()
       const timelineId = createNewTimeline(this.newTimelineName)
       this.$store.dispatch('loadTimelines')
       this.$store.dispatch('changeTimeline', timelineId)
