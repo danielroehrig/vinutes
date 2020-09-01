@@ -61,9 +61,7 @@ export default {
   watch: {
     isTimelineCreationModalShown (isVisible, wasVisible) {
       if (isVisible && !wasVisible) {
-        console.log('setting focus')
         this.$nextTick(() => {
-          console.log('waited a tick')
           this.$refs.inputName.focus()
         })
       }
