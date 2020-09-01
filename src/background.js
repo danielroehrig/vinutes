@@ -29,7 +29,8 @@ function createWindow () {
       width: 1024,
       height: 800,
       minWidth: 1024,
-      icon: path.join(__static, 'icon.png'),
+      // TODO: Make scalable
+      icon: path.join(__static, 'icons', '48x48.png'),
       webPreferences: {
         nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
         preload: path.join(__dirname, 'preload.js'),
