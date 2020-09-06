@@ -23,6 +23,8 @@
     "ipcRenderer": "readonly",
     "__static": "readonly",
     "describe": "readonly",
-    "it": "readonly"
+    "it": "readonly",
+    "jest": "readonly",
+    "expect": "readonly"
   }
 }
