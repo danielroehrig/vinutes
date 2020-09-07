@@ -3,7 +3,8 @@
     "create-new-project": "Neue Zeitlinie erstellen"
   },
   "text": {
-    "enter-unique-name-for-timeline": "Gib einen eindeutigen Namen für die neue Zeitlinie an"
+    "enter-unique-name-for-timeline": "Gib einen eindeutigen Namen für die neue Zeitlinie an",
+    "name-in-use": "Name wurde bereits vergeben"
   },
   "placeholder": {
     "enter-new-timeline-name": "Name der Zeitlinie"

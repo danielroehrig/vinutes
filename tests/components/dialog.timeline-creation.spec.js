@@ -46,6 +46,11 @@ describe('TimelineCreationDialog.vue', () => {
     const fakeChangeAppStateFunction = jest.fn()
     const store = new Vuex.Store({
       state: {},
+      getters: {
+        timelineNames () {
+          return ['Hans', 'Julia']
+        }
+      },
       mutations: {
         changeAppState: fakeChangeAppStateFunction
       }
@@ -90,6 +95,11 @@ describe('TimelineCreationDialog.vue', () => {
     const store = new Vuex.Store({
       state: {
         appState: sc.APP_STATE_CALENDAR_VIEW
+      },
+      getters: {
+        timelineNames () {
+          return ['Hans', 'Julia']
+        }
       },
       mutations: {
         setActive (state) {
@@ -136,10 +146,16 @@ describe('TimelineCreationDialog.vue', () => {
     const wrapper = mountWithStore(store)
     const input = wrapper.get('#timelineCreationDialogInputTimelineName')
     const submitButton = wrapper.get('#timelineCreationDialogButtonSubmit')
+    await input.setValue('Juli')
+    expect(submitButton.attributes()).not.toHaveProperty('disabled')
+    expect(wrapper.find('#timelineCreationDialogNameWarning').exists()).toBe(false)
     await input.setValue('Julia')
     expect(submitButton.attributes()).toHaveProperty('disabled')
+    expect(wrapper.find('#timelineCreationDialogNameWarning').exists()).toBe(true)
+    expect(wrapper.find('#timelineCreationDialogNameWarning').element).toBeVisible()
     await input.setValue('Julian')
     expect(submitButton.attributes()).not.toHaveProperty('disabled')
+    expect(wrapper.find('#timelineCreationDialogNameWarning').exists()).toBe(false)
   })
   // TODO Database says no (title too long, collision, whatevs)
 })
