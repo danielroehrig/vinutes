@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import { shallowMount } from '@vue/test-utils'
 import TimelineCreationDialog from '@/components/TimelineCreationDialog.vue'
 import Vuex from 'vuex'
@@ -75,7 +76,44 @@ describe('TimelineCreationDialog.vue', () => {
     expect(createNewTimeline).toHaveBeenCalledWith('Some Timeline name')
     expect(wrapper.vm.$data.newTimelineName).toBe(null)
   })
-  // TODO Focus on app status change
+  it('focuses the input field when the app status changes to APP_STATE_CREATE_TIMELINE', async () => {
+    const store = new Vuex.Store({
+      state: {
+        appState: sc.APP_STATE_CALENDAR_VIEW
+      },
+      mutations: {
+        setActive (state) {
+          state.appState = sc.APP_STATE_CREATE_TIMELINE
+        },
+        changeAppState (state) {
+          state.appState = sc.APP_STATE_CALENDAR_VIEW
+        }
+      },
+      actions: {
+        loadTimelines: jest.fn(),
+        changeTimeline: jest.fn()
+      }
+    })
+    const elem = document.createElement('div')
+    document.body.appendChild(elem)
+    const wrapper = shallowMount(TimelineCreationDialog, {
+      store: store,
+      mocks: {
+        $t
+      },
+      attachTo: elem
+    })
+    const input = wrapper.get('#timelineCreationDialogInputTimelineName')
+    store.commit('setActive')
+    await wrapper.vm.$nextTick().then(() => {
+      expect(input.element).toHaveFocus()
+    })
+    const cancelButton = wrapper.get('#timelineCreationDialogButtonCancel')
+    cancelButton.trigger('click')
+    await wrapper.vm.$nextTick().then(() => {
+      expect(input.element).not.toHaveFocus()
+    })
+  })
   // TODO duplicate timeline names
   // TODO Database says no (title too long, collision, whatevs)
 })

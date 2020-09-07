@@ -48,7 +48,7 @@ export default {
     }
   },
   methods: {
-    hide: function () {
+    leaveTimelineCreationState: function () {
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
     },
     clearTimelineName: function () {
@@ -56,7 +56,8 @@ export default {
     },
     cancelTimelineCreation: function () {
       this.clearTimelineName()
-      this.hide()
+      this.leaveTimelineCreationState()
+      this.$refs.inputName.blur()
     },
     createNewTimeline: function () {
       if (!this.isNameAcceptable) {
