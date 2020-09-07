@@ -40,11 +40,16 @@ export default {
       return this.$store.state.appState === sc.APP_STATE_CREATE_TIMELINE
     },
     isNameAcceptable () {
-      // TODO: check for timelines with the same name
       if (this.newTimelineName === null) {
         return false
       }
-      return this.newTimelineName.trim().length > 0
+      if (this.newTimelineName.trim().length === 0) {
+        return false
+      }
+      if (this.$store.getters.timelineNames.includes(this.newTimelineName)) {
+        return false
+      }
+      return true
     }
   },
   methods: {

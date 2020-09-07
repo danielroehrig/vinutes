@@ -24,7 +24,12 @@ const mountWithStore = (store) => {
 describe('TimelineCreationDialog.vue', () => {
   it('empty name disables submit button', async () => {
     const store = new Vuex.Store({
-      state: {}
+      state: {},
+      getters: {
+        timelineNames () {
+          return ['Hans', 'Julia']
+        }
+      }
     })
     const wrapper = mountWithStore(store)
     await wrapper.setData({ newTimelineName: null })
@@ -65,6 +70,11 @@ describe('TimelineCreationDialog.vue', () => {
       actions: {
         loadTimelines: jest.fn(),
         changeTimeline: jest.fn()
+      },
+      getters: {
+        timelineNames () {
+          return ['Hans', 'Julia']
+        }
       }
     })
     const wrapper = mountWithStore(store)
@@ -114,6 +124,22 @@ describe('TimelineCreationDialog.vue', () => {
       expect(input.element).not.toHaveFocus()
     })
   })
-  // TODO duplicate timeline names
+  it('checks for duplicated timeline names', async () => {
+    const store = new Vuex.Store({
+      state: {},
+      getters: {
+        timelineNames () {
+          return ['Hans', 'Julia']
+        }
+      }
+    })
+    const wrapper = mountWithStore(store)
+    const input = wrapper.get('#timelineCreationDialogInputTimelineName')
+    const submitButton = wrapper.get('#timelineCreationDialogButtonSubmit')
+    await input.setValue('Julia')
+    expect(submitButton.attributes()).toHaveProperty('disabled')
+    await input.setValue('Julian')
+    expect(submitButton.attributes()).not.toHaveProperty('disabled')
+  })
   // TODO Database says no (title too long, collision, whatevs)
 })
