@@ -158,6 +158,10 @@ describe('TimelineCreationDialog.vue', () => {
     expect(wrapper.find('#timelineCreationDialogNameWarning').exists()).toBe(false)
   })
   it('checks for database errors', async () => {
+    const brokenTimelineCreateCall = jest.fn(name => {
+      throw new Error('Some error')
+    })
+    createNewTimeline.mockImplementation(brokenTimelineCreateCall)
     const store = new Vuex.Store({
       state: {},
       getters: {
@@ -170,6 +174,8 @@ describe('TimelineCreationDialog.vue', () => {
     const input = wrapper.get('#timelineCreationDialogInputTimelineName')
     const submitButton = wrapper.get('#timelineCreationDialogButtonSubmit')
     await input.setValue('Ben')
+    submitButton.trigger('click')
+    expect(brokenTimelineCreateCall).toHaveBeenCalled()
   })
   // TODO Database says no (title too long, collision, whatevs)
 })
