@@ -14,13 +14,18 @@
     "sourceType": "module"
   },
   "plugins": [
-    "vue"
+    "vue",
+    "jest-dom"
   ],
   "rules": {
   },
   "globals": {
     "db": "readonly",
     "ipcRenderer": "readonly",
-    "__static": "readonly"
+    "__static": "readonly",
+    "describe": "readonly",
+    "it": "readonly",
+    "jest": "readonly",
+    "expect": "readonly"
   }
 }

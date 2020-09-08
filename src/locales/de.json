@@ -1,6 +1,20 @@
 {
   "action":{
-    "create-new-project": "Neues Projekt erstellen"
+    "create-new-project": "Neue Zeitlinie erstellen"
+  },
+  "text": {
+    "enter-unique-name-for-timeline": "Gib einen eindeutigen Namen für die neue Zeitlinie an",
+    "name-in-use": "Name wurde bereits vergeben"
+  },
+  "placeholder": {
+    "enter-new-timeline-name": "Name der Zeitlinie"
+  },
+  "button": {
+    "accept": "Bestätigen",
+    "cancel": "Abbrechen"
+  },
+  "error": {
+    "create-timeline-error": "Zeitline konnte nicht erstellt werden!"
   },
   "language": "Sprache"
 }
