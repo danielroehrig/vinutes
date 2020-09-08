@@ -4,55 +4,110 @@
     <div class="modal-content">
       <div class="box">
         <div class="field">
-          <label class="label">Create a new timeline</label>
+          <label class="label">{{ $t('action.create-new-project') }}</label>
           <div class="control">
-            <label>Enter a unique name for the new timeline
-              <input v-model="newTimelineName" class="input" type="text"
-                     placeholder="Enter name of the timeline">
+            <label>{{ $t('text.enter-unique-name-for-timeline') }}
+              <input v-model="newTimelineName" class="input" type="text" ref="inputName"
+                     id="timelineCreationDialogInputTimelineName"
+                     :placeholder="$t('placeholder.enter-new-timeline-name')" v-on:keyup.enter="createNewTimeline">
             </label>
           </div>
         </div>
+        <div class="notification is-danger" v-if="!nameAvailable" id="timelineCreationDialogNameWarning">
+          {{ $t('text.name-in-use') }}
+        </div>
+        <div class="notification is-danger" v-if="null!==errorMessage" id="timelineCreationDialogErrorMessage">
+          <button class="delete" @click="clearErrorMessage"></button>
+          {{ errorMessage }}
+        </div>
         <div class="field is-grouped">
           <div class="control">
-            <button class="button is-link" @click="createNewTimeline">Submit</button>
+            <button class="button is-link" @click="createNewTimeline" id="timelineCreationDialogButtonSubmit"
+                    :disabled="!isNameAcceptable">{{ $t('button.accept') }}
+            </button>
           </div>
           <div class="control">
-            <button class="button is-link is-light" @click="cancelTimelineCreation">Cancel</button>
+            <button class="button is-link is-light" @click="cancelTimelineCreation"
+                    id="timelineCreationDialogButtonCancel">{{ $t('button.cancel') }}
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <button class="modal-close is-large" aria-label="close" @click="cancelTimelineCreation"></button>
+    <button class="modal-close is-large" aria-label="close" @click="cancelTimelineCreation"
+            id="timelineCreationDialogButtonClose"></button>
   </div>
 </template>
 <script>
-import * as sc from "@/store-constants";
-import {createNewTimeline, getAllTimelines} from "@/lib/TimelineService";
+import * as sc from '@/store-constants'
+import { createNewTimeline } from '@/lib/TimelineService'
+
 export default {
-  name: "TimelineCreationDialog",
-  data: function() {
+  name: 'TimelineCreationDialog',
+  data: function () {
     return {
       newTimelineName: null,
+      errorMessage: null
     }
   },
   computed: {
-    isTimelineCreationModalShown() {
-      return this.$store.state.appState === sc.APP_STATE_CREATE_TIMELINE;
+    isTimelineCreationModalShown () {
+      return this.$store.state.appState === sc.APP_STATE_CREATE_TIMELINE
+    },
+    nameAvailable () {
+      return this.isNameAvailable()
+    },
+    isNameAcceptable () {
+      return (
+        this.newTimelineName !== null &&
+        this.newTimelineName.trim().length > 0 &&
+        this.isNameAvailable())
     }
   },
   methods: {
-    hide: function() {
-      this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW); //TODO: Not unknown
+    leaveTimelineCreationState: function () {
+      this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
     },
-    cancelTimelineCreation: function() {
-      this.hide();
+    clearTimelineName: function () {
+      this.newTimelineName = null
+    },
+    cancelTimelineCreation: function () {
+      this.clearTimelineName()
+      this.leaveTimelineCreationState()
+      this.$refs.inputName.blur()
+      this.clearErrorMessage()
     },
     createNewTimeline: function () {
-      let timelineId = createNewTimeline(this.newTimelineName);
-      this.$store.dispatch('loadTimelines');
-      this.$store.dispatch("changeTimeline", timelineId);
-      this.newTimelineName = null;
+      if (!this.isNameAcceptable) {
+        return
+      }
+      this.newTimelineName = this.newTimelineName.trim()
+      try {
+        const timelineId = createNewTimeline(this.newTimelineName)
+        this.$store.dispatch('loadTimelines')
+        this.$store.dispatch('changeTimeline', timelineId)
+      } catch (error) {
+        // TODO: Log to electron-log and/or to some cloud based error handler
+        this.errorMessage = this.$t('error.create-timeline-error')
+        return
+      }
+      this.clearTimelineName()
     },
+    clearErrorMessage: function () {
+      this.errorMessage = null
+    },
+    isNameAvailable: function () {
+      return !this.$store.getters.timelineNames.includes(this.newTimelineName)
+    }
+  },
+  watch: {
+    isTimelineCreationModalShown (isVisible, wasVisible) {
+      if (isVisible && !wasVisible) {
+        this.$nextTick(() => {
+          this.$refs.inputName.focus()
+        })
+      }
+    }
   }
-};
+}
 </script>

@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="field has-text-left">
-            <label class="label">Language</label>
+            <label class="label">{{ $t('language') }}</label>
             <div class="control">
                 <div class="select">
                     <select v-model="language">
@@ -21,29 +21,29 @@
 </template>
 
 <script>
-    export default {
-        name: "Preferences",
-        computed: {
-            language: {
-                set(language) {
-                    this.$store.commit("changeLanguage", language);
-                    ipcRenderer.send('update-config', "language", language);
-                },
-                get() {
-                    return this.$store.state.language;
-                },
-            },
-            timestampFormat: {
-                set(timestampFormat) {
-                    this.$store.commit("changeTimestampFormat", timestampFormat);
-                },
-                get() {
-                    return this.$store.state.calendarTimeStampFormat;
-                },
-            },
-        },
-        methods: {},
-    };
+export default {
+  name: 'Preferences',
+  computed: {
+    language: {
+      set (language) {
+        this.$store.commit('changeLanguage', language)
+        ipcRenderer.send('update-config', 'language', language)
+      },
+      get () {
+        return this.$store.state.language
+      }
+    },
+    timestampFormat: {
+      set (timestampFormat) {
+        this.$store.commit('changeTimestampFormat', timestampFormat)
+      },
+      get () {
+        return this.$store.state.calendarTimeStampFormat
+      }
+    }
+  },
+  methods: {}
+}
 </script>
 
 <style scoped>

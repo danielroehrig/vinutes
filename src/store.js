@@ -195,6 +195,11 @@ const store = new Vuex.Store({
       const timelines = getAllTimelines()
       context.commit('setTimelines', timelines)
     }
+  },
+  getters: {
+    timelineNames: state => {
+      return state.timelines.map(timeline => timeline.name)
+    }
   }
 })
 // All changes to the state are relayed to the PersistenceService

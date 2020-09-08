@@ -1,0 +1,20 @@
+{
+  "action":{
+    "create-new-project": "Create new timeline"
+  },
+  "text": {
+    "enter-unique-name-for-timeline": "Enter a unique name for the new timeline",
+    "name-in-use": "Name already in use"
+  },
+  "placeholder": {
+    "enter-new-timeline-name": "Name timeline"
+  },
+  "button": {
+    "accept": "Accept",
+    "cancel": "Cancel"
+  },
+  "error": {
+    "create-timeline-error": "Timeline could not be created!"
+  },
+  "language": "Language"
+}

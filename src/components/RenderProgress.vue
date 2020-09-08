@@ -16,17 +16,17 @@
 </template>
 
 <script>
-    export default {
-        name: "RenderProgress",
-        props:{
-            progress: Number,
-        },
-        computed: {
+export default {
+  name: 'RenderProgress',
+  props: {
+    progress: Number
+  },
+  computed: {
 
-        },
-        methods: {
-        },
-    };
+  },
+  methods: {
+  }
+}
 </script>
 
 <style scoped>

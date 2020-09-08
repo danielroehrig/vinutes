@@ -8,37 +8,37 @@
 </template>
 
 <script>
-    import CalendarWeek from "./CalendarWeek";
-    import VideoPlayer from "../VideoPlayer";
-    import { mapState } from 'vuex';
-    import moment from 'moment';
+import CalendarWeek from './CalendarWeek'
+import VideoPlayer from '../VideoPlayer'
+import { mapState } from 'vuex'
+import moment from 'moment'
 
-    const calendar = require('calendar');
-    let projectCalendar = new calendar.Calendar(1);
+const calendar = require('calendar')
+const projectCalendar = new calendar.Calendar(1)
 
-    export default {
-        name: "CalendarMonth",
-        components: {VideoPlayer, CalendarWeek},
-        computed: {
-            weeks() {
-              let isoWeek = moment({'year': this.currentYear, 'month': this.currentMonth, 'day': 1}).isoWeek();
-              let calendarWeeks = projectCalendar.monthDays(this.currentYear, this.currentMonth);
-              let weeks = [];
-              for(const week of calendarWeeks){
-                weeks.push({
-                  isoWeek: isoWeek++,
-                  days: week,
-                });
-              }
-              return weeks;
-            },
-            ...mapState([
-              'currentYear',
-              'currentMonth',
-            ])
-        },
+export default {
+  name: 'CalendarMonth',
+  components: { VideoPlayer, CalendarWeek },
+  computed: {
+    weeks () {
+      let isoWeek = moment({ year: this.currentYear, month: this.currentMonth, day: 1 }).isoWeek()
+      const calendarWeeks = projectCalendar.monthDays(this.currentYear, this.currentMonth)
+      const weeks = []
+      for (const week of calendarWeeks) {
+        weeks.push({
+          isoWeek: isoWeek++,
+          days: week
+        })
+      }
+      return weeks
+    },
+    ...mapState([
+      'currentYear',
+      'currentMonth'
+    ])
+  }
 
-    }
+}
 </script>
 
 <style scoped>

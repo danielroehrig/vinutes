@@ -16,6 +16,7 @@ export const getAllTimelines = () => {
  * Create a new timeline with the given name and return the id.
  * @param {string} name
  * @return {int}
+ * @throws SqliteError
  */
 export const createNewTimeline = (name) => {
   // TODO: Handle Exceptions like non-unique names

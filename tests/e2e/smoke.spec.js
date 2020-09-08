@@ -1,40 +1,17 @@
 import testWithSpectron from 'vue-cli-plugin-electron-builder/lib/testWithSpectron'
-import chai from 'chai'
-import chaiAsPromised from 'chai-as-promised'
-const spectron = __non_webpack_require__('spectron')
-
-chai.should()
-chai.use(chaiAsPromised)
+const spectron = require('spectron')
+jest.setTimeout(50000)
 
 describe('Application launch', function () {
-    this.timeout(30000)
-
-    beforeEach(function () {
-        return testWithSpectron(spectron).then(instance => {
-            this.app = instance.app
-            this.stopServe = instance.stopServe
-        })
-    })
-
-    beforeEach(function () {
-        chaiAsPromised.transferPromiseness = this.app.transferPromiseness
-    })
-
-    afterEach(function () {
-        if (this.app && this.app.isRunning()) {
-            return this.stopServe()
-        }
-    })
-
-    it('opens a window', function () {
-        return this.app.client
-            .getWindowCount()
-            .should.eventually.have.at.least(1);
-    })
-
-    it('does not have the developer tools open', function () {
-        const devToolsAreOpen = this.app.client
-            .browserWindow.isDevToolsOpened();
-        return devToolsAreOpen.should.eventually.be.false;
-    });
+  it('opens a window', async function () {
+    const { stdout, url, stopServe, app } = await testWithSpectron(spectron)
+    // stdout is the log of electron:serve
+    console.log(`electron:serve returned: ${stdout}`)
+    // url is the url for the dev server created with electron:serve
+    console.log(`the dev server url is: ${url}`)
+    // app is a spectron instance. It is attached to the dev server, launched, and waited for to load.
+    expect(await app.client.getWindowCount()).toBe(1)
+    // Before your tests end, make sure to stop the dev server and spectron
+    await stopServe()
+  })
 })
