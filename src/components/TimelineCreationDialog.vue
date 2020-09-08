@@ -16,6 +16,10 @@
         <div class="notification is-danger" v-if="!nameAvailable" id="timelineCreationDialogNameWarning">
           {{ $t('text.name-in-use') }}
         </div>
+        <div class="notification is-danger" v-if="null!==errorMessage" id="timelineCreationDialogErrorMessage">
+          <button class="delete" @click="clearErrorMessage"></button>
+          {{ errorMessage }}
+        </div>
         <div class="field is-grouped">
           <div class="control">
             <button class="button is-link" @click="createNewTimeline" id="timelineCreationDialogButtonSubmit"
@@ -42,7 +46,8 @@ export default {
   name: 'TimelineCreationDialog',
   data: function () {
     return {
-      newTimelineName: null
+      newTimelineName: null,
+      errorMessage: null
     }
   },
   computed: {
@@ -70,23 +75,26 @@ export default {
       this.clearTimelineName()
       this.leaveTimelineCreationState()
       this.$refs.inputName.blur()
+      this.clearErrorMessage()
     },
     createNewTimeline: function () {
       if (!this.isNameAcceptable) {
         return
       }
-      this.newTimelineName = 'Ben'
       this.newTimelineName = this.newTimelineName.trim()
       try {
         const timelineId = createNewTimeline(this.newTimelineName)
         this.$store.dispatch('loadTimelines')
         this.$store.dispatch('changeTimeline', timelineId)
       } catch (error) {
-        console.log('Caught ya!' + error)
         // TODO: Log to electron-log and/or to some cloud based error handler
+        this.errorMessage = this.$t('error.create-timeline-error')
         return
       }
       this.clearTimelineName()
+    },
+    clearErrorMessage: function () {
+      this.errorMessage = null
     },
     isNameAvailable: function () {
       return !this.$store.getters.timelineNames.includes(this.newTimelineName)

@@ -13,5 +13,8 @@
     "accept": "Accept",
     "cancel": "Cancel"
   },
+  "error": {
+    "create-timeline-error": "Timeline could not be created!"
+  },
   "language": "Language"
 }

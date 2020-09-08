@@ -173,9 +173,16 @@ describe('TimelineCreationDialog.vue', () => {
     const wrapper = mountWithStore(store)
     const input = wrapper.get('#timelineCreationDialogInputTimelineName')
     const submitButton = wrapper.get('#timelineCreationDialogButtonSubmit')
-    await input.setValue('Ben')
+    expect(wrapper.find('.timelineCreationDialogErrorMessage').exists()).toBe(false)
+    await input.setValue('Klaus')
     submitButton.trigger('click')
     expect(brokenTimelineCreateCall).toHaveBeenCalled()
+    await wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.find('#timelineCreationDialogErrorMessage').exists()).toBe(true)
+    })
+    wrapper.get('#timelineCreationDialogErrorMessage>button').trigger('click')
+    await wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.find('#timelineCreationDialogErrorMessage').exists()).toBe(false)
+    })
   })
-  // TODO Database says no (title too long, collision, whatevs)
 })

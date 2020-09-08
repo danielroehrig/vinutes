@@ -13,5 +13,8 @@
     "accept": "Bestätigen",
     "cancel": "Abbrechen"
   },
+  "error": {
+    "create-timeline-error": "Zeitline konnte nicht erstellt werden!"
+  },
   "language": "Sprache"
 }
