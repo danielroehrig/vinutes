@@ -157,5 +157,19 @@ describe('TimelineCreationDialog.vue', () => {
     expect(submitButton.attributes()).not.toHaveProperty('disabled')
     expect(wrapper.find('#timelineCreationDialogNameWarning').exists()).toBe(false)
   })
+  it('checks for database errors', async () => {
+    const store = new Vuex.Store({
+      state: {},
+      getters: {
+        timelineNames () {
+          return ['Hans', 'Julia']
+        }
+      }
+    })
+    const wrapper = mountWithStore(store)
+    const input = wrapper.get('#timelineCreationDialogInputTimelineName')
+    const submitButton = wrapper.get('#timelineCreationDialogButtonSubmit')
+    await input.setValue('Ben')
+  })
   // TODO Database says no (title too long, collision, whatevs)
 })

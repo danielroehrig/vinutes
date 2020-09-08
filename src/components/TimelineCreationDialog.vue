@@ -73,13 +73,19 @@ export default {
     },
     createNewTimeline: function () {
       if (!this.isNameAcceptable) {
-        // TODO: show error
         return
       }
+      this.newTimelineName = 'Ben'
       this.newTimelineName = this.newTimelineName.trim()
-      const timelineId = createNewTimeline(this.newTimelineName)
-      this.$store.dispatch('loadTimelines')
-      this.$store.dispatch('changeTimeline', timelineId)
+      try {
+        const timelineId = createNewTimeline(this.newTimelineName)
+        this.$store.dispatch('loadTimelines')
+        this.$store.dispatch('changeTimeline', timelineId)
+      } catch (error) {
+        console.log('Caught ya!' + error)
+        // TODO: Log to electron-log and/or to some cloud based error handler
+        return
+      }
       this.clearTimelineName()
     },
     isNameAvailable: function () {
