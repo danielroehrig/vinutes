@@ -34,13 +34,15 @@ const store = new Vuex.Store({
       state.currentDailyMediaShown.timeStamp = timeStamp
     },
     moveToPreviousMonth (state) {
-      const currentMoment = moment({ year: state.currentYear, month: state.currentMonth })
+      const currentMoment = moment(
+        { year: state.currentYear, month: state.currentMonth })
       currentMoment.subtract(1, 'month')
       state.currentMonth = currentMoment.month()
       state.currentYear = currentMoment.year()
     },
     moveToNextMonth (state) {
-      const currentMoment = moment({ year: state.currentYear, month: state.currentMonth })
+      const currentMoment = moment(
+        { year: state.currentYear, month: state.currentMonth })
       currentMoment.add(1, 'month')
       if (currentMoment < moment()) {
         state.currentMonth = currentMoment.month()
@@ -50,23 +52,24 @@ const store = new Vuex.Store({
     changeMediaFile (state, dailyMedia) {
       Vue.set(state.mediaFiles, dailyMedia.day, dailyMedia)
     },
-    removeMediaFile (state, moment) {
+    removeMediaFile (state, day) {
+      // TODO: Rather delete from database and reload
       Vue.delete(state.mediaFiles, 'k' + moment.format('YYYYMMDD'))
     },
     /**
-         * Change the language of the ui and timestamps
-         *
-         * @param {object} state
-         * @param {string} language
-         */
+     * Change the language of the ui and timestamps
+     *
+     * @param {object} state
+     * @param {string} language
+     */
     changeLanguage (state, language) {
       state.language = language
     },
     /**
-         * Change the timestamp format displayed in the calendar
-         * @param state
-         * @param {string} format
-         */
+     * Change the timestamp format displayed in the calendar
+     * @param state
+     * @param {string} format
+     */
     changeTimestampFormat (state, format) {
       state.calendarTimeStampFormat = format
     },
@@ -74,13 +77,18 @@ const store = new Vuex.Store({
       state.currentTimeline = timeline
     },
     loadDailyMedia (state) {
-      const startPoint = moment({ year: state.currentYear, month: state.currentMonth, day: 1 })
+      const startPoint = moment(
+        { year: state.currentYear, month: state.currentMonth, day: 1 })
       const endPoint = moment(startPoint).endOf('month')
-      const allMedia = loadDailyMediaForTimeline(state.currentTimeline, startPoint.format('YYYY-MM-DD'), endPoint.format('YYYY-MM-DD'))
+      const allMedia = loadDailyMediaForTimeline(state.currentTimeline,
+        startPoint.format('YYYY-MM-DD'), endPoint.format('YYYY-MM-DD'))
       state.mediaFiles = {}
       allMedia.forEach((row) => {
         const mediaMoment = moment(row.mediaDate)
-        Vue.set(state.mediaFiles, mediaMoment.date(), new DailyMedia(mediaMoment.year(), mediaMoment.month(), mediaMoment.date(), row.path, row.mediaType, row.videoTimestamp, row.videoStill))
+        Vue.set(state.mediaFiles, mediaMoment.date(),
+          new DailyMedia(mediaMoment.year(), mediaMoment.month(),
+            mediaMoment.date(), row.path, row.mediaType, row.videoTimestamp,
+            row.videoStill))
       })
     },
     applyConfig (state, databaseRow) {
@@ -103,10 +111,10 @@ const store = new Vuex.Store({
       state.renderQueue.shift()
     },
     /**
-         * Change the current state of the app
-         * @param state
-         * @param {int} appState
-         */
+     * Change the current state of the app
+     * @param state
+     * @param {int} appState
+     */
     changeAppState (state, appState) {
       state.appState = appState
     },
@@ -114,20 +122,20 @@ const store = new Vuex.Store({
       state.timelines = timelines
     },
     /**
-         * Set the currently selected day
-         * @param state
-         * @param {int} day
-         */
+     * Set the currently selected day
+     * @param state
+     * @param {int} day
+     */
     setCurrentDaySelected (state, day) {
       state.currentDaySelected = day
     }
   },
   actions: {
     /**
-         * Change the current timeline
-         * @param context
-         * @param {int} timeline
-         */
+     * Change the current timeline
+     * @param context
+     * @param {int} timeline
+     */
     changeTimeline (context, timeline) {
       console.log('Change Timeline')
       const currentTimeline = loadTimeline(timeline)
@@ -137,12 +145,11 @@ const store = new Vuex.Store({
     },
     acceptVideo (context, timeStamp) {
       context.commit('setTimeStampForVideo', timeStamp)
-      context.commit('hideVideoPlayer')
     },
     /**
-         *
-         * @param context
-         */
+     *
+     * @param context
+     */
     loadLastState (context) {
       const lastState = loadLastState()
       context.commit('applyConfig', lastState)
@@ -175,14 +182,15 @@ const store = new Vuex.Store({
         const mediaFilePaths = context.state.renderedQueue.map((mediaFile) => {
           return mediaFile.tmpFilePath
         })
-        ipcRenderer.send('merge-videos', mediaFilePaths, context.state.renderOutputPath)
+        ipcRenderer.send('merge-videos', mediaFilePaths,
+          context.state.renderOutputPath)
       }
     },
     /**
-         * Event: Day in calendar view was clicked.
-         * @param context
-         * @param {int} day
-         */
+     * Event: Day in calendar view was clicked.
+     * @param context
+     * @param {int} day
+     */
     calendarDayClicked (context, day) {
       if (context.state.currentTimeline === null) {
         context.commit('changeAppState', sc.APP_STATE_CREATE_TIMELINE)
