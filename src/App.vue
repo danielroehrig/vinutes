@@ -38,11 +38,19 @@ export default {
     language (newState, oldState) {
       this.$i18n.locale = newState
     },
+    /**
+     * State machine handler
+     * @param {string} newState
+     * @param {string} oldState
+     */
     appState (newState, oldState) {
       switch (newState) {
+        // Open media file chooser
         case sc.APP_STATE_CHOOSE_MEDIA_FILE:
         {
-          const dailyMedia = ipcRenderer.sendSync('show-open-dialog', this.currentYear, this.currentMonth, this.currentDaySelected)
+          // This is confusing, but basically, momentjs uses zero-based months while in the database January starts with 1
+          const oneBasedMonthNumeral = this.currentMonth + 1
+          const dailyMedia = ipcRenderer.sendSync('show-open-dialog', this.currentYear, oneBasedMonthNumeral, this.currentDaySelected)
           if (dailyMedia === null) {
             return
           }
