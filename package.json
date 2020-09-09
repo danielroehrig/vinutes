@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service electron:serve",
     "build": "vue-cli-service electron:build",
-    "test:unit": "vue-cli-service test:unit",
+    "test:unit": "vue-cli-service test:unit unit",
     "test:e2e": "env NODE_ENV=test vue-cli-service test:unit -ui=bdd tests/e2e --recursive",
     "lint": "eslint 'src/**'",
     "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=./public --flatten",
