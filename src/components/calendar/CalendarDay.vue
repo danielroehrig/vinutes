@@ -1,10 +1,10 @@
 <template>
-  <div class="column" style="padding: 5px;">
-    <button v-if="isVisible && hasMedia" class="delete has-background-danger is-pulled-right deleteMedia"></button>
-    <div class="box" :class="{'inactive': !isVisible, 'withMedia': (dailyMedia) }" :style="styling"
-         @click="$store.dispatch('calendarDayClicked', day)">
+  <div class="column">
+    <button v-if="isVisible && hasMedia" class="delete is-pulled-right deleteMedia"></button>
+    <div class="box" :class="{'inactive': !isVisible, 'withMedia': (hasMedia) }" :style="styling"
+         @click="calendarDayClicked">
       <div class="date">
-        {{ isVisible ? momentToday.format(timestampFormatting) : '' }}
+        {{ isVisible ? timestampString : '' }}
       </div>
     </div>
   </div>
@@ -33,18 +33,20 @@ export default {
     isVisible () {
       return this.day !== 0
     },
-    momentToday () {
+    timestampString () {
       moment.locale(this.language)
-      return this.currentMoment()
-    },
-    timestampFormatting () {
-      return this.calendarTimeStampFormat
+      const currentMoment = moment({
+        year: this.currentYear,
+        month: this.currentMonth,
+        day: this.day
+      })
+      return currentMoment.format(this.calendarTimeStampFormat)
     },
     dailyMedia () {
       return this.mediaFiles[this.day]
     },
     styling () {
-      const mediaFile = this.mediaFiles[this.day]
+      const mediaFile = this.dailyMedia
       if (mediaFile && mediaFile.videoStill) {
         return {
           backgroundImage: 'url(\'data:image/jpeg;charset=utf-8;base64,' + mediaFile.videoStill + '\')'
@@ -57,18 +59,18 @@ export default {
     ...mapMutations([
       'removeMediaFile'
     ]),
-    currentMoment: function () {
-      return moment({
-        year: this.currentYear,
-        month: this.currentMonth,
-        day: this.day
-      })
+    calendarDayClicked: function () {
+      this.$store.dispatch('calendarDayClicked', this.day)
     }
   }
 }
 </script>
 
 <style scoped>
+div.column {
+  padding: 5px;
+}
+
 div.inactive {
   visibility: hidden;
 }
