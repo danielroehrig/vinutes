@@ -50,6 +50,11 @@ export const fileTypeCategory = (filePath) => {
   return mime.getType(filePath).split('/')[0]
 }
 
+/**
+ * Return date as iso string
+ * @param {DailyMedia} dailyMedia
+ * @returns {string}
+ */
 export const dateAsIso = (dailyMedia) => {
   return moment({
     year: dailyMedia.year,

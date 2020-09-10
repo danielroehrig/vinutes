@@ -48,7 +48,6 @@ export const getDailyMediaForTimeline = (timelineId) => {
 export const safeDailyMediaForTimeline = (timelineId, dailyMedia) => {
   console.log('Saving Timeline to database!')
   const replaceDailyMedia = db.transaction(() => {
-    console.log(dateAsIso(dailyMedia))
     db.prepare('INSERT INTO media (timelineId, mediaDate, path, videoTimestamp, mediaType) VALUES ($timelineId, $mediaDate, $path, $videoTimestamp, $mediaType) ON CONFLICT(timelineId, mediaDate) DO UPDATE SET path=$path, videoTimestamp=$videoTimestamp;')
       .run({
         timelineId: timelineId,
@@ -57,11 +56,7 @@ export const safeDailyMediaForTimeline = (timelineId, dailyMedia) => {
         videoTimestamp: dailyMedia.timeStamp,
         mediaType: fileTypeCategory(dailyMedia.filePath)
       })
-    db.prepare('DELETE FROM videoStills WHERE timelineId=$timelineId AND mediaDate=$mediaDate;')
-      .run({
-        timelineId: timelineId,
-        mediaDate: dateAsIso(dailyMedia)
-      })
+    deleteVideoStillFromTimeline(timelineId, dailyMedia)
     if (dailyMedia.videoStill) {
       db.prepare('INSERT INTO videoStills(timelineId, mediaDate, data) VALUES($timelineId, $mediaDate, $data);')
         .run({
@@ -72,4 +67,36 @@ export const safeDailyMediaForTimeline = (timelineId, dailyMedia) => {
     }
   })
   replaceDailyMedia()
+}
+
+/**
+ * Delete the currently set mediafile from the given timeline
+ * @param {int} timelineId
+ * @param {DailyMedia} dailyMedia
+ */
+export const deleteMediaFileFromTimeline = (timelineId, dailyMedia) => {
+  console.log('Month ' + dateAsIso(dailyMedia))
+  const deleteMediaFile = db.transaction(() => {
+    deleteVideoStillFromTimeline(timelineId, dailyMedia)
+    db.prepare(
+      'DELETE FROM media WHERE timelineId=$timelineId AND mediaDate=$mediaDate;')
+      .run({
+        timelineId: timelineId,
+        mediaDate: dateAsIso(dailyMedia)
+      })
+  })
+  deleteMediaFile()
+}
+
+/**
+ * Delete a video still from the given timeline
+ * @param {int} timelineId
+ * @param {DailyMedia} dailyMedia
+ */
+const deleteVideoStillFromTimeline = (timelineId, dailyMedia) => {
+  db.prepare('DELETE FROM videoStills WHERE timelineId=$timelineId AND mediaDate=$mediaDate;')
+    .run({
+      timelineId: timelineId,
+      mediaDate: dateAsIso(dailyMedia)
+    })
 }

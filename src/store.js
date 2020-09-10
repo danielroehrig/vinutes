@@ -2,10 +2,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import moment from 'moment'
 import DailyMedia from './lib/DailyMedia'
-import { handleStoreMutation, loadLastState } from './lib/PersistenceService'
-import { loadDailyMediaForTimeline, loadTimeline } from './lib/TimelineService'
+import { handleStoreMutation, loadLastState } from '@/lib/PersistenceService'
 import * as sc from './store-constants'
-import { getAllTimelines } from '@/lib/TimelineService'
+import { getAllTimelines, loadDailyMediaForTimeline, loadTimeline, deleteMediaFileFromTimeline } from '@/lib/TimelineService'
 
 Vue.use(Vuex)
 
@@ -51,10 +50,6 @@ const store = new Vuex.Store({
     },
     changeMediaFile (state, dailyMedia) {
       Vue.set(state.mediaFiles, dailyMedia.day, dailyMedia)
-    },
-    removeMediaFile (state, day) {
-      // TODO: Rather delete from database and reload
-      Vue.delete(state.mediaFiles, 'k' + moment.format('YYYYMMDD'))
     },
     /**
      * Change the language of the ui and timestamps
@@ -199,6 +194,20 @@ const store = new Vuex.Store({
       context.commit('setCurrentDaySelected', day)
       context.commit('changeAppState', sc.APP_STATE_CHOOSE_MEDIA_FILE)
     },
+    /**
+     * Issue the database to delete a media file, then reload
+     * @param context
+     * @param day
+     */
+    removeMediaFile (context, day) {
+      deleteMediaFileFromTimeline(context.state.currentTimeline, new DailyMedia(context.state.currentYear, context.state.currentMonth + 1,
+        day, '', ''))
+      context.commit('loadDailyMedia')
+    },
+    /**
+     * Load all timelines from the database
+     * @param context
+     */
     loadTimelines (context) {
       const timelines = getAllTimelines()
       context.commit('setTimelines', timelines)

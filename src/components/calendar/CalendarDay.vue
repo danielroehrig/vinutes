@@ -1,6 +1,6 @@
 <template>
   <div class="column">
-    <button v-if="isVisible && hasMedia" class="delete is-pulled-right deleteMedia"></button>
+    <button v-if="isVisible && hasMedia" class="delete is-pulled-right removeMedia" @click="removeMedia"></button>
     <div class="box" :class="{'inactive': !isVisible, 'withMedia': (hasMedia) }" :style="styling"
          @click="calendarDayClicked">
       <div class="date">
@@ -12,7 +12,7 @@
 
 <script>
 import moment from 'moment'
-import { mapMutations, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'CalendarDay',
@@ -56,11 +56,15 @@ export default {
     }
   },
   methods: {
-    ...mapMutations([
-      'removeMediaFile'
-    ]),
+    ...mapActions({
+      clicked: 'calendarDayClicked',
+      removeMediaFile: 'removeMediaFile'
+    }),
     calendarDayClicked: function () {
-      this.$store.dispatch('calendarDayClicked', this.day)
+      this.clicked(this.day)
+    },
+    removeMedia: function () {
+      this.removeMediaFile(this.day)
     }
   }
 }
@@ -103,7 +107,7 @@ div.box:hover {
   cursor: pointer;
 }
 
-button.deleteMedia {
+button.removeMedia {
   z-index: 1;
   margin: 5px 5px;
 }
