@@ -52,6 +52,7 @@ export default {
           const oneBasedMonthNumeral = this.currentMonth + 1
           const dailyMedia = ipcRenderer.sendSync('show-open-dialog', this.currentYear, oneBasedMonthNumeral, this.currentDaySelected)
           if (dailyMedia === null) {
+            this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
             return
           }
           if (dailyMedia.mediaType === 'image') {
