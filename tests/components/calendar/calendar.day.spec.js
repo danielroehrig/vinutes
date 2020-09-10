@@ -109,4 +109,7 @@ describe('CalendarDay.vue', () => {
     wrapper.find('div.box').trigger('click')
     expect(fakeCalendarDayClicked).toHaveBeenCalledWith(expect.anything(), 7)
   })
+  // TODO: Remove media
+  // TODO: Show image or base64 screenshot
+  // TODO: Check it emits the right day to the store
 })

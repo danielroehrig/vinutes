@@ -1,13 +1,13 @@
 <template>
-    <div class="column" style="padding: 5px;">
-        <div class="box" :class="{'inactive': (day === 0), 'withMedia': (dailyMedia) }" :style="styling"
-             @click="$store.dispatch('calendarDayClicked', day)">
-            <div class="date">
-                {{ (day !== 0) ?
-                momentToday.format(timestampFormatting) : "" }}
-            </div>
-        </div>
+  <div class="column" style="padding: 5px;">
+    <button v-if="isVisible && hasMedia" class="delete has-background-danger is-pulled-right deleteMedia"></button>
+    <div class="box" :class="{'inactive': !isVisible, 'withMedia': (dailyMedia) }" :style="styling"
+         @click="$store.dispatch('calendarDayClicked', day)">
+      <div class="date">
+        {{ isVisible ? momentToday.format(timestampFormatting) : '' }}
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -27,6 +27,12 @@ export default {
       'language',
       'calendarTimeStampFormat'
     ]),
+    hasMedia () {
+      return this.dailyMedia
+    },
+    isVisible () {
+      return this.day !== 0
+    },
     momentToday () {
       moment.locale(this.language)
       return this.currentMoment()
@@ -41,7 +47,7 @@ export default {
       const mediaFile = this.mediaFiles[this.day]
       if (mediaFile && mediaFile.videoStill) {
         return {
-          backgroundImage: "url('data:image/jpeg;charset=utf-8;base64," + mediaFile.videoStill + "')"
+          backgroundImage: 'url(\'data:image/jpeg;charset=utf-8;base64,' + mediaFile.videoStill + '\')'
         }
       }
       return {}
@@ -49,8 +55,7 @@ export default {
   },
   methods: {
     ...mapMutations([
-      'removeMediaFile',
-      'showVideoPlayer'
+      'removeMediaFile'
     ]),
     currentMoment: function () {
       return moment({
@@ -64,35 +69,40 @@ export default {
 </script>
 
 <style scoped>
-    div.inactive {
-        visibility: hidden;
-    }
+div.inactive {
+  visibility: hidden;
+}
 
-    div.withMedia {
-        background-position: center;
-        background-size: cover;
-        color: white;
-        text-shadow: 1px 1px #333333;
-    }
+div.withMedia {
+  background-position: center;
+  background-size: cover;
+  color: white;
+  text-shadow: 1px 1px #333333;
+}
 
-    div.box {
-        width: 100%;
-        padding: 56.25% 0 0 0;
-        position: relative; /* If you want text inside of it */
-    }
+div.box {
+  width: 100%;
+  padding: 56.25% 0 0 0;
+  position: relative; /* If you want text inside of it */
+}
 
-    div.date {
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        padding: 20px;
-    }
+div.date {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding: 20px;
+}
 
-    div.box:hover {
-        background-color: hsl(171, 100%, 41%);
-        color: white;
-        cursor: pointer;
-    }
+div.box:hover {
+  background-color: hsl(171, 100%, 41%);
+  color: white;
+  cursor: pointer;
+}
+
+button.deleteMedia {
+  z-index: 1;
+  margin: 5px 5px;
+}
 </style>
