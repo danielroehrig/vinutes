@@ -30,6 +30,10 @@ export default class DailyMedia {
     return dateAsIso(this)
   }
 
+  get dateAsMoment () {
+    return dateAsMoment(this)
+  }
+
   /**
    * Set type for this class to DailyMedia
    * @returns {string}
@@ -56,9 +60,18 @@ export const fileTypeCategory = (filePath) => {
  * @returns {string}
  */
 export const dateAsIso = (dailyMedia) => {
+  return dateAsMoment(dailyMedia).format('YYYY-MM-DD')
+}
+
+/**
+ * Return date as moment string
+ * @param {DailyMedia} dailyMedia
+ * @returns {moment.Moment}
+ */
+export const dateAsMoment = (dailyMedia) => {
   return moment({
     year: dailyMedia.year,
     month: dailyMedia.month - 1,
     day: dailyMedia.day
-  }).format('YYYY-MM-DD')
+  })
 }

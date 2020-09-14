@@ -10,7 +10,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    isVideoPlayerVisible: false,
+    isVideoPlayerVisible: false, // Todo Remove as this is just another state
     currentDailyMediaShown: null,
     currentMonth: moment().month(),
     currentYear: moment().year(),
@@ -108,7 +108,7 @@ const store = new Vuex.Store({
     /**
      * Change the current state of the app
      * @param state
-     * @param {int} appState
+     * @param {string} appState
      */
     changeAppState (state, appState) {
       state.appState = appState
@@ -197,12 +197,12 @@ const store = new Vuex.Store({
     /**
      * Issue the database to delete a media file, then reload
      * @param context
-     * @param day
      */
-    removeMediaFile (context, day) {
+    removeCurrentMediaFile (context) {
       deleteMediaFileFromTimeline(context.state.currentTimeline, new DailyMedia(context.state.currentYear, context.state.currentMonth + 1,
-        day, '', ''))
+        context.state.currentDaySelected, '', ''))
       context.commit('loadDailyMedia')
+      context.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
     },
     /**
      * Load all timelines from the database

@@ -12,7 +12,8 @@
 
 <script>
 import moment from 'moment'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
+import * as sc from '@/store-constants'
 
 export default {
   name: 'CalendarDay',
@@ -57,14 +58,19 @@ export default {
   },
   methods: {
     ...mapActions({
-      clicked: 'calendarDayClicked',
-      removeMediaFile: 'removeMediaFile'
+      clicked: 'calendarDayClicked'
     }),
+    ...mapMutations([
+      'changeAppState',
+      'setCurrentDaySelected'
+    ]),
     calendarDayClicked: function () {
       this.clicked(this.day)
     },
     removeMedia: function () {
-      this.removeMediaFile(this.day)
+      console.log('Remove this day: ' + this.day)
+      this.setCurrentDaySelected(this.day)
+      this.$store.commit('changeAppState', sc.APP_STATE_CONFIRM_MEDIA_DELETE)
     }
   }
 }
