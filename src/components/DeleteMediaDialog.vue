@@ -3,10 +3,10 @@
     <div class="modal-background"></div>
     <div class="modal-card" style="width: 440px">
       <header class="modal-card-head">
-        <p class="modal-card-title">Delete Media</p>
+        <p class="modal-card-title">{{ $t('action.delete-media') }}</p>
       </header>
       <section class="modal-card-body">
-          <h1 class="is-bold">Do you want to delete this media file from this timeline?</h1>
+          <h1 class="is-bold">{{ $t('text.confirm-delete-media') }}</h1>
           <figure class="image">
           <img :src="videoStill">
           </figure>
@@ -23,6 +23,7 @@
 import { mapActions, mapMutations, mapState } from 'vuex'
 import * as sc from '@/store-constants'
 import moment from 'moment'
+import { dateAsMoment } from '@/lib/DailyMedia'
 export default {
   name: 'DeleteMediaDialog',
   computed: {
@@ -45,7 +46,7 @@ export default {
     fullDate () {
       if (this.mediaFile) {
         moment.locale(this.language)
-        return this.mediaFile.dateAsMoment.format(this.calendarTimeStampFormat)
+        return dateAsMoment(this.mediaFile).format(this.calendarTimeStampFormat)
       }
       return null
     },
