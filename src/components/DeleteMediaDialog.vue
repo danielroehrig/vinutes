@@ -1,7 +1,7 @@
 <template>
   <div class="modal" :class="{'is-active': isVisible}">
     <div class="modal-background"></div>
-    <div class="modal-card" style="width: 440px">
+    <div class="modal-card" style="width: 480px">
       <header class="modal-card-head">
         <p class="modal-card-title">{{ $t('action.delete-media') }}</p>
       </header>
@@ -13,8 +13,8 @@
         <p>{{ fullDate }}</p>
       </section>
       <footer class="modal-card-foot">
-        <button class="button" @click="cancel">Cancel</button>
-        <button class="button is-danger" @click="deleteMediaFile">Delete</button>
+        <button class="button" @click="cancel">{{ $t('button.cancel') }}</button>
+        <button class="button is-danger" @click="deleteMediaFile">{{ $t('button.delete') }}</button>
       </footer>
     </div>
   </div>

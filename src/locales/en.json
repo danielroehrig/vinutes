@@ -13,7 +13,8 @@
   },
   "button": {
     "accept": "Accept",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "delete": "Delete"
   },
   "error": {
     "create-timeline-error": "Timeline could not be created!"

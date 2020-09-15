@@ -13,7 +13,8 @@
   },
   "button": {
     "accept": "Bestätigen",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "delete": "Löschen"
   },
   "error": {
     "create-timeline-error": "Zeitline konnte nicht erstellt werden!"
