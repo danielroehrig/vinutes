@@ -13,16 +13,16 @@ export default class DailyMedia {
    * @param {string} filePath Full path to file
    * @param {string} mediaType
    * @param {number} timeStamp
-   * @param {?string} videoStill
+   * @param {?string} previewImage
    */
   constructor (
-    year, month, day, filePath, mediaType, timeStamp = 0.0, videoStill = null) {
+    year, month, day, filePath, mediaType, timeStamp = 0.0, previewImage = null) {
     this.year = year
     this.month = month
     this.day = day
     this.filePath = filePath
     this.timeStamp = 0.0
-    this.videoStill = videoStill
+    this.previewImage = previewImage
     this.mediaType = mediaType
   }
 

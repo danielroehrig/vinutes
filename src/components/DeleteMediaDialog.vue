@@ -8,7 +8,7 @@
       <section class="modal-card-body">
           <h1 class="is-bold">{{ $t('text.confirm-delete-media') }}</h1>
           <figure class="image">
-          <img :src="videoStill">
+          <img :src="previewImage">
           </figure>
         <p>{{ fullDate }}</p>
       </section>
@@ -50,9 +50,9 @@ export default {
       }
       return null
     },
-    videoStill () {
+    previewImage () {
       if (this.mediaFile) {
-        return 'data:image/jpeg;charset=utf-8;base64,' + this.mediaFile.videoStill
+        return 'data:image/jpeg;charset=utf-8;base64,' + this.mediaFile.previewImage
       }
       return null
     }

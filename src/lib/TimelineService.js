@@ -56,13 +56,13 @@ export const safeDailyMediaForTimeline = (timelineId, dailyMedia) => {
         videoTimestamp: dailyMedia.timeStamp,
         mediaType: fileTypeCategory(dailyMedia.filePath)
       })
-    deleteVideoStillFromTimeline(timelineId, dailyMedia)
-    if (dailyMedia.videoStill) {
+    deletePreviewImageFromTimeline(timelineId, dailyMedia)
+    if (dailyMedia.previewImage) {
       db.prepare('INSERT INTO videoStills(timelineId, mediaDate, data) VALUES($timelineId, $mediaDate, $data);')
         .run({
           timelineId: timelineId,
           mediaDate: dateAsIso(dailyMedia),
-          data: dailyMedia.videoStill
+          data: dailyMedia.previewImage
         })
     }
   })
@@ -77,7 +77,7 @@ export const safeDailyMediaForTimeline = (timelineId, dailyMedia) => {
 export const deleteMediaFileFromTimeline = (timelineId, dailyMedia) => {
   console.log('Month ' + dateAsIso(dailyMedia))
   const deleteMediaFile = db.transaction(() => {
-    deleteVideoStillFromTimeline(timelineId, dailyMedia)
+    deletePreviewImageFromTimeline(timelineId, dailyMedia)
     db.prepare(
       'DELETE FROM media WHERE timelineId=$timelineId AND mediaDate=$mediaDate;')
       .run({
@@ -93,7 +93,7 @@ export const deleteMediaFileFromTimeline = (timelineId, dailyMedia) => {
  * @param {int} timelineId
  * @param {DailyMedia} dailyMedia
  */
-const deleteVideoStillFromTimeline = (timelineId, dailyMedia) => {
+const deletePreviewImageFromTimeline = (timelineId, dailyMedia) => {
   db.prepare('DELETE FROM videoStills WHERE timelineId=$timelineId AND mediaDate=$mediaDate;')
     .run({
       timelineId: timelineId,

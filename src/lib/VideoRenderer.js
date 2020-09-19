@@ -25,7 +25,7 @@ const createScreenshot = (dailyMedia, timeline, event) => {
   }).on('end', function () {
     console.log('screenshot created')
     const buff = fs.readFileSync(path.join(app.getPath('temp'), screenshotName))
-    dailyMedia.videoStill = buff.toString('base64')
+    dailyMedia.previewImage = buff.toString('base64')
     event.reply('screenshot-created', dailyMedia)
   })
 }
@@ -38,7 +38,7 @@ const createImagePreview = async (dailyMedia, event) => {
     .jpeg()
     .toBuffer()
     .then((outputBuffer) => {
-      dailyMedia.videoStill = outputBuffer.toString('base64')
+      dailyMedia.previewImage = outputBuffer.toString('base64')
       event.reply('screenshot-created', dailyMedia)
     })
 }

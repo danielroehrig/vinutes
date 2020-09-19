@@ -48,9 +48,9 @@ export default {
     },
     styling () {
       const mediaFile = this.dailyMedia
-      if (mediaFile && mediaFile.videoStill) {
+      if (mediaFile && mediaFile.previewImage) {
         return {
-          backgroundImage: 'url(\'data:image/jpeg;charset=utf-8;base64,' + mediaFile.videoStill + '\')'
+          backgroundImage: 'url(\'data:image/jpeg;charset=utf-8;base64,' + mediaFile.previewImage + '\')'
         }
       }
       return {}
