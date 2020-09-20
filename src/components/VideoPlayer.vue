@@ -44,7 +44,6 @@ export default {
       const currentDailyMedia = this.$store.state.currentDailyMediaShown
       const currentTimeline = this.$store.state.currentTimeline
       this.$store.dispatch('acceptVideo', videoPreviewPlayer.currentTime)
-      // eslint-disable-next-line no-undef
       ipcRenderer.send('create-video-screenshot', currentDailyMedia, currentTimeline)
       this.$store.commit('setCurrentDailyMedia', null)
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)

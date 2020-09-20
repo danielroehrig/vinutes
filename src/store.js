@@ -10,7 +10,6 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    isVideoPlayerVisible: false, // Todo Remove as this is just another state
     currentDailyMediaShown: null,
     currentMonth: moment().month(),
     currentYear: moment().year(),
@@ -192,6 +191,11 @@ const store = new Vuex.Store({
         return
       }
       context.commit('setCurrentDaySelected', day)
+      if (context.state.mediaFiles[day]) {
+        context.commit('setCurrentDailyMedia', context.state.mediaFiles[day])
+        context.commit('changeAppState', sc.APP_STATE_VIDEO_PLAYER)
+        return
+      }
       context.commit('changeAppState', sc.APP_STATE_CHOOSE_MEDIA_FILE)
     },
     /**
