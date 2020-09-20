@@ -1,17 +1,20 @@
 {
   "action":{
-    "create-new-project": "Create new timeline"
+    "create-new-project": "Create new timeline",
+    "delete-media": "Delete media"
   },
   "text": {
     "enter-unique-name-for-timeline": "Enter a unique name for the new timeline",
-    "name-in-use": "Name already in use"
+    "name-in-use": "Name already in use",
+    "confirm-delete-media": "Do you want to delete this media file from this timeline?"
   },
   "placeholder": {
     "enter-new-timeline-name": "Name timeline"
   },
   "button": {
     "accept": "Accept",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "delete": "Delete"
   },
   "error": {
     "create-timeline-error": "Timeline could not be created!"

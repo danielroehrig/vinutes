@@ -1,17 +1,20 @@
 {
   "action":{
-    "create-new-project": "Neue Zeitlinie erstellen"
+    "create-new-project": "Neue Zeitlinie erstellen",
+    "delete-media": "Tag löschen"
   },
   "text": {
     "enter-unique-name-for-timeline": "Gib einen eindeutigen Namen für die neue Zeitlinie an",
-    "name-in-use": "Name wurde bereits vergeben"
+    "name-in-use": "Name wurde bereits vergeben",
+    "confirm-delete-media": "Möchtest du das Medium für diesen Tag und diese Zeitlinie löschen?"
   },
   "placeholder": {
     "enter-new-timeline-name": "Name der Zeitlinie"
   },
   "button": {
     "accept": "Bestätigen",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "delete": "Löschen"
   },
   "error": {
     "create-timeline-error": "Zeitline konnte nicht erstellt werden!"
