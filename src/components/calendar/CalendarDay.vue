@@ -1,7 +1,7 @@
 <template>
   <div class="column">
     <button v-if="isVisible && hasMedia" class="delete is-pulled-right removeMedia" @click="removeMedia"></button>
-    <div class="box" :class="{'inactive': !isVisible, 'withMedia': (hasMedia) }" :style="styling"
+    <div class="box calendar-day" :id="dayId" :class="{'inactive': !isVisible, 'withMedia': (hasMedia) }" :style="styling"
          @click="calendarDayClicked">
       <div class="date">
         {{ isVisible ? timestampString : '' }}
@@ -28,6 +28,9 @@ export default {
       'language',
       'calendarTimeStampFormat'
     ]),
+    dayId () {
+      return 'calendarDay' + this.day
+    },
     hasMedia () {
       return this.dailyMedia
     },
