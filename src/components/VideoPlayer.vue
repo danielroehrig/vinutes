@@ -11,10 +11,10 @@
       </div>
       <div class="columns">
         <div class="column">
-          <button class="button" value="Cancel" @click="closeVideoPlayer">Cancel</button>
+          <button class="button" value="Cancel" @click="closeVideoPlayer">{{ $t('button.cancel') }}</button>
         </div>
         <div class="column">
-          <button class="button is-primary" @click="acceptVideo">Accept</button>
+          <button class="button is-primary" @click="acceptVideo" id="videoPlayerAcceptButton">{{ $t('button.accept') }}</button>
         </div>
       </div>
     </div>
