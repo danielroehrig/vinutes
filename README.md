@@ -13,4 +13,10 @@ yarn install
 ### Better-Sqlite complains about wrong node.js version
 ```
 ./node_modules/.bin/electron-rebuild -f -w better-sqlite3
-``
+```
+
+
+### Videos used for testing from Pexels
+
+* Video by samazing family from Pexels
+* Video by Taryn Elliott from Pexels
