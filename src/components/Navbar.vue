@@ -63,7 +63,7 @@
       </div>
     </nav>
     <TimelineCreationDialog/>
-
+    <RenderTimeSpanDialog/>
     <RenderProgress v-if="this.$store.state.renderQueue.length>0 || this.$store.state.renderedQueue.length>0"
                     :progress="renderProgress"></RenderProgress>
   </div>
@@ -74,10 +74,10 @@ import { getDailyMediaForTimeline, loadTimeline } from '@/lib/TimelineService'
 import RenderProgress from './RenderProgress'
 import TimelineCreationDialog from '@/components/TimelineCreationDialog'
 import * as sc from '@/store-constants'
-
+import RenderTimeSpanDialog from '@/components/RenderTimeSpanDialog'
 export default {
   name: 'Navbar',
-  components: { TimelineCreationDialog, RenderProgress },
+  components: { RenderTimeSpanDialog, TimelineCreationDialog, RenderProgress },
   computed: {
     timelines: function () {
       const timelines = this.$store.state.timelines
