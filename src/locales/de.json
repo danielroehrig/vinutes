@@ -1,12 +1,14 @@
 {
   "action":{
     "create-new-project": "Neue Zeitlinie erstellen",
-    "delete-media": "Tag löschen"
+    "delete-media": "Tag löschen",
+    "render-time-span": "Zeitspanne zum Rendern auswählen"
   },
   "text": {
     "enter-unique-name-for-timeline": "Gib einen eindeutigen Namen für die neue Zeitlinie an",
     "name-in-use": "Name wurde bereits vergeben",
-    "confirm-delete-media": "Möchtest du das Medium für diesen Tag und diese Zeitlinie löschen?"
+    "confirm-delete-media": "Möchtest du das Medium für diesen Tag und diese Zeitlinie löschen?",
+    "render-whole-timeline": "Vom ersten bis zum letzten Video"
   },
   "placeholder": {
     "enter-new-timeline-name": "Name der Zeitlinie"
@@ -14,10 +16,15 @@
   "button": {
     "accept": "Bestätigen",
     "cancel": "Abbrechen",
-    "delete": "Löschen"
+    "delete": "Löschen",
+    "render": "Render"
   },
   "error": {
     "create-timeline-error": "Zeitline konnte nicht erstellt werden!"
   },
-  "language": "Sprache"
+  "language": "Sprache",
+  "whole-time-line": "Gesamtes Zeitline",
+  "year": "Jahr",
+  "month": "Monat",
+  "custom": "Benutzerdefiniert"
 }
