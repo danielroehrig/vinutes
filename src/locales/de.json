@@ -8,7 +8,10 @@
     "enter-unique-name-for-timeline": "Gib einen eindeutigen Namen für die neue Zeitlinie an",
     "name-in-use": "Name wurde bereits vergeben",
     "confirm-delete-media": "Möchtest du das Medium für diesen Tag und diese Zeitlinie löschen?",
-    "render-whole-timeline": "Vom ersten bis zum letzten Video"
+    "render-whole-timeline": "Vom ersten bis zum letzten Video",
+    "render-current-month": "Den gesamten aktuellen Monat",
+    "render-current-year": "Das gesamte aktuelle Jahr",
+    "render-custom": "Wähle die Zeitspanne zum Rendern aus"
   },
   "placeholder": {
     "enter-new-timeline-name": "Name der Zeitlinie"

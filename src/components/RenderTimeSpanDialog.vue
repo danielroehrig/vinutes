@@ -6,7 +6,7 @@
         <p class="modal-card-title">{{ $t('action.render-time-span') }}</p>
       </header>
       <section class="modal-card-body">
-        <div class="tabs is-centered">
+        <div class="tabs is-centered is-fullwidth is-toggle">
           <ul>
             <li :class="{'is-active': tabSelected('whole')}"><a @click="selectTab('whole')">{{ $t('whole-time-line') }}</a></li>
             <li :class="{'is-active': tabSelected('month')}"><a @click="selectTab('month')">{{ $t('month') }}</a></li>
@@ -18,14 +18,15 @@
           <i>{{ $t('text.render-whole-timeline') }}</i>
         </div>
         <div :class="{'is-hidden': !tabSelected('month')}">
-          Month Stuff
+          <i>{{ $t('text.render-current-month') }}</i>
         </div>
         <div :class="{'is-hidden': !tabSelected('year')}">
-          year Stuff
+          <i>{{ $t('text.render-current-year') }}</i>
         </div>
         <div class="field" :class="{'is-hidden': !tabSelected('custom')}">
           <div class="control">
             <input type="date" id="renderTimeSpanDialogDateSpanChooser" ref='calendarTrigger'>
+            <i>{{ $t('text.render-custom') }}</i>
           </div>
         </div>
       </section>
