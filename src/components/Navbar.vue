@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { getDailyMediaForTimeline, loadTimeline } from '@/lib/TimelineService'
+import { loadTimeline } from '@/lib/TimelineService'
 import RenderProgress from './RenderProgress'
 import TimelineCreationDialog from '@/components/TimelineCreationDialog'
 import * as sc from '@/store-constants'
@@ -109,13 +109,7 @@ export default {
       this.$store.dispatch('changeTimeline', id)
     },
     renderCurrentTimeline: function () {
-      const filePath = ipcRenderer.sendSync('show-save-dialog')
-      if (filePath === null) {
-        return
-      }
-      this.$store.commit('setRenderOutputPath', filePath)
-      const mediaFiles = getDailyMediaForTimeline(this.$store.state.currentTimeline)
-      this.$store.dispatch('startRenderQueue', mediaFiles)
+      this.$store.commit('changeAppState', sc.APP_STATE_CHOOSE_RENDER_TIME_SPAN)
     },
     showTimelineCreationModal: function () {
       this.$store.commit('changeAppState', sc.APP_STATE_CREATE_TIMELINE)
