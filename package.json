@@ -20,6 +20,7 @@
     "@mdi/font": "^5.3.45",
     "better-sqlite3": "^7.1.0",
     "bulma": "^0.8.2",
+    "bulma-calendar": "^6.0.9",
     "calendar": "^0.1.1",
     "electron-log": "^4.2.2",
     "fluent-ffmpeg": "^2.1.2",

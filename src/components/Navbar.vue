@@ -63,21 +63,21 @@
       </div>
     </nav>
     <TimelineCreationDialog/>
-
+    <RenderTimeSpanDialog/>
     <RenderProgress v-if="this.$store.state.renderQueue.length>0 || this.$store.state.renderedQueue.length>0"
                     :progress="renderProgress"></RenderProgress>
   </div>
 </template>
 
 <script>
-import { getDailyMediaForTimeline, loadTimeline } from '@/lib/TimelineService'
+import { loadTimeline } from '@/lib/TimelineService'
 import RenderProgress from './RenderProgress'
 import TimelineCreationDialog from '@/components/TimelineCreationDialog'
 import * as sc from '@/store-constants'
-
+import RenderTimeSpanDialog from '@/components/RenderTimeSpanDialog'
 export default {
   name: 'Navbar',
-  components: { TimelineCreationDialog, RenderProgress },
+  components: { RenderTimeSpanDialog, TimelineCreationDialog, RenderProgress },
   computed: {
     timelines: function () {
       const timelines = this.$store.state.timelines
@@ -109,13 +109,7 @@ export default {
       this.$store.dispatch('changeTimeline', id)
     },
     renderCurrentTimeline: function () {
-      const filePath = ipcRenderer.sendSync('show-save-dialog')
-      if (filePath === null) {
-        return
-      }
-      this.$store.commit('setRenderOutputPath', filePath)
-      const mediaFiles = getDailyMediaForTimeline(this.$store.state.currentTimeline)
-      this.$store.dispatch('startRenderQueue', mediaFiles)
+      this.$store.commit('changeAppState', sc.APP_STATE_CHOOSE_RENDER_TIME_SPAN)
     },
     showTimelineCreationModal: function () {
       this.$store.commit('changeAppState', sc.APP_STATE_CREATE_TIMELINE)

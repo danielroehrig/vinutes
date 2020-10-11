@@ -160,6 +160,7 @@ const store = new Vuex.Store({
       context.commit('loadDailyMedia')
     },
     startRenderQueue (context, dailyMediaObjects) {
+      context.commit('changeAppState', sc.APP_STATE_UNKNOWN)// TODO: Render Progress
       context.commit('clearRenderQueues')
       context.commit('setRenderQueue', dailyMediaObjects)
       context.dispatch('renderNextInQueue', null)
