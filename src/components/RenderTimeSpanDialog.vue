@@ -45,9 +45,10 @@
 </template>
 <script>
 import bulmaCalendar from 'bulma-calendar'
-import { getDailyMediaForTimeline } from '@/lib/TimelineService'
+import { getDailyMediaForTimeline, getDailyMediaForTimelineAndTimeRange } from '@/lib/TimelineService'
 import * as sc from '@/store-constants'
 import { mapState } from 'vuex'
+import moment from 'moment'
 
 let calendar = null
 export default {
@@ -98,13 +99,42 @@ export default {
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
     },
     accept () {
-      console.log(this.selectedTab)
+      // Set name from timeline plus date range
+      let mediaFiles = []
+      let startDate = null
+      let endDate = null
+      switch (this.selectedTab) {
+        case 'whole':
+          mediaFiles = getDailyMediaForTimeline(this.$store.state.currentTimeline)
+          break
+        case 'month':
+          startDate = moment({ year: this.$store.state.currentYear, month: this.$store.state.currentMonth, day: 1 })
+          endDate = moment({ year: this.$store.state.currentYear, month: this.$store.state.currentMonth + 1, day: 1 }).subtract(1, 'day')
+          console.log('month: ' + startDate.format('YYYY-MM-DD') + ' ' + endDate.format('YYYY-MM-DD'))
+          mediaFiles = getDailyMediaForTimelineAndTimeRange(this.$store.state.currentTimeline, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))
+          break
+        case 'year':
+          startDate = moment({ year: this.$store.state.currentYear, month: 0, day: 1 })
+          endDate = moment({ year: this.$store.state.currentYear, month: 11, day: 31 })
+          console.log('year:  ' + startDate.format('YYYY-MM-DD') + endDate.format('YYYY-MM-DD'))
+          mediaFiles = getDailyMediaForTimelineAndTimeRange(this.$store.state.currentTimeline, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))
+          break
+        case 'custom':
+          startDate = moment({ year: this.startDate.getFullYear(), month: this.startDate.getMonth(), day: this.startDate.getDate() })
+          endDate = moment({ year: this.endDate.getFullYear(), month: this.endDate.getMonth(), day: this.endDate.getDate() })
+          console.log('custom:  ' + startDate.format('YYYY-MM-DD') + endDate.format('YYYY-MM-DD'))
+          mediaFiles = getDailyMediaForTimelineAndTimeRange(this.$store.state.currentTimeline, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))
+          break
+      }
+      // TODO: Catch empty timeline (crashes)
+      if (mediaFiles.length === 0) {
+        return
+      }
       const filePath = ipcRenderer.sendSync('show-save-dialog')
       if (filePath === null) {
         return
       }
       this.$store.commit('setRenderOutputPath', filePath)
-      const mediaFiles = getDailyMediaForTimeline(this.$store.state.currentTimeline)
       this.$store.dispatch('startRenderQueue', mediaFiles)
     }
   }

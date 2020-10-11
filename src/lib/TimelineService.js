@@ -32,14 +32,38 @@ export const loadDailyMediaForTimeline = (id, startDate, endDate) => {
   })
 }
 
+/**
+ * Get all daily medias for a timeline
+ * @param {int} timelineId
+ * @returns {array} DailyMedia
+ */
 export const getDailyMediaForTimeline = (timelineId) => {
-  // TODO: Turn into DailyMedia Objects to avoid confusion
   const dbResults = db.prepare('SELECT mediaDate, path, videoTimestamp, mediaType FROM media WHERE timelineId=$id ORDER BY mediaDate ASC;').all({
     id: timelineId
   })
 
   return dbResults.map(row => {
     console.log(JSON.stringify(row))
+    const mediaDate = moment(row.mediaDate)
+    return new DailyMedia(mediaDate.year(), mediaDate.month(), mediaDate.date(), row.path, row.mediaType, row.videoTimestamp)
+  })
+}
+
+/**
+ * Get all daily medias for a timeline and a time range
+ * @param {int} timelineId
+ * @param {string} startDate
+ * @param {string} endDate
+ * @returns {array} DailyMedia
+ */
+export const getDailyMediaForTimelineAndTimeRange = (timelineId, startDate, endDate) => {
+  const dbResults = db.prepare('SELECT mediaDate, path, videoTimestamp, mediaType FROM media WHERE timelineId=$id AND mediaDate BETWEEN $startDate AND $endDate ORDER BY mediaDate ASC;').all({
+    id: timelineId,
+    startDate: startDate,
+    endDate: endDate
+  })
+
+  return dbResults.map(row => {
     const mediaDate = moment(row.mediaDate)
     return new DailyMedia(mediaDate.year(), mediaDate.month(), mediaDate.date(), row.path, row.mediaType, row.videoTimestamp)
   })
