@@ -1,6 +1,8 @@
 {
   "action":{
     "create-new-project": "Neue Zeitlinie erstellen",
+    "delete-current-project": "Aktuelle Zeitlinie löschen",
+    "confirm-deletion-of-timeline-by-entering-name": "Bitte gib den Namen der aktuellen Zeitlinie ein, damit diese gelöscht werden kann. Diese Aktion kann nicht rückgängig gemacht werden!",
     "delete-media": "Tag löschen",
     "render-time-span": "Zeitspanne zum Rendern auswählen"
   },
@@ -14,7 +16,8 @@
     "render-custom": "Wähle die Zeitspanne zum Rendern aus"
   },
   "placeholder": {
-    "enter-new-timeline-name": "Name der Zeitlinie"
+    "enter-new-timeline-name": "Name der Zeitlinie",
+    "confirm-timeline-name": "Bestätige den Namen der Zeitlinie"
   },
   "button": {
     "accept": "Bestätigen",
