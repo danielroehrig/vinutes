@@ -4,7 +4,13 @@ import moment from 'moment'
 import DailyMedia from './lib/DailyMedia'
 import { handleStoreMutation, loadLastState } from '@/lib/PersistenceService'
 import * as sc from './store-constants'
-import { getAllTimelines, loadDailyMediaForTimeline, loadTimeline, deleteMediaFileFromTimeline } from '@/lib/TimelineService'
+import {
+  getAllTimelines,
+  loadDailyMediaForTimeline,
+  loadTimeline,
+  deleteMediaFileFromTimeline,
+  deleteTimeline
+} from '@/lib/TimelineService'
 
 Vue.use(Vuex)
 
@@ -206,6 +212,12 @@ const store = new Vuex.Store({
     removeCurrentMediaFile (context) {
       deleteMediaFileFromTimeline(context.state.currentTimeline, new DailyMedia(context.state.currentYear, context.state.currentMonth + 1,
         context.state.currentDaySelected, '', ''))
+      context.commit('loadDailyMedia')
+      context.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+    },
+    deleteCurrentTimeline (context) {
+      deleteTimeline(context.state.currentTimeline)
+      context.commit('setTimelines', null)
       context.commit('loadDailyMedia')
       context.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
     },

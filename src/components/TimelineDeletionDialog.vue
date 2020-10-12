@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     deleteTimeline: function () {
-      console.log('delete me')
+      this.$store.dispatch('deleteCurrentTimeline')
     },
     cancel: function () {
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
