@@ -1,5 +1,5 @@
 <template>
-  <section class="modal is-active" id="timelineDeletionDialog">
+  <section class="modal"  :class="{'is-active': isVisible}" id="timelineDeletionDialog">
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head has-background-danger">
@@ -36,6 +36,9 @@ export default {
   },
   name: 'TimelineDeletionDialog',
   computed: {
+    isVisible: function () {
+      return this.$store.state.appState === sc.APP_STATE_CONFIRM_TIMELINE_DELETE
+    },
     deleteButtonEnabled: function () {
       return this.confirmedTimelineName === this.currentTimelineName
     }
@@ -45,7 +48,7 @@ export default {
       console.log('delete me')
     },
     cancel: function () {
-      this.$store.state.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+      this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
     }
   }
 }
