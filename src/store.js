@@ -128,6 +128,13 @@ const store = new Vuex.Store({
      */
     setCurrentDaySelected (state, day) {
       state.currentDaySelected = day
+    },
+    /**
+     * Just clear the calendar
+     * @param state
+     */
+    clearMediafiles (state) {
+      state.mediaFiles = {}
     }
   },
   actions: {
@@ -215,11 +222,17 @@ const store = new Vuex.Store({
       context.commit('loadDailyMedia')
       context.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
     },
-    deleteCurrentTimeline (context) {
-      deleteTimeline(context.state.currentTimeline)
-      context.commit('setTimelines', null)
-      context.commit('loadDailyMedia')
-      context.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+    async deleteCurrentTimeline (context) {
+      const currentTimeline = context.state.currentTimeline
+      context.commit('changeTimeline', null)
+      deleteTimeline(currentTimeline)
+      await context.dispatch('loadTimelines')
+      if (context.state.timelines.length > 0) {
+        await context.dispatch('changeTimeline', context.state.timelines[0].id)
+      } else {
+        context.commit('clearMediafiles')
+        context.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+      }
     },
     /**
      * Load all timelines from the database

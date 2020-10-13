@@ -43,7 +43,7 @@ export const handleStoreMutation = (mutation, state) => {
       safeDailyMediaForTimeline(state.currentTimeline, mutation.payload)
       return
     default:
-      console.log('Unknown mutation')
+      console.log('Unknown mutation: ' + mutation.type)
       return
   }
   updateStatement.run({ payload: mutation.payload })

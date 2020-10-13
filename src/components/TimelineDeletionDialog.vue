@@ -45,9 +45,11 @@ export default {
   },
   methods: {
     deleteTimeline: function () {
+      this.confirmedTimelineName = ''
       this.$store.dispatch('deleteCurrentTimeline')
     },
     cancel: function () {
+      this.confirmedTimelineName = ''
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
     }
   }

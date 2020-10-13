@@ -45,6 +45,9 @@
               <a class="navbar-item" @click="showTimelineCreationModal">
                 {{ $t('action.create-new-project') }}
               </a>
+              <a class="navbar-item has-text-danger" @click="showTimelineDeletionModal">
+                <i class="mdi mdi-alert"></i> {{ $t('action.delete-current-project') }}
+              </a>
             </div>
           </div>
         </div>
