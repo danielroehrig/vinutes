@@ -12,6 +12,7 @@ const path = require('path')
 const fs = require('fs')
 const log = require('electron-log')
 const VideoRenderer = require('./lib/VideoRenderer')
+const os = require('os')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -110,15 +111,36 @@ if (isDevelopment) {
 
 ipcMain.on('show-open-dialog', (event, year, month, day) => {
   console.log(`Open File Dialog for ${year} ${month} ${day}`)
-  const filePaths = dialog.showOpenDialogSync({
-    title: 'Choose a video or image',
-    filters: [
-      { name: 'All media files', extensions: ['mp4', 'mov', 'avi', 'mpg', 'mpeg', 'jpg', 'jpeg', 'gif', 'png'] },
-      { name: 'Videos', extensions: ['mp4', 'mov', 'avi', 'mpg', 'mpeg'] },
-      { name: 'Images', extensions: ['jpg', 'jpeg', 'gif', 'png'] }
-    ],
-    properties: ['openFile']
-  })
+  let filePaths = []
+  if (process.env.SPECTRON) {
+    if (day === 3) {
+      filePaths = [path.join(__dirname, '..', 'tests', 'e2e/testvideos/', 'familie.mp4')]
+    } else {
+      filePaths = [path.join(__dirname, '..', 'tests', 'e2e/testvideos/', 'vacation.mp4')]
+    }
+  } else {
+    filePaths = dialog.showOpenDialogSync({
+      title: 'Choose a video or image',
+      filters: [
+        {
+          name: 'All media files',
+          extensions: [
+            'mp4',
+            'mov',
+            'avi',
+            'mpg',
+            'mpeg',
+            'jpg',
+            'jpeg',
+            'gif',
+            'png']
+        },
+        { name: 'Videos', extensions: ['mp4', 'mov', 'avi', 'mpg', 'mpeg'] },
+        { name: 'Images', extensions: ['jpg', 'jpeg', 'gif', 'png'] }
+      ],
+      properties: ['openFile']
+    })
+  }
   if (filePaths) {
     const filePath = filePaths[0]
     event.returnValue = new DailyMedia(year, month, day, filePath, fileTypeCategory(filePath))
@@ -128,6 +150,10 @@ ipcMain.on('show-open-dialog', (event, year, month, day) => {
 })
 
 ipcMain.on('show-save-dialog', (event) => {
+  if (process.env.SPECTRON) {
+    event.returnValue = path.join(os.tmpdir(), 'spectronoutput.mp4')
+    return
+  }
   const filePath = dialog.showSaveDialogSync({
     title: 'Choose a video or image',
     defaultPath: app.getPath('home')

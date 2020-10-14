@@ -2,7 +2,10 @@ import { ipcRenderer } from 'electron'
 import path from 'path'
 
 const userPath = ipcRenderer.sendSync('get-user-path')
-const dbPath = path.join(userPath, 'vinutes.db')
+let dbPath = path.join(userPath, 'vinutes.db')
+if (process.env.WEBPACK_DEV_SERVER_URL) {
+  dbPath = path.join(userPath, 'vinutes-dev.db')
+}
 const Database = require('better-sqlite3')
 const db = new Database(dbPath, { verbose: console.log })
 

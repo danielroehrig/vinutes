@@ -11,10 +11,10 @@
       </div>
       <div class="columns">
         <div class="column">
-          <button class="button" value="Cancel" @click="closeVideoPlayer">Cancel</button>
+          <button class="button" value="Cancel" @click="closeVideoPlayer">{{ $t('button.cancel') }}</button>
         </div>
         <div class="column">
-          <button class="button is-primary" @click="acceptVideo">Accept</button>
+          <button class="button is-primary" @click="acceptVideo" id="videoPlayerAcceptButton">{{ $t('button.accept') }}</button>
         </div>
       </div>
     </div>
@@ -44,7 +44,6 @@ export default {
       const currentDailyMedia = this.$store.state.currentDailyMediaShown
       const currentTimeline = this.$store.state.currentTimeline
       this.$store.dispatch('acceptVideo', videoPreviewPlayer.currentTime)
-      // eslint-disable-next-line no-undef
       ipcRenderer.send('create-video-screenshot', currentDailyMedia, currentTimeline)
       this.$store.commit('setCurrentDailyMedia', null)
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)

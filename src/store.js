@@ -2,16 +2,20 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import moment from 'moment'
 import DailyMedia from './lib/DailyMedia'
-import { handleStoreMutation, loadLastState } from './lib/PersistenceService'
-import { loadDailyMediaForTimeline, loadTimeline } from './lib/TimelineService'
+import { handleStoreMutation, loadLastState } from '@/lib/PersistenceService'
 import * as sc from './store-constants'
-import { getAllTimelines } from '@/lib/TimelineService'
+import {
+  getAllTimelines,
+  loadDailyMediaForTimeline,
+  loadTimeline,
+  deleteMediaFileFromTimeline,
+  deleteTimeline
+} from '@/lib/TimelineService'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    isVideoPlayerVisible: false,
     currentDailyMediaShown: null,
     currentMonth: moment().month(),
     currentYear: moment().year(),
@@ -34,13 +38,15 @@ const store = new Vuex.Store({
       state.currentDailyMediaShown.timeStamp = timeStamp
     },
     moveToPreviousMonth (state) {
-      const currentMoment = moment({ year: state.currentYear, month: state.currentMonth })
+      const currentMoment = moment(
+        { year: state.currentYear, month: state.currentMonth })
       currentMoment.subtract(1, 'month')
       state.currentMonth = currentMoment.month()
       state.currentYear = currentMoment.year()
     },
     moveToNextMonth (state) {
-      const currentMoment = moment({ year: state.currentYear, month: state.currentMonth })
+      const currentMoment = moment(
+        { year: state.currentYear, month: state.currentMonth })
       currentMoment.add(1, 'month')
       if (currentMoment < moment()) {
         state.currentMonth = currentMoment.month()
@@ -50,23 +56,20 @@ const store = new Vuex.Store({
     changeMediaFile (state, dailyMedia) {
       Vue.set(state.mediaFiles, dailyMedia.day, dailyMedia)
     },
-    removeMediaFile (state, moment) {
-      Vue.delete(state.mediaFiles, 'k' + moment.format('YYYYMMDD'))
-    },
     /**
-         * Change the language of the ui and timestamps
-         *
-         * @param {object} state
-         * @param {string} language
-         */
+     * Change the language of the ui and timestamps
+     *
+     * @param {object} state
+     * @param {string} language
+     */
     changeLanguage (state, language) {
       state.language = language
     },
     /**
-         * Change the timestamp format displayed in the calendar
-         * @param state
-         * @param {string} format
-         */
+     * Change the timestamp format displayed in the calendar
+     * @param state
+     * @param {string} format
+     */
     changeTimestampFormat (state, format) {
       state.calendarTimeStampFormat = format
     },
@@ -74,13 +77,18 @@ const store = new Vuex.Store({
       state.currentTimeline = timeline
     },
     loadDailyMedia (state) {
-      const startPoint = moment({ year: state.currentYear, month: state.currentMonth, day: 1 })
+      const startPoint = moment(
+        { year: state.currentYear, month: state.currentMonth, day: 1 })
       const endPoint = moment(startPoint).endOf('month')
-      const allMedia = loadDailyMediaForTimeline(state.currentTimeline, startPoint.format('YYYY-MM-DD'), endPoint.format('YYYY-MM-DD'))
+      const allMedia = loadDailyMediaForTimeline(state.currentTimeline,
+        startPoint.format('YYYY-MM-DD'), endPoint.format('YYYY-MM-DD'))
       state.mediaFiles = {}
       allMedia.forEach((row) => {
         const mediaMoment = moment(row.mediaDate)
-        Vue.set(state.mediaFiles, mediaMoment.date(), new DailyMedia(mediaMoment.year(), mediaMoment.month(), mediaMoment.date(), row.path, row.mediaType, row.videoTimestamp, row.videoStill))
+        Vue.set(state.mediaFiles, mediaMoment.date(),
+          new DailyMedia(mediaMoment.year(), mediaMoment.month(),
+            mediaMoment.date(), row.path, row.mediaType, row.videoTimestamp,
+            row.videoStill))
       })
     },
     applyConfig (state, databaseRow) {
@@ -103,10 +111,10 @@ const store = new Vuex.Store({
       state.renderQueue.shift()
     },
     /**
-         * Change the current state of the app
-         * @param state
-         * @param {int} appState
-         */
+     * Change the current state of the app
+     * @param state
+     * @param {string} appState
+     */
     changeAppState (state, appState) {
       state.appState = appState
     },
@@ -114,20 +122,27 @@ const store = new Vuex.Store({
       state.timelines = timelines
     },
     /**
-         * Set the currently selected day
-         * @param state
-         * @param {int} day
-         */
+     * Set the currently selected day
+     * @param state
+     * @param {int} day
+     */
     setCurrentDaySelected (state, day) {
       state.currentDaySelected = day
+    },
+    /**
+     * Just clear the calendar
+     * @param state
+     */
+    clearMediafiles (state) {
+      state.mediaFiles = {}
     }
   },
   actions: {
     /**
-         * Change the current timeline
-         * @param context
-         * @param {int} timeline
-         */
+     * Change the current timeline
+     * @param context
+     * @param {int} timeline
+     */
     changeTimeline (context, timeline) {
       console.log('Change Timeline')
       const currentTimeline = loadTimeline(timeline)
@@ -137,12 +152,11 @@ const store = new Vuex.Store({
     },
     acceptVideo (context, timeStamp) {
       context.commit('setTimeStampForVideo', timeStamp)
-      context.commit('hideVideoPlayer')
     },
     /**
-         *
-         * @param context
-         */
+     *
+     * @param context
+     */
     loadLastState (context) {
       const lastState = loadLastState()
       context.commit('applyConfig', lastState)
@@ -159,6 +173,7 @@ const store = new Vuex.Store({
       context.commit('loadDailyMedia')
     },
     startRenderQueue (context, dailyMediaObjects) {
+      context.commit('changeAppState', sc.APP_STATE_UNKNOWN)// TODO: Render Progress
       context.commit('clearRenderQueues')
       context.commit('setRenderQueue', dailyMediaObjects)
       context.dispatch('renderNextInQueue', null)
@@ -175,22 +190,54 @@ const store = new Vuex.Store({
         const mediaFilePaths = context.state.renderedQueue.map((mediaFile) => {
           return mediaFile.tmpFilePath
         })
-        ipcRenderer.send('merge-videos', mediaFilePaths, context.state.renderOutputPath)
+        ipcRenderer.send('merge-videos', mediaFilePaths,
+          context.state.renderOutputPath)
       }
     },
     /**
-         * Event: Day in calendar view was clicked.
-         * @param context
-         * @param {int} day
-         */
+     * Event: Day in calendar view was clicked.
+     * @param context
+     * @param {int} day
+     */
     calendarDayClicked (context, day) {
       if (context.state.currentTimeline === null) {
         context.commit('changeAppState', sc.APP_STATE_CREATE_TIMELINE)
         return
       }
       context.commit('setCurrentDaySelected', day)
+      if (context.state.mediaFiles[day]) {
+        context.commit('setCurrentDailyMedia', context.state.mediaFiles[day])
+        context.commit('changeAppState', sc.APP_STATE_VIDEO_PLAYER)
+        return
+      }
       context.commit('changeAppState', sc.APP_STATE_CHOOSE_MEDIA_FILE)
     },
+    /**
+     * Issue the database to delete a media file, then reload
+     * @param context
+     */
+    removeCurrentMediaFile (context) {
+      deleteMediaFileFromTimeline(context.state.currentTimeline, new DailyMedia(context.state.currentYear, context.state.currentMonth + 1,
+        context.state.currentDaySelected, '', ''))
+      context.commit('loadDailyMedia')
+      context.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+    },
+    async deleteCurrentTimeline (context) {
+      const currentTimeline = context.state.currentTimeline
+      context.commit('changeTimeline', null)
+      deleteTimeline(currentTimeline)
+      await context.dispatch('loadTimelines')
+      if (context.state.timelines.length > 0) {
+        await context.dispatch('changeTimeline', context.state.timelines[0].id)
+      } else {
+        context.commit('clearMediafiles')
+        context.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+      }
+    },
+    /**
+     * Load all timelines from the database
+     * @param context
+     */
     loadTimelines (context) {
       const timelines = getAllTimelines()
       context.commit('setTimelines', timelines)

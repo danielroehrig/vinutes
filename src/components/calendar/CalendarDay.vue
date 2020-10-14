@@ -1,18 +1,19 @@
 <template>
-    <div class="column" style="padding: 5px;">
-        <div class="box" :class="{'inactive': (day === 0), 'withMedia': (dailyMedia) }" :style="styling"
-             @click="$store.dispatch('calendarDayClicked', day)">
-            <div class="date">
-                {{ (day !== 0) ?
-                momentToday.format(timestampFormatting) : "" }}
-            </div>
-        </div>
+  <div class="column">
+    <button v-if="isVisible && hasMedia" class="delete is-pulled-right removeMedia" @click="removeMedia" :id="deleteButtonId"></button>
+    <div class="box calendar-day" :id="dayId" :class="{'inactive': !isVisible, 'withMedia': (hasMedia) }" :style="styling"
+         @click="calendarDayClicked">
+      <div class="date">
+        {{ isVisible ? timestampString : '' }}
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
 import moment from 'moment'
-import { mapMutations, mapState } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
+import * as sc from '@/store-constants'
 
 export default {
   name: 'CalendarDay',
@@ -27,72 +28,98 @@ export default {
       'language',
       'calendarTimeStampFormat'
     ]),
-    momentToday () {
-      moment.locale(this.language)
-      return this.currentMoment()
+    deleteButtonId () {
+      return this.dayId + 'DeleteButton'
     },
-    timestampFormatting () {
-      return this.calendarTimeStampFormat
+    dayId () {
+      return 'calendarDay' + this.day
+    },
+    hasMedia () {
+      return this.dailyMedia
+    },
+    isVisible () {
+      return this.day !== 0
+    },
+    timestampString () {
+      moment.locale(this.language)
+      const currentMoment = moment({
+        year: this.currentYear,
+        month: this.currentMonth,
+        day: this.day
+      })
+      return currentMoment.format(this.calendarTimeStampFormat)
     },
     dailyMedia () {
       return this.mediaFiles[this.day]
     },
     styling () {
-      const mediaFile = this.mediaFiles[this.day]
-      if (mediaFile && mediaFile.videoStill) {
+      const mediaFile = this.dailyMedia
+      if (mediaFile && mediaFile.previewImage) {
         return {
-          backgroundImage: "url('data:image/jpeg;charset=utf-8;base64," + mediaFile.videoStill + "')"
+          backgroundImage: 'url(\'data:image/jpeg;charset=utf-8;base64,' + mediaFile.previewImage + '\')'
         }
       }
       return {}
     }
   },
   methods: {
+    ...mapActions({
+      clicked: 'calendarDayClicked'
+    }),
     ...mapMutations([
-      'removeMediaFile',
-      'showVideoPlayer'
+      'changeAppState',
+      'setCurrentDaySelected'
     ]),
-    currentMoment: function () {
-      return moment({
-        year: this.currentYear,
-        month: this.currentMonth,
-        day: this.day
-      })
+    calendarDayClicked: function () {
+      this.clicked(this.day)
+    },
+    removeMedia: function () {
+      this.setCurrentDaySelected(this.day)
+      this.$store.commit('changeAppState', sc.APP_STATE_CONFIRM_MEDIA_DELETE)
     }
   }
 }
 </script>
 
 <style scoped>
-    div.inactive {
-        visibility: hidden;
-    }
+div.column {
+  padding: 5px;
+}
 
-    div.withMedia {
-        background-position: center;
-        background-size: cover;
-        color: white;
-        text-shadow: 1px 1px #333333;
-    }
+div.inactive {
+  visibility: hidden;
+}
 
-    div.box {
-        width: 100%;
-        padding: 56.25% 0 0 0;
-        position: relative; /* If you want text inside of it */
-    }
+div.withMedia {
+  background-position: center;
+  background-size: cover;
+  color: white;
+  text-shadow: 1px 1px #333333;
+}
 
-    div.date {
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        padding: 20px;
-    }
+div.box {
+  width: 100%;
+  padding: 56.25% 0 0 0;
+  position: relative; /* If you want text inside of it */
+}
 
-    div.box:hover {
-        background-color: hsl(171, 100%, 41%);
-        color: white;
-        cursor: pointer;
-    }
+div.date {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding: 20px;
+}
+
+div.box:hover {
+  background-color: hsl(171, 100%, 41%);
+  color: white;
+  cursor: pointer;
+}
+
+button.removeMedia {
+  z-index: 1;
+  margin: 5px 5px;
+}
 </style>
