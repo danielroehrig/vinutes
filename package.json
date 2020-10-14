@@ -1,7 +1,21 @@
 {
   "name": "vinutes",
+  "description": "Daily videos - one second at a time",
+  "keywords": ["video","diary"],
+  "homepage": "http://vinutes.org",
   "version": "0.2.0",
   "private": true,
+  "author": {"name": "Daniel Röhrig", "email": "daniel@vinutes.org",
+    "url": "https://github.com/danielroehrig"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danielroehrig/vinutes/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danielroehrig/vinutes.git"
+  },
   "scripts": {
     "serve": "vue-cli-service electron:serve",
     "build": "vue-cli-service electron:build",
