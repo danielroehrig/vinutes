@@ -1,6 +1,8 @@
 {
   "action":{
     "create-new-project": "Create new timeline",
+    "delete-current-project": "Delete current timeline",
+    "confirm-deletion-of-timeline-by-entering-name": "Please enter the name of the current timeline to confirm that you really want to delete it. This action cannot be undone!",
     "delete-media": "Delete media",
     "render-time-span": "Choose time span to render"
   },
@@ -14,7 +16,8 @@
     "render-custom": "Select the time span to render"
   },
   "placeholder": {
-    "enter-new-timeline-name": "Name timeline"
+    "enter-new-timeline-name": "Name timeline",
+    "confirm-timeline-name": "Confirm timeline name"
   },
   "button": {
     "accept": "Accept",

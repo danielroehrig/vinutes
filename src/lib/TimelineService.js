@@ -113,6 +113,18 @@ export const deleteMediaFileFromTimeline = (timelineId, dailyMedia) => {
 }
 
 /**
+ * Delete a complete timeline with all associated media
+ * @param {int} timelineId
+ */
+export const deleteTimeline = (timelineId) => {
+  console.log('Trying to delete timeline id: ' + timelineId)
+  const deleteTimelineTransaction = db.transaction(() => {
+    db.prepare('DELETE FROM timeline WHERE id=$timelineId').run({ timelineId: timelineId })
+  })
+  deleteTimelineTransaction()
+}
+
+/**
  * Delete a video still from the given timeline
  * @param {int} timelineId
  * @param {DailyMedia} dailyMedia

@@ -4,7 +4,13 @@ import moment from 'moment'
 import DailyMedia from './lib/DailyMedia'
 import { handleStoreMutation, loadLastState } from '@/lib/PersistenceService'
 import * as sc from './store-constants'
-import { getAllTimelines, loadDailyMediaForTimeline, loadTimeline, deleteMediaFileFromTimeline } from '@/lib/TimelineService'
+import {
+  getAllTimelines,
+  loadDailyMediaForTimeline,
+  loadTimeline,
+  deleteMediaFileFromTimeline,
+  deleteTimeline
+} from '@/lib/TimelineService'
 
 Vue.use(Vuex)
 
@@ -122,6 +128,13 @@ const store = new Vuex.Store({
      */
     setCurrentDaySelected (state, day) {
       state.currentDaySelected = day
+    },
+    /**
+     * Just clear the calendar
+     * @param state
+     */
+    clearMediafiles (state) {
+      state.mediaFiles = {}
     }
   },
   actions: {
@@ -208,6 +221,18 @@ const store = new Vuex.Store({
         context.state.currentDaySelected, '', ''))
       context.commit('loadDailyMedia')
       context.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+    },
+    async deleteCurrentTimeline (context) {
+      const currentTimeline = context.state.currentTimeline
+      context.commit('changeTimeline', null)
+      deleteTimeline(currentTimeline)
+      await context.dispatch('loadTimelines')
+      if (context.state.timelines.length > 0) {
+        await context.dispatch('changeTimeline', context.state.timelines[0].id)
+      } else {
+        context.commit('clearMediafiles')
+        context.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+      }
     },
     /**
      * Load all timelines from the database
