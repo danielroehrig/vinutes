@@ -19,6 +19,7 @@
   "scripts": {
     "serve": "vue-cli-service electron:serve",
     "build": "vue-cli-service electron:build",
+    "build-win": "vue-cli-service electron:build --win",
     "test:unit": "vue-cli-service test:unit unit",
     "test:e2e": "vue-cli-service test:unit -ui=bdd tests/e2e --recursive",
     "lint": "eslint 'src/**'",
