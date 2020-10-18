@@ -2,12 +2,22 @@ const { app } = require('electron')
 const moment = require('moment')
 const path = require('path')
 const fs = require('fs')
-const ffmpegPath = path.join(app.getAppPath(), '..', 'public', 'bin', 'amd64', 'ffmpeg')
+const os = require('os')
+let ffmpegPath = null
 const silenceMP3Path = path.join(app.getAppPath(), '..', 'public', 'silence.mp3')
 const FfmpegCommand = require('fluent-ffmpeg')
 const sharp = require('sharp')
-FfmpegCommand.setFfmpegPath(ffmpegPath)
+switch (os.type()) {
+  case 'Linux':
+    ffmpegPath = path.join(app.getAppPath(), '..', 'public', 'bin', 'amd64', 'ffmpeg')
+    break
+  case 'Windows_NT':
+    ffmpegPath = path.join(app.getAppPath(), '..', 'public', 'bin', 'win64', 'ffmpeg.exe')
+    FfmpegCommand.setFfprobePath(path.join(app.getAppPath(), '..', 'public', 'bin', 'win64', 'ffprobe.exe'))
+    break
+}
 
+FfmpegCommand.setFfmpegPath(ffmpegPath)
 /**
  * Create screenshot at the given time stamp from file path
  *
