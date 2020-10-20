@@ -94,6 +94,8 @@ const renderVideo = async (dailyMedia, tmpFolder, event) => {
       }
     })
     .size('1920x1080')
+    .videoBitrate('16384k')
+    .videoCodec('libx264')
     .autopad('black')
     .output(tmpFileName)
     .on('start', function () {
