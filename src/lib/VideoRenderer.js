@@ -12,8 +12,8 @@ switch (os.type()) {
     ffmpegPath = path.join(app.getAppPath(), '..', 'bin', 'amd64', 'ffmpeg')
     break
   case 'Windows_NT':
-    ffmpegPath = path.join(app.getAppPath(), '..', 'public', 'bin', 'win64', 'ffmpeg.exe')
-    FfmpegCommand.setFfprobePath(path.join(app.getAppPath(), '..', 'public', 'bin', 'win64', 'ffprobe.exe'))
+    ffmpegPath = path.join(app.getAppPath(), '..', 'bin', 'win64', 'ffmpeg.exe')
+    FfmpegCommand.setFfprobePath(path.join(app.getAppPath(), '..', 'bin', 'win64', 'ffprobe.exe'))
     break
 }
 
