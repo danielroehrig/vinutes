@@ -33,7 +33,10 @@ module.exports = {
         },
         win: {
           target: ['msi', 'nsis'],
-          icon: 'assets/VinuteHeart-Pink.ico'
+          icon: 'assets/VinuteHeart-Pink.ico',
+          extraResources: [
+            'bin/win64/**'
+          ]
         },
         extraResources: [
           'public/**'
