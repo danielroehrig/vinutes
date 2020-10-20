@@ -9,7 +9,7 @@ const FfmpegCommand = require('fluent-ffmpeg')
 const sharp = require('sharp')
 switch (os.type()) {
   case 'Linux':
-    ffmpegPath = path.join(app.getAppPath(), '..', 'public', 'bin', 'amd64', 'ffmpeg')
+    ffmpegPath = path.join(app.getAppPath(), '..', 'bin', 'amd64', 'ffmpeg')
     break
   case 'Windows_NT':
     ffmpegPath = path.join(app.getAppPath(), '..', 'public', 'bin', 'win64', 'ffmpeg.exe')
