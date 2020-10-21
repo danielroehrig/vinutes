@@ -18,14 +18,12 @@ module.exports = {
       builderOptions: {
         appId: 'de.danielroehrig.vinutes',
         linux: {
-          // target: ['AppImage', 'deb', 'pacman', 'snap'],
-          target: ['AppImage'],
-          icon: 'assets/VinuteHeart-Pink.png',
+          target: ['AppImage', 'deb', 'pacman', 'snap'],
+          icon: 'public/icons/icon.icns',
           category: 'Video',
           synopsis: 'Video diary made easy',
           desktop: {
-            Name: 'Vinutes',
-            Icon: 'assets/VinuteHeart-Pink.png'
+            Name: 'Vinutes'
           },
           extraResources: [
             'bin/amd64/**'
@@ -33,7 +31,7 @@ module.exports = {
         },
         win: {
           target: ['msi', 'nsis'],
-          icon: 'assets/VinuteHeart-Pink.ico',
+          icon: 'public/icons/icon.ico',
           extraResources: [
             'bin/win64/**'
           ]
