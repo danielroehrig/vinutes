@@ -8,7 +8,8 @@ on:
     tags:
     - 'v*'
 jobs:
-  build:
+  build_linux:
+    name: Create all the linux builds
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -36,3 +37,23 @@ jobs:
         bodyFile: "RELEASE.md"
         token: ${{ secrets.GITHUB_TOKEN }}
         commit: "master"
+  windows_build:
+    name: Create the windows build
+    steps:
+      - name: Install 7Zip PowerShell Module
+        shell: powershell
+        run: Install-Module 7Zip4PowerShell -Force -Verbose
+      - uses: actions/checkout@v2
+      - name: Prepare yarn install
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - run: yarn install --frozen-lockfile
+      - name: Build linux builds
+        run: yarn run build
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "./dist_electron/vinutes-*.msi, ./dist_electron/vinutes_*.nsis"
+          bodyFile: "RELEASE.md"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit: "master"
