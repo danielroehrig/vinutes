@@ -8,6 +8,7 @@ on:
 jobs:
   windows_build:
     name: Create the windows build
+    runs-on: windows-latest
     steps:
       - name: Install 7Zip PowerShell Module
         shell: powershell
