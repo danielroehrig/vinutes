@@ -4,7 +4,7 @@
 name: Release Binaries
 
 on:
-  push
+  - push
 jobs:
   windows_build:
     name: Create the windows build
