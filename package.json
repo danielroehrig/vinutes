@@ -1,11 +1,16 @@
 {
   "name": "vinutes",
   "description": "Daily videos - one second at a time",
-  "keywords": ["video","diary"],
+  "keywords": [
+    "video",
+    "diary"
+  ],
   "homepage": "http://vinutes.org",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "private": true,
-  "author": {"name": "Daniel Röhrig", "email": "daniel@vinutes.org",
+  "author": {
+    "name": "Daniel Röhrig",
+    "email": "daniel@vinutes.org",
     "url": "https://github.com/danielroehrig"
   },
   "license": "MIT",
@@ -19,10 +24,11 @@
   "scripts": {
     "serve": "vue-cli-service electron:serve",
     "build": "vue-cli-service electron:build",
+    "build-win": "vue-cli-service electron:build --win",
     "test:unit": "vue-cli-service test:unit unit",
     "test:e2e": "vue-cli-service test:unit -ui=bdd tests/e2e --recursive",
     "lint": "eslint 'src/**'",
-    "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=./public --flatten",
+    "electron:generate-icons": "electron-icon-builder --input=./assets/icon.png --output=./public --flatten",
     "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'",
     "lint-fix": "eslint 'src/**' --fix",
     "postinstall": "electron-builder install-app-deps",
@@ -40,7 +46,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "mime": "^2.4.6",
     "moment": "^2.26.0",
-    "sharp": "^0.25.4",
+    "sharp": "^0.26.2",
     "vue": "^2.6.11",
     "vue-i18n": "^8.17.3",
     "vue-router": "^3.2.0",

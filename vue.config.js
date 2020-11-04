@@ -16,8 +16,25 @@ module.exports = {
         })
       },
       builderOptions: {
+        appId: 'de.danielroehrig.vinutes',
         linux: {
-          target: ['AppImage', 'deb']
+          target: ['AppImage', 'deb', 'pacman', 'snap'],
+          icon: 'public/icons/icon.icns',
+          category: 'Video',
+          synopsis: 'Video diary made easy',
+          desktop: {
+            Name: 'Vinutes'
+          },
+          extraResources: [
+            'bin/amd64/**'
+          ]
+        },
+        win: {
+          target: ['msi', 'nsis'],
+          icon: 'public/icons/icon.ico',
+          extraResources: [
+            'bin/win64/**'
+          ]
         },
         extraResources: [
           'public/**'
