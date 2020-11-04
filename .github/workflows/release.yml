@@ -4,8 +4,39 @@
 name: Release Binaries
 
 on:
-  - push
+  push:
+    tags:
+    - 'v*'
 jobs:
+  build_linux:
+    name: Create all the linux builds
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Cache node modules
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+    - name: Prepare yarn install
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - run: yarn install --frozen-lockfile
+    - name: Build linux builds
+      run: yarn run build
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "./dist_electron/vinutes-*.AppImage, ./dist_electron/vinutes_*.snap"
+        bodyFile: "RELEASE.md"
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit: "master"
   windows_build:
     name: Create the windows build
     runs-on: windows-latest
