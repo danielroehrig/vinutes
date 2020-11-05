@@ -8,11 +8,12 @@ on:
     tags:
     - 'v*'
 jobs:
-  build_linux:
+  linux_build:
     name: Create all the linux builds
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
     - name: Cache node modules
       uses: actions/cache@v2
       env:
@@ -28,15 +29,16 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '12.x'
-    - run: yarn install --frozen-lockfile
-    - name: Build linux builds
+    - name: Install node packages
+      run: yarn install --frozen-lockfile
+    - name: Build for linux
       run: yarn run build
-    - uses: ncipollo/release-action@v1
+    - name: Upload AppImage
+      uses: actions/upload-artifact@v2
       with:
-        artifacts: "./dist_electron/vinutes-*.AppImage, ./dist_electron/vinutes_*.snap"
-        bodyFile: "RELEASE.md"
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commit: "master"
+        name: linux-appimage
+        path: "./dist_electron/vinutes-*.AppImage"
+
   windows_build:
     name: Create the windows build
     runs-on: windows-latest
@@ -44,17 +46,51 @@ jobs:
       - name: Install 7Zip PowerShell Module
         shell: powershell
         run: Install-Module 7Zip4PowerShell -Force -Verbose
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - name: Prepare yarn install
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'
-      - run: yarn install --frozen-lockfile
-      - name: Build linux builds
+      - name: Install node packages
+        run: yarn install --frozen-lockfile
+      - name: Build for windows
         run: yarn run build
-      - uses: ncipollo/release-action@v1
+      - name: Upload MSI
+        uses: actions/upload-artifact@v2
         with:
-          artifacts: "./dist_electron/vinutes-*.msi, ./dist_electron/vinutes_*.nsis"
+          name: windows-msi
+          path: "./dist_electron/vinutes-*.msi"
+  create_release:
+    name: Package the release
+    needs: [linux_build, windows_build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Download the windows msi build
+        uses: actions/download-artifact@v2
+        with:
+          name: windows-msi
+      - name: Download the linux AppImage
+        uses: actions/download-artifact@v2
+        with:
+          name: linux-appimage
+      - name: start the release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "vinutes-*.msi, vinutes_*.AppImage"
           bodyFile: "RELEASE.md"
           token: ${{ secrets.GITHUB_TOKEN }}
           commit: "master"

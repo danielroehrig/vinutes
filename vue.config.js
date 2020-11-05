@@ -18,7 +18,7 @@ module.exports = {
       builderOptions: {
         appId: 'de.danielroehrig.vinutes',
         linux: {
-          target: ['AppImage', 'deb', 'pacman', 'snap'],
+          target: ['AppImage'],
           icon: 'public/icons/icon.icns',
           category: 'Video',
           synopsis: 'Video diary made easy',
@@ -30,7 +30,7 @@ module.exports = {
           ]
         },
         win: {
-          target: ['msi', 'nsis'],
+          target: ['msi'],
           icon: 'public/icons/icon.ico',
           extraResources: [
             'bin/win64/**'
