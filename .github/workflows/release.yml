@@ -71,7 +71,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: windows-msi
-          path: "dist_electron\vinutes*.msi"
+          path: "dist_electron\\vinutes*.msi"
   create_release:
     name: Package the release
     needs: [linux_build, windows_build]
