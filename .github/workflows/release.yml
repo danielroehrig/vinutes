@@ -37,7 +37,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: linux-appimage
-        path: "./dist_electron/vinutes-*.AppImage"
+        path: "./dist_electron/vinutes*.AppImage"
 
   windows_build:
     name: Create the windows build
@@ -71,7 +71,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: windows-msi
-          path: "./dist_electron/vinutes-*.msi"
+          path: "dist_electron\vinutes*.msi"
   create_release:
     name: Package the release
     needs: [linux_build, windows_build]
@@ -90,7 +90,7 @@ jobs:
       - name: start the release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "vinutes-*.msi, vinutes_*.AppImage"
+          artifacts: "vinutes*.msi, vinutes*.AppImage"
           bodyFile: "RELEASE.md"
           token: ${{ secrets.GITHUB_TOKEN }}
           commit: "master"
