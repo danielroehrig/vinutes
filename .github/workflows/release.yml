@@ -74,9 +74,39 @@ jobs:
         with:
           name: windows-msi
           path: "dist_electron\\vinutes*.msi"
+  macos_build:
+    name: Create the mac build
+    runs-on: macos-10.15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Prepare yarn install
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Install node packages
+        run: yarn install --frozen-lockfile
+      - name: Build for macos
+        run: yarn run build
+      - name: Upload dmg
+        uses: actions/upload-artifact@v2
+        with:
+          name: mac-dmg
+          path: "./dist_electron/vinutes*.dmg"
   create_release:
     name: Package the release
-    needs: [linux_build, windows_build]
+    needs: [linux_build, windows_build, macos_build]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -92,7 +122,7 @@ jobs:
       - name: start the release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "vinutes*.msi, vinutes*.AppImage"
+          artifacts: "vinutes*.msi, vinutes*.AppImage, vinutes*.dmg"
           bodyFile: "RELEASE.md"
           token: ${{ secrets.GITHUB_TOKEN }}
           commit: "master"
