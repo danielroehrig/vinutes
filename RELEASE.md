@@ -1,5 +1,4 @@
-# Version 0.2.2 - May even run on Windows!
+# Version 0.2.3 - May even run on ...Macs?!
 
-This version focuses on the Windows release. Which is tricky
-as I am not a Windows user. But it seems to kind of work-ish?
-So, if you have a Windows OS, give it a try and then some feedback!
+Is this even possible? You tell me! I don't own a Mac! And my mac owning 
+colleagues are too "asleep" right now. So, srsly, TELL ME!
