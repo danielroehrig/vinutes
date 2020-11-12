@@ -36,9 +36,14 @@ module.exports = {
             'bin/win64/**'
           ]
         },
-        extraResources: [
-          'public/**'
-        ],
+        mac: {
+          target: ['dmg'],
+          icon: 'public/icons/icon.icns',
+          category: 'public.app-category.entertainment',
+          extraResources: [
+            'bin/macos/**'
+          ]
+        },
         asarUnpack: [
           '**/node_modules/sharp/**/*'
         ]

@@ -119,6 +119,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: linux-appimage
+      - name: Download the mac dmg
+        uses: actions/download-artifact@v2
+        with:
+          name: mac-dmg
       - name: start the release
         uses: ncipollo/release-action@v1
         with:
