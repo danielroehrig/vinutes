@@ -36,6 +36,14 @@ module.exports = {
             'bin/win64/**'
           ]
         },
+        mac: {
+          target: ['dmg'],
+          icon: 'public/icons/icon.icns',
+          category: 'public.app-category.entertainment',
+          extraResources: [
+            'bin/macos/**'
+          ]
+        },
         extraResources: [
           'public/**'
         ],
