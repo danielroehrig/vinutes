@@ -44,6 +44,9 @@ module.exports = {
             'bin/macos/**'
           ]
         },
+        extraResources: [
+          'public/**'
+        ],
         asarUnpack: [
           '**/node_modules/sharp/**/*'
         ]
