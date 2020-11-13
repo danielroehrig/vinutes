@@ -39,7 +39,7 @@ module.exports = {
         mac: {
           target: ['dmg'],
           icon: 'public/icons/icon.icns',
-          category: 'public.app-category.entertainment',
+          category: 'public.app-category.video',
           extraResources: [
             'bin/macos/**'
           ]
