@@ -190,9 +190,9 @@ ipcMain.on('merge-videos', (event, filePaths, outputPath) => {
   VideoRenderer.mergeVideos(filePaths, outputPath, event)
 })
 
-ipcMain.on('render-image-preview', (event, dailyMedia) => {
+ipcMain.on('render-image-preview', async (event, dailyMedia) => {
   console.log('creating image preview')
-  VideoRenderer.createImagePreview(dailyMedia, event)
+  await VideoRenderer.createImagePreview(dailyMedia, event)
 })
 
 ipcMain.on('exit-app', (event, exitCode) => {

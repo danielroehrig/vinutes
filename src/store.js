@@ -251,9 +251,18 @@ const store = new Vuex.Store({
 })
 // All changes to the state are relayed to the PersistenceService
 store.subscribe(handleStoreMutation)
+
+/**
+ * #################################################
+ * Listeners to various events from the main thread
+ * #################################################
+ */
+
 ipcRenderer.on('screenshot-created', (event, dailyMedia) => {
   store.commit('changeMediaFile', dailyMedia)
+  store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
 })
+
 ipcRenderer.on('video-rendered', (event, dailyMedia) => {
   console.log('Store says, render next!')
   store.dispatch('renderNextInQueue', dailyMedia)
