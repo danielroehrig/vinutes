@@ -1,4 +1,5 @@
-# Version 0.2.3 - May even run on ...Macs?!
+# Version 0.2.4
 
-Is this even possible? You tell me! I don't own a Mac! And my mac owning 
-colleagues are too "asleep" right now. So, srsly, TELL ME!
+Just a small but terribly annoying bug that needed to be crushed before I could show it to my friends:
+
+* Fix selecting an image freezes UI until the image is selected for editing and the dialog canceled
