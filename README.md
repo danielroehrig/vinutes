@@ -22,6 +22,7 @@ yarn run build
 
 ## Features
 
+* cross platform (runs on linux, windows and [almost mac](https://github.com/danielroehrig/vinutes/issues/34))
 * multiple timelines
 * support for videos and images
 * choose position of the video
