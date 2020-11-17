@@ -55,9 +55,9 @@
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-primary" @click="renderCurrentTimeline()" id="navbarRenderButton">
+              <b-button type="is-primary" @click="renderCurrentTimeline()" id="navbarRenderButton">
                 <strong>Render</strong>
-              </a>
+              </b-button>
               <router-link to="/preferences">
                 <span class="button mdi mdi-24px mdi-cog"></span>
               </router-link>
