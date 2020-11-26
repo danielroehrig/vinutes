@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Navbar></Navbar>
-    <router-view/>
+    <Calendar></Calendar>
   </div>
 </template>
 
@@ -20,9 +20,10 @@ import Navbar from './components/Navbar'
 import { initDBStructure } from './lib/PersistenceService'
 import { mapState } from 'vuex'
 import * as sc from '@/store-constants'
+import Calendar from '@/components/calendar/Calendar'
 
 export default {
-  components: { Navbar },
+  components: { Calendar, Navbar },
   // Before any window is created, load database structure
   beforeCreate () {
     // TODO Migration comes here

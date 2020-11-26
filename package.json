@@ -50,7 +50,6 @@
     "sharp": "0.25.4",
     "vue": "^2.6.11",
     "vue-i18n": "^8.17.3",
-    "vue-router": "^3.2.0",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
