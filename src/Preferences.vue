@@ -2,15 +2,15 @@
   <section>
     <b-sidebar
         type="is-light"
-        :fullheight="fullheight"
-        :fullwidth="fullwidth"
-        :overlay="overlay"
-        :right="right"
-        v-model="open"
+        :fullheight=true
+        :fullwidth=false
+        :overlay=true
+        :right=true
         :on-cancel="close"
+        :open="visible"
     >
       <div class="container mt-4">
-        <h1 class="subtitle">Preferences</h1>
+        <h1 class="subtitle">{{ $t('preferences') }}</h1>
         <div class="field has-text-left">
           <label class="label" for="preferences-language-select">{{ $t('language') }}</label>
           <div class="control">
@@ -23,7 +23,7 @@
           </div>
         </div>
         <div class="field has-text-left">
-          <label class="label">Timestamp format</label>
+          <label class="label">{{ $t("timestamp-format") }}</label>
           <div class="control">
             <input class="input" type="text" v-model="timestampFormat">
           </div>
@@ -40,14 +40,6 @@ export default {
   name: 'Preferences',
   props: {
     open: Boolean
-  },
-  data () {
-    return {
-      overlay: true,
-      fullheight: true,
-      fullwidth: false,
-      right: true
-    }
   },
   computed: {
     language: {
@@ -66,6 +58,9 @@ export default {
       get () {
         return this.$store.state.calendarTimeStampFormat
       }
+    },
+    visible: function () {
+      return this.open
     }
   },
   methods: {
@@ -75,9 +70,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.p-1 {
-  padding: 1em;
-}
-</style>
