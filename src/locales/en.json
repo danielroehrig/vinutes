@@ -1,5 +1,5 @@
 {
-  "action":{
+  "action": {
     "create-new-project": "Create new timeline",
     "delete-current-project": "Delete current timeline",
     "confirm-deletion-of-timeline-by-entering-name": "Please enter the name of the current timeline to confirm that you really want to delete it. This action cannot be undone!",
@@ -23,7 +23,8 @@
     "accept": "Accept",
     "cancel": "Cancel",
     "delete": "Delete",
-    "render": "Render"
+    "render": "Render",
+    "close": "Close"
   },
   "error": {
     "create-timeline-error": "Timeline could not be created!"
@@ -32,5 +33,7 @@
   "whole-time-line": "Whole time line",
   "year": "Year",
   "month": "Month",
-  "custom": "Custom"
+  "custom": "Custom",
+  "preferences": "Preferences",
+  "timestamp-format": "Timestamp format"
 }
