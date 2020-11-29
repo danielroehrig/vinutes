@@ -58,7 +58,7 @@
               <b-button type="is-primary" @click="renderCurrentTimeline()" id="navbarRenderButton">
                 <strong>Render</strong>
               </b-button>
-                <span class="button mdi mdi-24px mdi-cog"></span>
+                <b-button class="mdi mdi-24px mdi-cog" @click="showPreferences()"></b-button>
             </div>
           </div>
         </div>
@@ -127,6 +127,9 @@ export default {
     },
     showTimelineDeletionModal: function () {
       this.$store.commit('changeAppState', sc.APP_STATE_CONFIRM_TIMELINE_DELETE)
+    },
+    showPreferences: function () {
+      this.$emit('openPreferences')
     }
   }
 }
