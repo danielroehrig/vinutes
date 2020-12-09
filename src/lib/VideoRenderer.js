@@ -89,9 +89,9 @@ const renderVideo = async (dailyMedia, tmpFolder, event) => {
       options: {
         text: dateName,
         fontcolor: 'white',
-        fontsize: 80,
-        x: '(w)/2',
-        y: '(h)*0.75',
+        fontsize: 50,
+        x: '(w)/3*2',
+        y: '(h)*0.80',
         shadowcolor: 'black',
         shadowx: 2,
         shadowy: 2
