@@ -18,7 +18,7 @@ module.exports = {
       builderOptions: {
         appId: 'de.danielroehrig.vinutes',
         linux: {
-          target: ['AppImage'],
+          target: ['AppImage', 'pacman'],
           icon: 'public/icons/icon.icns',
           category: 'Video',
           synopsis: 'Video diary made easy',
