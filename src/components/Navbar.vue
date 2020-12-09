@@ -1,69 +1,36 @@
 <template>
   <section>
-    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <div class="navbar-item">
-          <img src="img/heartlogo.png" width="28" height="28">
-        </div>
+    <b-navbar type="is-dark" :mobile-burger=false>
+      <template v-slot:brand>
+        <b-navbar-item>
+          <img src="img/heartlogo.png">
+        </b-navbar-item>
+      </template>
+      <template v-slot:start>
+        <b-navbar-item v-if="isCurrentTimelineEmpty">
+          <b-button type="is-primary" @click="showTimelineCreationModal">{{
+              $t('action.create-new-project')
+            }}
+          </b-button>
+        </b-navbar-item>
+        <MenuTimelineSelector v-if="!isCurrentTimelineEmpty" :timelines="timelines" :currentTimeline="currentTimeline"
+                              v-on:setTimeline="setTimeline"
+                              v-on:showTimelineCreationModal="showTimelineCreationModal"
+                              v-on:showTimelineDeletionModal="showTimelineDeletionModal">
 
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
-           data-target="navbarBasicExample">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
-      </div>
-
-      <div id="navbar" class="navbar-menu">
-        <div class="navbar-start">
-          <div v-if="(timelines.length === 0 || currentTimeline === null)" class="navbar-item">
-            <button class="button" @click="showTimelineCreationModal">{{ $t('action.create-new-project') }}</button>
+        </MenuTimelineSelector>
+      </template>
+      <template slot="end">
+        <b-navbar-item tag="div">
+          <div class="buttons">
+            <b-button type="is-primary" @click="renderCurrentTimeline">
+              <strong>Render</strong>
+            </b-button>
+            <b-button type="is-light" class="mdi mdi-24px mdi-cog" @click="showPreferences()"></b-button>
           </div>
-          <div v-else-if="timelines.length === 1" class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link" v-bind:key="timelines[0].id">
-              {{ timelines[0].name }}
-            </a>
-            <div class="navbar-dropdown">
-              <a class="navbar-item" @click="showTimelineCreationModal">
-                {{ $t('action.create-new-project') }}
-              </a>
-              <a class="navbar-item has-text-danger" @click="showTimelineDeletionModal">
-                <i class="mdi mdi-alert"></i> {{ $t('action.delete-current-project') }}
-              </a>
-            </div>
-          </div>
-          <div v-else class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link">
-              {{ currentTimeline.name }}
-            </a>
-            <div class="navbar-dropdown">
-              <a v-for="timeline in selectableTimelines" v-bind:key="timeline.id" class="navbar-item"
-                 @click="setTimeline(timeline.id)">
-                {{ timeline.name }}
-              </a>
-              <hr class="navbar-divider">
-              <a class="navbar-item" @click="showTimelineCreationModal">
-                {{ $t('action.create-new-project') }}
-              </a>
-              <a class="navbar-item has-text-danger" @click="showTimelineDeletionModal">
-                <i class="mdi mdi-alert"></i> {{ $t('action.delete-current-project') }}
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="navbar-end">
-          <div class="navbar-item">
-            <div class="buttons">
-              <b-button type="is-primary" @click="renderCurrentTimeline()" id="navbarRenderButton">
-                <strong>Render</strong>
-              </b-button>
-                <b-button class="mdi mdi-24px mdi-cog" @click="showPreferences()"></b-button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
+        </b-navbar-item>
+      </template>
+    </b-navbar>
     <TimelineCreationDialog/>
     <TimelineDeletionDialog v-bind:current-timeline-name="currentTimelineName"/>
     <RenderTimeSpanDialog/>
@@ -79,15 +46,20 @@ import TimelineCreationDialog from '@/components/TimelineCreationDialog'
 import * as sc from '@/store-constants'
 import RenderTimeSpanDialog from '@/components/RenderTimeSpanDialog'
 import TimelineDeletionDialog from '@/components/TimelineDeletionDialog'
+import MenuTimelineSelector from '@/components/MenuTimelineSelector'
 
 export default {
   name: 'Navbar',
-  components: { TimelineDeletionDialog, RenderTimeSpanDialog, TimelineCreationDialog, RenderProgress },
+  components: {
+    MenuTimelineSelector,
+    TimelineDeletionDialog,
+    RenderTimeSpanDialog,
+    TimelineCreationDialog,
+    RenderProgress
+  },
   computed: {
     timelines: function () {
-      const timelines = this.$store.state.timelines
-      console.log(timelines)
-      return timelines
+      return this.$store.state.timelines
     },
     currentTimeline: function () {
       const currentTimeline = this.$store.state.currentTimeline
@@ -102,17 +74,15 @@ export default {
       }
       return ''
     },
-    selectableTimelines: function () {
-      return this.timelines.filter((timeline) => {
-        return timeline.id !== this.currentTimeline.id
-      })
-    },
     renderProgress: function () {
       const renderQueueCount = this.$store.state.renderQueue.length + this.$store.state.renderedQueue.length
       if (renderQueueCount <= 0) {
         return 0
       }
       return this.$store.state.renderedQueue.length / renderQueueCount * 100
+    },
+    isCurrentTimelineEmpty: function () {
+      return this.timelines.length === 0 || this.currentTimeline === null
     }
   },
   methods: {
