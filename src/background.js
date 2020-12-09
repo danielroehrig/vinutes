@@ -36,7 +36,8 @@ function createWindow () {
         nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
         preload: path.join(__dirname, 'preload.js'),
         webSecurity: false
-      }
+      },
+      autoHideMenuBar: true
     })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

@@ -6,7 +6,7 @@
     "diary"
   ],
   "homepage": "http://vinutes.org",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "private": true,
   "author": {
     "name": "Daniel Röhrig",
@@ -24,6 +24,7 @@
   "scripts": {
     "serve": "vue-cli-service electron:serve",
     "build": "vue-cli-service electron:build",
+    "css-build": "node-sass --omit-source-map-url sass/vinutes.scss css/vinutes.css",
     "test:unit": "vue-cli-service test:unit unit",
     "test:e2e": "vue-cli-service test:unit -ui=bdd tests/e2e --recursive",
     "lint": "eslint 'src/**'",
@@ -38,7 +39,8 @@
   "dependencies": {
     "@mdi/font": "^5.3.45",
     "better-sqlite3": "^7.1.0",
-    "bulma": "^0.8.2",
+    "buefy": "^0.9.4",
+    "bulma": "^0.9.1",
     "bulma-calendar": "^6.0.9",
     "calendar": "^0.1.1",
     "electron-log": "^4.2.2",
@@ -48,7 +50,6 @@
     "sharp": "0.25.4",
     "vue": "^2.6.11",
     "vue-i18n": "^8.17.3",
-    "vue-router": "^3.2.0",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
@@ -72,6 +73,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-vue": "^6.2.2",
     "jest": "^26.4.2",
+    "node-sass": "^5.0.0",
     "spectron": "^11.1.0",
     "vue-cli-plugin-electron-builder": "^2.0.0-rc.4",
     "vue-cli-plugin-i18n": "~1.0.1",

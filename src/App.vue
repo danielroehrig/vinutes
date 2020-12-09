@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-    <Navbar></Navbar>
-    <router-view/>
+    <Navbar v-on:openPreferences="openPreferences()"></Navbar>
+    <Preferences v-bind:open="this.showPreferences" v-on:closePreferences="closePreferences()"></Preferences>
+    <Calendar></Calendar>
   </div>
 </template>
 
@@ -20,9 +21,16 @@ import Navbar from './components/Navbar'
 import { initDBStructure } from './lib/PersistenceService'
 import { mapState } from 'vuex'
 import * as sc from '@/store-constants'
+import Calendar from '@/components/calendar/Calendar'
+import Preferences from '@/Preferences'
 
 export default {
-  components: { Navbar },
+  components: { Preferences, Calendar, Navbar },
+  data: function () {
+    return {
+      showPreferences: false
+    }
+  },
   // Before any window is created, load database structure
   beforeCreate () {
     // TODO Migration comes here
@@ -33,6 +41,14 @@ export default {
   mounted () {
     this.$store.dispatch('loadTimelines')
     this.$store.dispatch('loadLastState')
+  },
+  methods: {
+    closePreferences: function () {
+      this.showPreferences = false
+    },
+    openPreferences: function () {
+      this.showPreferences = true
+    }
   },
   watch: {
     language (newState, oldState) {

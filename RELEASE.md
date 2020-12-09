@@ -1,5 +1,13 @@
-# Version 0.2.4
+# Version 0.2.5 - I am Prrrrutty!
 
-Just a small but terribly annoying bug that needed to be crushed before I could show it to my friends:
+Focusing a bit on the design for a bit. As good as I can.
 
-* Fix selecting an image freezes UI until the image is selected for editing and the dialog canceled
+### UI
+ * Remove scrollbar
+ * Hide menu bar
+ * Enable SASS and change the primary color
+ * Change the preferences menu from router link to sidebar component
+ 
+### Internals
+ * No more vue router
+ * Use [buefy](https://buefy.org)

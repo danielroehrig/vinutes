@@ -23,7 +23,8 @@
     "accept": "Bestätigen",
     "cancel": "Abbrechen",
     "delete": "Löschen",
-    "render": "Render"
+    "render": "Render",
+    "close": "Schließen"
   },
   "error": {
     "create-timeline-error": "Zeitline konnte nicht erstellt werden!"
@@ -32,5 +33,7 @@
   "whole-time-line": "Gesamtes Zeitline",
   "year": "Jahr",
   "month": "Monat",
-  "custom": "Benutzerdefiniert"
+  "custom": "Benutzerdefiniert",
+  "preferences": "Einstellungen",
+  "timestamp-format": "Zeitstempel format"
 }
