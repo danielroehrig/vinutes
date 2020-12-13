@@ -2,7 +2,7 @@
   <div class="column">
     <button v-if="isVisible && hasMedia" class="delete is-pulled-right removeMedia" @click="removeMedia" :id="deleteButtonId"></button>
     <div class="box calendar-day" :id="dayId" :class="{'inactive': !isVisible, 'withMedia': (hasMedia) }" :style="styling"
-         @click="calendarDayClicked">
+         @click="calendarDayClicked" @drop.prevent="droppedFile" @dragover.prevent>
       <div class="date">
         {{ isVisible ? timestampString : '' }}
       </div>
@@ -76,6 +76,10 @@ export default {
     removeMedia: function () {
       this.setCurrentDaySelected(this.day)
       this.$store.commit('changeAppState', sc.APP_STATE_CONFIRM_MEDIA_DELETE)
+    },
+    droppedFile: function (ev) {
+      const file = ev.dataTransfer.items[0].getAsFile()
+      console.log('name = ' + file.name)
     }
   }
 }
