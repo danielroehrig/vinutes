@@ -116,14 +116,18 @@ div.date {
   padding: 20px;
 }
 
-div.box:hover {
-  background-color: hsl(171, 100%, 41%);
-  color: white;
-  cursor: pointer;
-}
-
 button.removeMedia {
   z-index: 1;
   margin: 5px 5px;
+}
+</style>
+
+<style scoped lang="scss">
+@import "sass/vinutes";
+
+div.box:hover {
+  background-color: $primary;
+  color: white;
+  cursor: pointer;
 }
 </style>
