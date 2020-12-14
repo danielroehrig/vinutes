@@ -1,8 +1,8 @@
 <template>
   <div class="column">
     <button v-if="isVisible && hasMedia" class="delete is-pulled-right removeMedia" @click="removeMedia" :id="deleteButtonId"></button>
-    <div class="box calendar-day" :id="dayId" :class="{'inactive': !isVisible, 'withMedia': (hasMedia) }" :style="styling"
-         @click="calendarDayClicked" @drop.prevent="droppedFile" @dragover.prevent>
+    <div class="box calendar-day" :id="dayId" :class="{'inactive': !isVisible, 'withMedia': (hasMedia), 'dragged': this.draggedOver }" :style="styling"
+         @click="calendarDayClicked" @drop.prevent="droppedFile" @dragover.prevent @dragenter.prevent="draggedFile" @dragleave="leaveDrag">
       <div class="date">
         {{ isVisible ? timestampString : '' }}
       </div>
@@ -17,6 +17,11 @@ import * as sc from '@/store-constants'
 
 export default {
   name: 'CalendarDay',
+  data: function () {
+    return {
+      draggedOver: false
+    }
+  },
   props: {
     day: Number
   },
@@ -77,9 +82,16 @@ export default {
       this.setCurrentDaySelected(this.day)
       this.$store.commit('changeAppState', sc.APP_STATE_CONFIRM_MEDIA_DELETE)
     },
+    draggedFile: function () {
+      this.draggedOver = true
+    },
+    leaveDrag: function () {
+      this.draggedOver = false
+    },
     droppedFile: function (ev) {
+      this.draggedOver = false
       const file = ev.dataTransfer.items[0].getAsFile()
-      console.log('name = ' + file.name)
+      console.log('name = ' + file.name + ' ' + file.path)
     }
   }
 }
@@ -125,7 +137,7 @@ button.removeMedia {
 <style scoped lang="scss">
 @import "sass/vinutes";
 
-div.box:hover {
+div.box:hover, div.box.dragged {
   background-color: $primary;
   color: white;
   cursor: pointer;
