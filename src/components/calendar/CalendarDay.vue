@@ -14,6 +14,7 @@
 import moment from 'moment'
 import { mapActions, mapMutations, mapState } from 'vuex'
 import * as sc from '@/store-constants'
+import DailyMedia, { fileTypeCategory } from '@/lib/DailyMedia'
 
 export default {
   name: 'CalendarDay',
@@ -91,7 +92,13 @@ export default {
     droppedFile: function (ev) {
       this.draggedOver = false
       const file = ev.dataTransfer.items[0].getAsFile()
-      console.log('name = ' + file.name + ' ' + file.path)
+      const dailyMedia = new DailyMedia(this.currentYear, this.currentMonth + 1, this.day, file.path, fileTypeCategory(file.path))
+      if (dailyMedia.mediaType === 'image') {
+        ipcRenderer.send('render-image-preview', dailyMedia)
+        return
+      }
+      this.$store.commit('setCurrentDailyMedia', dailyMedia)
+      this.$store.commit('changeAppState', sc.APP_STATE_VIDEO_PLAYER)
     }
   }
 }
