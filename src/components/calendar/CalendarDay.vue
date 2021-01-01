@@ -144,9 +144,16 @@ button.removeMedia {
 <style scoped lang="scss">
 @import "sass/vinutes";
 
+div.box:hover {
+  cursor: pointer;
+}
+
 div.box:hover, div.box.dragged {
   background-color: $primary;
   color: white;
-  cursor: pointer;
+}
+
+div.box.dragged {
+  cursor: grab;
 }
 </style>
