@@ -1,6 +1,8 @@
 # Version 0.2.5 - I am Prrrrutty!
 
 Focusing a bit on the design for a bit. As good as I can.
+### Functionality
+ * Add Drag & Drop support for media files directly into the calendar
 
 ### UI
  * Remove scrollbar

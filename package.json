@@ -6,7 +6,7 @@
     "diary"
   ],
   "homepage": "http://vinutes.org",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "private": true,
   "author": {
     "name": "Daniel Röhrig",
@@ -37,7 +37,7 @@
   },
   "main": "background.js",
   "dependencies": {
-    "@mdi/font": "^5.3.45",
+    "@mdi/font": "^5.8.55",
     "better-sqlite3": "^7.1.0",
     "buefy": "^0.9.4",
     "bulma": "^0.9.1",
@@ -47,6 +47,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "mime": "^2.4.6",
     "moment": "^2.26.0",
+    "sass-loader": "^10.1.0",
     "sharp": "0.25.4",
     "vue": "^2.6.11",
     "vue-i18n": "^8.17.3",

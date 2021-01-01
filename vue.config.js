@@ -1,9 +1,15 @@
 const webpack = require('webpack')
+const path = require('path')
 
 module.exports = {
   configureWebpack: {
   },
   pluginOptions: {
+    'style-resources-loader': {
+      preProcessor: 'scss',
+      // load which style file you want to import globally
+      patterns: [path.resolve(__dirname, './sass/vinutes.scss')]
+    },
     electronBuilder: {
       externals: [
         'better-sqlite3'
