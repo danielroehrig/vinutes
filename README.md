@@ -38,5 +38,12 @@ yarn run build
 ./node_modules/.bin/electron-rebuild -f -w better-sqlite3
 ```
 
+### Complaining about libvips-cpp.so.42 shared object not found or similar 
+No joke, but I solved it with good old:
+```
+rm -rf node_modules
+yarn install
+```
+
 ## Acknowledgements
 * Videos used for testing and screenshots from Pexels
