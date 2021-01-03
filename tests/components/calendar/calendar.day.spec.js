@@ -93,25 +93,6 @@ describe('CalendarDay.vue', () => {
     store.state.currentMonth = 9
     expect(wrapper.vm.timestampString).toEqual(moment({ year: 2018, month: 9, day: 7 }).format(store.state.calendarTimeStampFormat))
   })
-  it('click on day triggers current day mutation', () => {
-    const fakeCalendarDayClicked = jest.fn()
-    const store = new Vuex.Store({
-      state: {
-        mediaFiles: {},
-        currentMonth: 11,
-        currentYear: 2018,
-        currentDaySelected: null
-      },
-      actions: {
-        calendarDayClicked: fakeCalendarDayClicked
-      }
-    }
-    )
-    const day = 7
-    const wrapper = mountWithStore(store, { day })
-    wrapper.find('div.box').trigger('click')
-    expect(fakeCalendarDayClicked).toHaveBeenCalledWith(expect.anything(), 7)
-  })
   // TODO: Remove media
   // TODO: Show image or base64 screenshot
   // TODO: Check it emits the right day to the store
