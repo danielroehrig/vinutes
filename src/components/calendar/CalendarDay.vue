@@ -18,7 +18,7 @@ import DailyMedia, { fileTypeCategory } from '@/lib/DailyMedia'
 
 export default {
   name: 'CalendarDay',
-  data: function () {
+  data () {
     return {
       draggedOver: false
     }
@@ -32,7 +32,8 @@ export default {
       'currentMonth',
       'mediaFiles',
       'language',
-      'calendarTimeStampFormat'
+      'calendarTimeStampFormat',
+      'currentTimeline'
     ]),
     deleteButtonId () {
       return this.dayId + 'DeleteButton'
@@ -74,22 +75,39 @@ export default {
     }),
     ...mapMutations([
       'changeAppState',
-      'setCurrentDaySelected'
+      'setCurrentDaySelected',
+      'setCurrentDailyMedia'
     ]),
-    calendarDayClicked: function () {
-      this.clicked(this.day)
+    /**
+     * React to the day being clicked
+     * @return void
+     */
+    calendarDayClicked () {
+      if (this.currentTimeline === null) {
+        this.changeAppState(sc.APP_STATE_CREATE_TIMELINE)
+        return
+      }
+      this.setCurrentDaySelected(this.day)
+      const mediaFile = this.mediaFiles[this.day]
+      if (mediaFile) {
+        this.setCurrentDailyMedia(mediaFile)
+        const newState = fileTypeCategory(mediaFile.filePath) === 'video' ? sc.APP_STATE_VIDEO_PLAYER : sc.APP_STATE_IMAGE_VIEWER
+        this.changeAppState(newState)
+        return
+      }
+      this.changeAppState(sc.APP_STATE_CHOOSE_MEDIA_FILE)
     },
-    removeMedia: function () {
+    removeMedia () {
       this.setCurrentDaySelected(this.day)
       this.$store.commit('changeAppState', sc.APP_STATE_CONFIRM_MEDIA_DELETE)
     },
-    draggedFile: function () {
+    draggedFile () {
       this.draggedOver = true
     },
-    leaveDrag: function () {
+    leaveDrag () {
       this.draggedOver = false
     },
-    droppedFile: function (ev) {
+    droppedFile (ev) {
       this.draggedOver = false
       const file = ev.dataTransfer.items[0].getAsFile()
       const dailyMedia = new DailyMedia(this.currentYear, this.currentMonth + 1, this.day, file.path, fileTypeCategory(file.path))

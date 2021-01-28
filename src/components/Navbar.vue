@@ -42,11 +42,11 @@
 <script>
 import { loadTimeline } from '@/lib/TimelineService'
 import RenderProgress from './RenderProgress'
-import TimelineCreationDialog from '@/components/TimelineCreationDialog'
+import TimelineCreationDialog from '@/components/timeline/TimelineCreationDialog'
 import * as sc from '@/store-constants'
-import RenderTimeSpanDialog from '@/components/RenderTimeSpanDialog'
-import TimelineDeletionDialog from '@/components/TimelineDeletionDialog'
-import MenuTimelineSelector from '@/components/MenuTimelineSelector'
+import RenderTimeSpanDialog from '@/components/timeline/RenderTimelineDialog'
+import TimelineDeletionDialog from '@/components/timeline/TimelineDeletionDialog'
+import MenuTimelineSelector from '@/components/timeline/MenuTimelineSelector'
 
 export default {
   name: 'Navbar',

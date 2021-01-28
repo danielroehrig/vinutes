@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import { shallowMount } from '@vue/test-utils'
-import TimelineCreationDialog from '@/components/TimelineCreationDialog.vue'
+import TimelineCreationDialog from '@/components/timeline/TimelineCreationDialog.vue'
 import Vuex from 'vuex'
 import Vue from 'vue'
 import * as sc from '@/store-constants'

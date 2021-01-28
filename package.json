@@ -22,7 +22,7 @@
     "url": "https://github.com/danielroehrig/vinutes.git"
   },
   "scripts": {
-    "serve": "vue-cli-service electron:serve",
+    "serve": "vue-cli-service electron:serve --remote-debugging-port=9223",
     "build": "vue-cli-service electron:build",
     "css-build": "node-sass --omit-source-map-url sass/vinutes.scss css/vinutes.css",
     "test:unit": "vue-cli-service test:unit unit",
