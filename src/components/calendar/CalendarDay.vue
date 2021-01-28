@@ -74,10 +74,26 @@ export default {
     }),
     ...mapMutations([
       'changeAppState',
-      'setCurrentDaySelected'
+      'setCurrentDaySelected',
+      'setCurrentDailyMedia'
     ]),
+    /**
+     * React to the day being clicked
+     * @return void
+     */
     calendarDayClicked () {
-      this.clicked(this.day)
+      if (this.currentTimeline === null) {
+        this.changeAppState(sc.APP_STATE_CREATE_TIMELINE)
+        return
+      }
+      this.setCurrentDaySelected(this.day)
+      if (this.mediaFiles[this.day]) {
+        this.setCurrentDailyMedia(this.mediaFiles[this.day])
+        // TODO only if not a video
+        this.changeAppState(sc.APP_STATE_VIDEO_PLAYER)
+        return
+      }
+      this.changeAppState(sc.APP_STATE_CHOOSE_MEDIA_FILE)
     },
     removeMedia () {
       this.setCurrentDaySelected(this.day)

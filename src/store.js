@@ -195,24 +195,6 @@ const store = new Vuex.Store({
       }
     },
     /**
-     * Event: Day in calendar view was clicked.
-     * @param context
-     * @param {int} day
-     */
-    calendarDayClicked (context, day) {
-      if (context.state.currentTimeline === null) {
-        context.commit('changeAppState', sc.APP_STATE_CREATE_TIMELINE)
-        return
-      }
-      context.commit('setCurrentDaySelected', day)
-      if (context.state.mediaFiles[day]) {
-        context.commit('setCurrentDailyMedia', context.state.mediaFiles[day])
-        context.commit('changeAppState', sc.APP_STATE_VIDEO_PLAYER)
-        return
-      }
-      context.commit('changeAppState', sc.APP_STATE_CHOOSE_MEDIA_FILE)
-    },
-    /**
      * Issue the database to delete a media file, then reload
      * @param context
      */
