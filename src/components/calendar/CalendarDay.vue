@@ -32,7 +32,8 @@ export default {
       'currentMonth',
       'mediaFiles',
       'language',
-      'calendarTimeStampFormat'
+      'calendarTimeStampFormat',
+      'currentTimeline'
     ]),
     deleteButtonId () {
       return this.dayId + 'DeleteButton'
