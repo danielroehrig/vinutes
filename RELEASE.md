@@ -19,6 +19,7 @@ Focusing a bit on the design for a bit. As good as I can.
 ### Internals
  * No more vue router
  * Use [buefy](https://buefy.org)
+ * Bump electron to version 9.4
 
 ### Platforms
  * Add pacman (mainly because I use manjaro)
