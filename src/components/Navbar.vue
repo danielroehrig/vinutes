@@ -44,7 +44,7 @@ import { loadTimeline } from '@/lib/TimelineService'
 import RenderProgress from './RenderProgress'
 import TimelineCreationDialog from '@/components/timeline/TimelineCreationDialog'
 import * as sc from '@/store-constants'
-import RenderTimeSpanDialog from '@/components/timeline/RenderTimeSpanDialog'
+import RenderTimeSpanDialog from '@/components/timeline/RenderTimelineDialog'
 import TimelineDeletionDialog from '@/components/timeline/TimelineDeletionDialog'
 import MenuTimelineSelector from '@/components/timeline/MenuTimelineSelector'
 
