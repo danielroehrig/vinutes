@@ -9,7 +9,7 @@
 
 <script>
 import CalendarWeek from './CalendarWeek'
-import VideoPlayer from '../VideoPlayer'
+import VideoPlayer from '../mediapreview/VideoPlayer'
 import { mapState } from 'vuex'
 import moment from 'moment'
 
