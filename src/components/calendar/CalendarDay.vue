@@ -18,7 +18,7 @@ import DailyMedia, { fileTypeCategory } from '@/lib/DailyMedia'
 
 export default {
   name: 'CalendarDay',
-  data: function () {
+  data () {
     return {
       draggedOver: false
     }
@@ -76,20 +76,20 @@ export default {
       'changeAppState',
       'setCurrentDaySelected'
     ]),
-    calendarDayClicked: function () {
+    calendarDayClicked () {
       this.clicked(this.day)
     },
-    removeMedia: function () {
+    removeMedia () {
       this.setCurrentDaySelected(this.day)
       this.$store.commit('changeAppState', sc.APP_STATE_CONFIRM_MEDIA_DELETE)
     },
-    draggedFile: function () {
+    draggedFile () {
       this.draggedOver = true
     },
-    leaveDrag: function () {
+    leaveDrag () {
       this.draggedOver = false
     },
-    droppedFile: function (ev) {
+    droppedFile (ev) {
       this.draggedOver = false
       const file = ev.dataTransfer.items[0].getAsFile()
       const dailyMedia = new DailyMedia(this.currentYear, this.currentMonth + 1, this.day, file.path, fileTypeCategory(file.path))
