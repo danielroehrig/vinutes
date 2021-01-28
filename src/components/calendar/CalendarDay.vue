@@ -87,10 +87,11 @@ export default {
         return
       }
       this.setCurrentDaySelected(this.day)
-      if (this.mediaFiles[this.day]) {
-        this.setCurrentDailyMedia(this.mediaFiles[this.day])
-        // TODO only if not a video
-        this.changeAppState(sc.APP_STATE_VIDEO_PLAYER)
+      const mediaFile = this.mediaFiles[this.day]
+      if (mediaFile) {
+        this.setCurrentDailyMedia(mediaFile)
+        const newState = fileTypeCategory(mediaFile.filePath) === 'video' ? sc.APP_STATE_VIDEO_PLAYER : sc.APP_STATE_IMAGE_VIEWER
+        this.changeAppState(newState)
         return
       }
       this.changeAppState(sc.APP_STATE_CHOOSE_MEDIA_FILE)
