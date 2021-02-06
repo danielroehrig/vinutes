@@ -126,7 +126,6 @@ export default {
           mediaFiles = getDailyMediaForTimelineAndTimeRange(this.$store.state.currentTimeline, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))
           break
       }
-      // TODO: Catch empty timeline (crashes)
       if (mediaFiles.length === 0) {
         return
       }
@@ -134,8 +133,8 @@ export default {
       if (filePath === null) {
         return
       }
-      this.$store.commit('setRenderOutputPath', filePath)
-      this.$store.dispatch('startRenderQueue', mediaFiles)
+
+      ipcRenderer.send('start-rendering', filePath, mediaFiles)
     }
   }
 }
