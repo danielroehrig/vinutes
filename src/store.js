@@ -94,22 +94,6 @@ const store = new Vuex.Store({
     applyConfig (state, databaseRow) {
       state.language = databaseRow.language ? databaseRow.language : 'en'// TODO: Use system default language
     },
-    clearRenderQueues (state) {
-      state.renderQueue = []
-      state.renderedQueue = []
-    },
-    setRenderOutputPath (state, path) {
-      state.renderOutputPath = path
-    },
-    setRenderQueue (state, elements) {
-      state.renderQueue = elements
-    },
-    addToRenderedQueue (state, element) {
-      state.renderedQueue.push(element)
-    },
-    removeFirstElementFromRenderQueue (state) {
-      state.renderQueue.shift()
-    },
     /**
      * Change the current state of the app
      * @param state
@@ -118,6 +102,11 @@ const store = new Vuex.Store({
     changeAppState (state, appState) {
       state.appState = appState
     },
+    /**
+     * Write the loaded timelines into the store
+     * @param state
+     * @param timelines
+     */
     setTimelines (state, timelines) {
       state.timelines = timelines
     },
