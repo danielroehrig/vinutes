@@ -27,10 +27,6 @@ ipcRenderer.on('screenshot-created', (event, dailyMedia) => {
   store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
 })
 
-ipcRenderer.on('video-rendered', (event, dailyMedia) => {
-  console.log('Store says, render next!')
-  store.dispatch('renderNextInQueue', dailyMedia)
-})
 ipcRenderer.on('video-merged', (event, dailyMedia) => {
   console.log('Store says, everything is merged!')
   store.commit('setRenderOutputPath', null)
