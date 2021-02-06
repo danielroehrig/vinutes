@@ -154,7 +154,7 @@ const store = new Vuex.Store({
       context.commit('setTimeStampForVideo', timeStamp)
     },
     /**
-     *
+     * Load the last state of the app from the database
      * @param context
      */
     loadLastState (context) {
@@ -172,30 +172,9 @@ const store = new Vuex.Store({
       context.commit('moveToNextMonth')
       context.commit('loadDailyMedia')
     },
-    startRenderQueue (context, dailyMediaObjects) {
-      context.commit('changeAppState', sc.APP_STATE_UNKNOWN)// TODO: Render Progress
-      context.commit('clearRenderQueues')
-      context.commit('setRenderQueue', dailyMediaObjects)
-      context.dispatch('renderNextInQueue', null)
-    },
-    renderNextInQueue (context, lastElement) {
-      if (lastElement !== null) {
-        context.commit('addToRenderedQueue', lastElement)
-      }
-      if (context.state.renderQueue.length > 0) {
-        const nextElement = context.state.renderQueue[0]
-        context.commit('removeFirstElementFromRenderQueue')
-        ipcRenderer.send('render-video', nextElement)
-      } else {
-        const mediaFilePaths = context.state.renderedQueue.map((mediaFile) => {
-          return mediaFile.tmpFilePath
-        })
-        ipcRenderer.send('merge-videos', mediaFilePaths,
-          context.state.renderOutputPath)
-      }
-    },
     /**
      * Issue the database to delete a media file, then reload
+     * TODO: Should not be the responsibility of the store
      * @param context
      */
     removeCurrentMediaFile (context) {
@@ -204,6 +183,11 @@ const store = new Vuex.Store({
       context.commit('loadDailyMedia')
       context.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
     },
+    /**
+     * Delete the current timelines and all videos
+     * @param context
+     * @return {Promise<void>}
+     */
     async deleteCurrentTimeline (context) {
       const currentTimeline = context.state.currentTimeline
       context.commit('changeTimeline', null)
