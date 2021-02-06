@@ -168,19 +168,24 @@ ipcMain.on('get-user-path', (event) => {
 })
 
 const renderedTempPath = path.join(app.getPath('temp'), 'vinutes-rendered')
-ipcMain.on('render-video', (event, dailyMedia) => {
-  console.log('start render file')
+ipcMain.on('start-rendering', (event, filePath, mediaFiles) => {
+  console.log('start rendering files')
   try {
     fs.mkdirSync(renderedTempPath)
   } catch (e) {
     console.log('path exists presumably')
   }
-  VideoRenderer.renderVideo(dailyMedia, renderedTempPath, event)
-})
-
-ipcMain.on('merge-videos', (event, filePaths, outputPath) => {
-  console.log('start merging videos to ' + outputPath)
-  VideoRenderer.mergeVideos(filePaths, outputPath, event)
+  VideoRenderer
+    .renderClips(renderedTempPath, mediaFiles, renderedTempPath)
+    .then(
+      () => {
+        const filePaths = mediaFiles.map(d => d.tmpFilePath)
+        VideoRenderer.mergeVideos(filePaths, filePath, event)
+      }
+    )
+    .catch(error => {
+      console.log('Arrrghhh: ' + error)
+    })
 })
 
 ipcMain.on('render-image-preview', async (event, dailyMedia) => {
