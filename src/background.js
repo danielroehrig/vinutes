@@ -176,11 +176,10 @@ ipcMain.on('start-rendering', (event, filePath, mediaFiles) => {
     console.log('path exists presumably')
   }
   VideoRenderer
-    .renderClips(renderedTempPath, mediaFiles, renderedTempPath)
+    .run(filePath, mediaFiles, renderedTempPath)
     .then(
       () => {
-        const filePaths = mediaFiles.map(d => d.tmpFilePath)
-        VideoRenderer.mergeVideos(filePaths, filePath, event)
+        console.log('rendering done')
       }
     )
     .catch(error => {
