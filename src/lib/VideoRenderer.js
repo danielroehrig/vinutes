@@ -21,10 +21,7 @@ switch (os.type()) {
     break
 }
 
-const currentFFmpegCommand = null
-let renderQueue = []
-let renderedQueue = []
-const currentVideo = null
+let currentFFmpegCommand = null
 
 FfmpegCommand.setFfmpegPath(ffmpegPath)
 /**
@@ -36,7 +33,7 @@ FfmpegCommand.setFfmpegPath(ffmpegPath)
  */
 const createScreenshot = (dailyMedia, timeline, event) => {
   const screenshotName = `vinutes-${dailyMedia.year}${dailyMedia.month}${dailyMedia.day}.jpg`
-  new FfmpegCommand(dailyMedia.filePath).screenshots({
+  currentFFmpegCommand = new FfmpegCommand(dailyMedia.filePath).screenshots({
     timestamps: [dailyMedia.timeStamp],
     filename: screenshotName,
     folder: app.getPath('temp'),
@@ -68,6 +65,16 @@ const createImagePreview = (dailyMedia, event) => {
     })
 }
 
+const run = (filePath, dailyMediaObjects, tmpFolder) => {
+  return renderClips(filePath, dailyMediaObjects, tmpFolder)
+    .then(
+      () => {
+        const filePaths = dailyMediaObjects.map(d => d.tmpFilePath)
+        return mergeVideos(filePaths, filePath)
+      }
+    )
+}
+
 /**
  * Create and start a new render queue
  * @param filePath
@@ -76,23 +83,22 @@ const createImagePreview = (dailyMedia, event) => {
  * @return {Promise<never>|T}
  */
 const renderClips = (filePath, dailyMediaObjects, tmpFolder) => {
-  renderQueue = dailyMediaObjects.slice() // Create a shallow copy as arrays are passed by reference to functions
-  renderedQueue = []
-  if (renderQueue.length < 1) {
+  const renderQueue = dailyMediaObjects.slice() // Create a shallow copy as arrays are passed by reference to functions
+  const renderLength = renderQueue.length
+  let renderProgress = 0
+  if (renderLength < 1) {
     return Promise.reject(new Error('Nothing to render'))
   }
 
   return renderQueue.reduce(
     (promiseChain, dailyMediaObject) => {
       return promiseChain.then(() => {
+        const renderPercentage = (renderProgress / renderLength) * 90// Reserve the last 10 percent for the merging
+        console.log('Progress: ' + renderPercentage)
+        renderProgress++
         return renderToVideoClip(dailyMediaObject, tmpFolder)
       })
     }, Promise.resolve(true))
-}
-
-const getRenderingProgress = () => {
-  // TODO Implement
-  return 100
 }
 
 /**
@@ -163,6 +169,7 @@ FfmpegCommand.prototype.setOutputParameters = function (tmpFileName) {
 function prepareVideoClip (dailyMedia, tmpFolder, mediaDateString, dateName, tmpFileName) {
   return new Promise((resolve, reject) => {
     const ffmpeg = new FfmpegCommand()
+    currentFFmpegCommand = ffmpeg
     ffmpeg.addInput(dailyMedia.filePath)
       .seekInput(dailyMedia.timeStamp)
       .duration(1.5)
@@ -196,6 +203,7 @@ function prepareStillImageVideo (dailyMedia, tmpFolder, mediaDateString, dateNam
   return new Promise((resolve, reject) => {
     const imageFile = path.join(tmpFolder, mediaDateString + '.jpg')
     const ffmpeg = new FfmpegCommand()
+    currentFFmpegCommand = ffmpeg
     ffmpeg
       .addInput(imageFile)
       .loop(1.5)
@@ -218,7 +226,9 @@ function prepareStillImageVideo (dailyMedia, tmpFolder, mediaDateString, dateNam
       .resize(1920, 1080, {
         fit: 'cover'
       })
-      .toFile(imageFile).then(() => ffmpeg.run()).catch(error => reject(error))
+      .toFile(imageFile)
+      .then(() => ffmpeg.run())
+      .catch(error => reject(error))
   })
 }
 
@@ -226,30 +236,39 @@ function prepareStillImageVideo (dailyMedia, tmpFolder, mediaDateString, dateNam
  * Merge previously rendered video clips into a new compilation
  * @param videoPaths
  * @param outputPath
- * @param event
+ * @param {string|PromiseLike<T>|T} outputPath
  */
-const mergeVideos = (videoPaths, outputPath, event) => {
+const mergeVideos = (videoPaths, outputPath) => {
   const outputPathObject = path.parse(outputPath)
-  outputPath = path.join(outputPathObject.dir, outputPathObject.name + '.mp4')
+  outputPath = path.join(outputPathObject.dir, outputPathObject.name + '.mp4')// TODO What happens if you add mp4 extension
   const mergeCommand = new FfmpegCommand()
-  videoPaths.forEach((path) => {
-    try {
-      fs.statSync(path)
-    } catch (e) {
-      console.log('File does not exist.')
-      return
-    }
-    mergeCommand.addInput(path)
+  currentFFmpegCommand = mergeCommand
+  return new Promise((resolve, reject) => {
+    videoPaths.forEach((path) => {
+      try {
+        fs.statSync(path)
+      } catch (e) {
+        console.log('File does not exist.')
+        reject(e)
+      }
+      mergeCommand.addInput(path)
+    })
+    mergeCommand
+      .on('end', () => {
+        console.log('merging ended')
+        resolve(outputPath)
+      })
+      .on('error', (e) => {
+        console.log('e')
+        reject(e)
+      })
+      .on('start', () => {
+        console.log('merging started')
+      })
+      .mergeToFile(outputPath, app.getPath('temp'))
   })
-  mergeCommand
-    .on('end', function () {
-      // TODO turn into a promise
-      event.reply('video-merged')
-    }).mergeToFile(outputPath, app.getPath('temp'))
 }
 
 module.exports.createScreenshot = createScreenshot
-module.exports.renderVideo = renderToVideoClip
-module.exports.mergeVideos = mergeVideos
+module.exports.run = run
 module.exports.createImagePreview = createImagePreview
-module.exports.renderClips = renderClips
