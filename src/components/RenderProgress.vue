@@ -8,14 +8,14 @@
                 </div>
             </div>
             <div class="columns">
-                <div class="column"><button class="button" value="Cancel">Cancel</button></div>
+                <div class="column"><button class="button" value="Cancel" @click="cancelRendering">Cancel</button></div>
             </div>
         </div>
         <button class="modal-close is-large"></button>
     </div>
 </template>
-
 <script>
+import * as sc from '@/store-constants'
 export default {
   name: 'RenderProgress',
   props: {
@@ -25,6 +25,10 @@ export default {
 
   },
   methods: {
+    cancelRendering () {
+      this.$store.commit('changeAppState', sc.APP_STATE_UNKNOWN)// TODO: Render Progress
+      this.$store.commit('clearRenderQueues')
+    }
   }
 }
 </script>
