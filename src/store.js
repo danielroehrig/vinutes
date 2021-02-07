@@ -124,9 +124,9 @@ const store = new Vuex.Store({
     clearMediafiles (state) {
       state.mediaFiles = {}
     },
-    renderUpdate (state, imagePath, percentage) {
-      state.renderCurrentImage = imagePath
-      state.renderPercentage = percentage
+    renderUpdate (state, payload) {
+      state.renderCurrentImage = payload.imagePath
+      state.renderPercentage = payload.percentage
     }
   },
   actions: {

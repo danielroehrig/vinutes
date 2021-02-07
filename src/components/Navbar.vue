@@ -34,7 +34,7 @@
     <TimelineCreationDialog/>
     <TimelineDeletionDialog v-bind:current-timeline-name="currentTimelineName"/>
     <RenderTimeSpanDialog/>
-    <RenderProgress v-if=isStateRendering :progress="renderProgress"></RenderProgress>
+    <RenderProgress v-if=isStateRendering></RenderProgress>
   </section>
 </template>
 
@@ -75,9 +75,6 @@ export default {
     },
     isStateRendering () {
       return this.$store.state.appState === sc.APP_STATE_RENDERING_TIMELINE
-    },
-    renderProgress: function () {
-      return this.$store.state.renderPercentage
     },
     isCurrentTimelineEmpty: function () {
       return this.timelines.length === 0 || this.currentTimeline === null

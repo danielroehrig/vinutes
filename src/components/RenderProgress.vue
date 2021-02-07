@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="columns">
                 <div class="column">
-                    <progress class="progress is-primary" :value="progress" max="100">{{ progress }}%</progress>
+                    <b-progress class="progress is-primary" :value="renderProgress" show-value format="percent"></b-progress>
                 </div>
             </div>
             <div class="columns">
@@ -18,16 +18,14 @@
 import * as sc from '@/store-constants'
 export default {
   name: 'RenderProgress',
-  props: {
-    progress: Number
-  },
   computed: {
-
+    renderProgress () {
+      return this.$store.state.renderPercentage
+    }
   },
   methods: {
     cancelRendering () {
       this.$store.commit('changeAppState', sc.APP_STATE_UNKNOWN)// TODO: Render Progress
-      this.$store.commit('clearRenderQueues')
     }
   }
 }
