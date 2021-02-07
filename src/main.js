@@ -27,8 +27,12 @@ ipcRenderer.on('screenshot-created', (event, dailyMedia) => {
   store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
 })
 
-ipcRenderer.on('video-merged', (event, dailyMedia) => {
-  console.log('Store says, everything is merged!')
-  store.commit('setRenderOutputPath', null)
-  store.commit('clearRenderQueues')
+ipcRenderer.on('render-update', (event, dailyMedia, percentage) => {
+  console.log('render update! ' + percentage)
+  store.commit('changeAppState', sc.APP_STATE_RENDERING_TIMELINE)
+  store.commit('renderUpdate', dailyMedia ? dailyMedia.previewImage : null, percentage)
+})
+
+ipcRenderer.on('render-done', event => {
+  store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
 })

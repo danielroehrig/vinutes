@@ -1,4 +1,4 @@
-const { app } = require('electron')
+const { app, webContents } = require('electron')
 const moment = require('moment')
 const path = require('path')
 const fs = require('fs')
@@ -65,12 +65,12 @@ const createImagePreview = (dailyMedia, event) => {
     })
 }
 
-const run = (filePath, dailyMediaObjects, tmpFolder) => {
-  return renderClips(filePath, dailyMediaObjects, tmpFolder)
+const run = (filePath, dailyMediaObjects, tmpFolder, event) => {
+  return renderClips(filePath, dailyMediaObjects, tmpFolder, event)
     .then(
       () => {
         const filePaths = dailyMediaObjects.map(d => d.tmpFilePath)
-        return mergeVideos(filePaths, filePath)
+        return mergeVideos(filePaths, filePath, event)
       }
     )
 }
@@ -80,21 +80,24 @@ const run = (filePath, dailyMediaObjects, tmpFolder) => {
  * @param filePath
  * @param dailyMediaObjects
  * @param tmpFolder
+ * @param event
  * @return {Promise<never>|T}
  */
-const renderClips = (filePath, dailyMediaObjects, tmpFolder) => {
+const renderClips = (filePath, dailyMediaObjects, tmpFolder, event) => {
   const renderQueue = dailyMediaObjects.slice() // Create a shallow copy as arrays are passed by reference to functions
   const renderLength = renderQueue.length
   let renderProgress = 0
   if (renderLength < 1) {
     return Promise.reject(new Error('Nothing to render'))
   }
+  event.reply('render-update', null, 0)
 
   return renderQueue.reduce(
     (promiseChain, dailyMediaObject) => {
       return promiseChain.then(() => {
         const renderPercentage = (renderProgress / renderLength) * 90// Reserve the last 10 percent for the merging
         console.log('Progress: ' + renderPercentage)
+        event.reply('render-update', dailyMediaObject.filePath, renderPercentage)
         renderProgress++
         return renderToVideoClip(dailyMediaObject, tmpFolder)
       })
@@ -238,7 +241,7 @@ function prepareStillImageVideo (dailyMedia, tmpFolder, mediaDateString, dateNam
  * @param outputPath
  * @param {string|PromiseLike<T>|T} outputPath
  */
-const mergeVideos = (videoPaths, outputPath) => {
+const mergeVideos = (videoPaths, outputPath, event) => {
   const outputPathObject = path.parse(outputPath)
   outputPath = path.join(outputPathObject.dir, outputPathObject.name + '.mp4')// TODO What happens if you add mp4 extension
   const mergeCommand = new FfmpegCommand()
@@ -263,6 +266,7 @@ const mergeVideos = (videoPaths, outputPath) => {
         reject(e)
       })
       .on('start', () => {
+        event.reply('render-update', null, 90)
         console.log('merging started')
       })
       .mergeToFile(outputPath, app.getPath('temp'))

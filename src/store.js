@@ -24,11 +24,10 @@ const store = new Vuex.Store({
     calendarTimeStampFormat: 'ddd, D. MMM, Y',
     currentTimeline: null,
     mediaFiles: {},
-    renderQueue: [],
-    renderedQueue: [],
-    renderOutputPath: null,
     appState: sc.APP_STATE_UNKNOWN,
-    timelines: []
+    timelines: [],
+    renderCurrentImage: null,
+    renderPercentage: 0
   },
   mutations: {
     setCurrentDailyMedia (state, dailyMedia) {
@@ -124,6 +123,10 @@ const store = new Vuex.Store({
      */
     clearMediafiles (state) {
       state.mediaFiles = {}
+    },
+    renderUpdate (state, imagePath, percentage) {
+      state.renderCurrentImage = imagePath
+      state.renderPercentage = percentage
     }
   },
   actions: {

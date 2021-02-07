@@ -167,8 +167,8 @@ ipcMain.on('get-user-path', (event) => {
   event.returnValue = app.getPath('userData')
 })
 
-const renderedTempPath = path.join(app.getPath('temp'), 'vinutes-rendered')
 ipcMain.on('start-rendering', (event, filePath, mediaFiles) => {
+  const renderedTempPath = path.join(app.getPath('temp'), 'vinutes-rendered')
   console.log('start rendering files')
   try {
     fs.mkdirSync(renderedTempPath)
@@ -176,9 +176,10 @@ ipcMain.on('start-rendering', (event, filePath, mediaFiles) => {
     console.log('path exists presumably')
   }
   VideoRenderer
-    .run(filePath, mediaFiles, renderedTempPath)
+    .run(filePath, mediaFiles, renderedTempPath, event)
     .then(
       () => {
+        event.reply('render-done')
         console.log('rendering done')
       }
     )
