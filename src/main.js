@@ -29,6 +29,7 @@ ipcRenderer.on('screenshot-created', (event, dailyMedia) => {
 
 ipcRenderer.on('render-update', (event, previewImageFilePath, percentage) => {
   console.log('render update! ' + percentage)
+  console.log('file image! ' + previewImageFilePath)
   store.commit('changeAppState', sc.APP_STATE_RENDERING_TIMELINE)
   store.commit('renderUpdate', { imagePath: previewImageFilePath || null, percentage: percentage })
 })

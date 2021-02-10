@@ -1,26 +1,39 @@
 <template>
-    <div class="modal is-active">
-        <div class="modal-background"></div>
-        <div class="modal-content">
-            <div class="columns">
-                <div class="column">
-                    <b-progress class="progress is-primary" :value="renderProgress" show-value format="percent"></b-progress>
-                </div>
+    <b-modal can-cancel="false" v-model="isActive">
+        <div class="card">
+          <div class="card-image">
+              <b-image
+                  src="https://picsum.photos/id/1074/800/400"
+                  alt="The Buefy Logo"
+                  ratio="601by235"
+              ></b-image>
+
+          </div>
+          <div class="card-content">
+            <h3 class="card-header-title">Render Progress</h3>
+            <b-progress type="is-primary" :value="renderProgress" show-value format="percent"></b-progress>
+          </div>
+          <footer class="card-footer">
+            <div class="card-footer-item">
+              <b-button type="is-danger is-light" @click="cancelRendering">Cancel</b-button>
             </div>
-            <div class="columns">
-                <div class="column"><button class="button" value="Cancel" @click="cancelRendering">Cancel</button></div>
-            </div>
+          </footer>
         </div>
-        <button class="modal-close is-large"></button>
-    </div>
+    </b-modal>
 </template>
 <script>
 import * as sc from '@/store-constants'
 export default {
   name: 'RenderProgress',
+  props: {
+    isActive: Boolean
+  },
   computed: {
     renderProgress () {
       return this.$store.state.renderPercentage
+    },
+    currentImage () {
+      return this.$store.state.renderCurrentImage
     }
   },
   methods: {
@@ -37,5 +50,8 @@ export default {
     }
     .modal-content{
         overflow: hidden;
+    }
+    button.modal-close {
+      display: none;
     }
 </style>

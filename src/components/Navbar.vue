@@ -34,7 +34,7 @@
     <TimelineCreationDialog/>
     <TimelineDeletionDialog v-bind:current-timeline-name="currentTimelineName"/>
     <RenderTimeSpanDialog/>
-    <RenderProgress v-if=isStateRendering></RenderProgress>
+    <RenderProgress :is-active="isStateRendering"></RenderProgress>
   </section>
 </template>
 
