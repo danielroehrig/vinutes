@@ -65,6 +65,14 @@ const createImagePreview = (dailyMedia, event) => {
     })
 }
 
+/**
+ * Run the rendering process
+ * @param filePath
+ * @param dailyMediaObjects
+ * @param tmpFolder
+ * @param event
+ * @return {Promise<unknown>}
+ */
 const run = (filePath, dailyMediaObjects, tmpFolder, event) => {
   return renderClips(filePath, dailyMediaObjects, tmpFolder, event)
     .then(
@@ -97,7 +105,8 @@ const renderClips = (filePath, dailyMediaObjects, tmpFolder, event) => {
       return promiseChain.then(() => {
         const renderPercentage = (renderProgress / renderLength) * 90// Reserve the last 10 percent for the merging
         console.log('Progress: ' + renderPercentage)
-        event.reply('render-update', dailyMediaObject.filePath, renderPercentage)
+        console.log('image: ' + JSON.stringify(dailyMediaObject))
+        event.reply('render-update', dailyMediaObject, renderPercentage)
         renderProgress++
         return renderToVideoClip(dailyMediaObject, tmpFolder)
       })
