@@ -27,11 +27,9 @@ ipcRenderer.on('screenshot-created', (event, dailyMedia) => {
   store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
 })
 
-ipcRenderer.on('render-update', (event, previewImageFilePath, percentage) => {
-  console.log('render update! ' + percentage)
-  console.log('file image! ' + previewImageFilePath)
+ipcRenderer.on('render-update', (event, dailyMediaObject, percentage) => {
   store.commit('changeAppState', sc.APP_STATE_RENDERING_TIMELINE)
-  store.commit('renderUpdate', { imagePath: previewImageFilePath || null, percentage: percentage })
+  store.commit('renderUpdate', { dailyMedia: dailyMediaObject || null, percentage: percentage })
 })
 
 ipcRenderer.on('render-done', event => {
