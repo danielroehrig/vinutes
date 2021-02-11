@@ -26,7 +26,7 @@ const store = new Vuex.Store({
     mediaFiles: {},
     appState: sc.APP_STATE_UNKNOWN,
     timelines: [],
-    renderCurrentImage: null,
+    renderCurrentDailyMedia: null,
     renderPercentage: 0
   },
   mutations: {
@@ -125,7 +125,7 @@ const store = new Vuex.Store({
       state.mediaFiles = {}
     },
     renderUpdate (state, payload) {
-      state.renderCurrentImage = payload.imagePath
+      state.renderCurrentDailyMedia = payload.dailyMedia
       state.renderPercentage = payload.percentage
     }
   },
