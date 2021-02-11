@@ -1,11 +1,9 @@
 <template>
-    <b-modal can-cancel="false" v-model="isActive">
+    <b-modal :can-cancel=false v-model="isActive">
         <div class="card">
-          <div class="card-image">
+          <div v-if="currentImage" class="card-image">
               <b-image
-                  src="https://picsum.photos/id/1074/800/400"
-                  alt="The Buefy Logo"
-                  ratio="601by235"
+                  :src="currentImage"
               ></b-image>
 
           </div>
@@ -33,7 +31,7 @@ export default {
       return this.$store.state.renderPercentage
     },
     currentImage () {
-      return this.$store.state.renderCurrentImage
+      return this.$store.state.renderCurrentDailyMedia ? 'data:image/jpg;base64,' + this.$store.state.renderCurrentDailyMedia.previewImage : null
     }
   },
   methods: {
