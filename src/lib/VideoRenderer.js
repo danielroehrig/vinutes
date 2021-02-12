@@ -71,7 +71,7 @@ const createImagePreview = (dailyMedia, event) => {
  * @param dailyMediaObjects
  * @param tmpFolder
  * @param event
- * @return {Promise<unknown>}
+ * @return {Promise<string>} Resolves to the filename of the rendered video
  */
 const run = (filePath, dailyMediaObjects, tmpFolder, event) => {
   return renderClips(filePath, dailyMediaObjects, tmpFolder, event)
@@ -248,6 +248,7 @@ function prepareStillImageVideo (dailyMedia, tmpFolder, mediaDateString, dateNam
  * Merge previously rendered video clips into a new compilation
  * @param videoPaths
  * @param outputPath
+ * @param event
  * @param {string|PromiseLike<T>|T} outputPath
  */
 const mergeVideos = (videoPaths, outputPath, event) => {
