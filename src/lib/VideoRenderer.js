@@ -1,4 +1,4 @@
-const { app, webContents } = require('electron')
+const { app } = require('electron')
 const moment = require('moment')
 const path = require('path')
 const fs = require('fs')
