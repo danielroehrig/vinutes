@@ -5,16 +5,19 @@ const path = require('path')
 
 jest.mock('fs')
 
-jest.mock('sharp', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      resize: function () {
-        return this
-      },
-      toFile: () => Promise.resolve()
-    }
-  })
-})
+jest.mock('sharp')
+const sharp = require('sharp')
+const mockSharpResize = jest.fn()
+const mockSharpToFile = jest.fn()
+const mockedSharp = () => {
+  return {
+    resize: mockSharpResize,
+    toFile: mockSharpToFile
+  }
+}
+sharp.mockImplementation(mockedSharp)
+mockSharpResize.mockImplementation(mockedSharp)
+mockSharpToFile.mockImplementation(() => Promise.resolve())
 
 const eventMock = {
   reply: () => {
