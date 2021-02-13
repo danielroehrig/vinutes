@@ -104,8 +104,6 @@ const renderClips = (filePath, dailyMediaObjects, tmpFolder, event) => {
     (promiseChain, dailyMediaObject) => {
       return promiseChain.then(() => {
         const renderPercentage = (renderProgress / renderLength) * 90// Reserve the last 10 percent for the merging
-        console.log('Progress: ' + renderPercentage)
-        console.log('image: ' + JSON.stringify(dailyMediaObject))
         event.reply('render-update', dailyMediaObject, renderPercentage)
         renderProgress++
         return renderToVideoClip(dailyMediaObject, tmpFolder)

@@ -3,6 +3,19 @@ import DailyMedia from '@/lib/DailyMedia'
 const { run } = require('@/lib/VideoRenderer')
 const path = require('path')
 
+jest.mock('fs')
+
+jest.mock('sharp', () => {
+  return jest.fn().mockImplementation(() => {
+    return {
+      resize: function () {
+        return this
+      },
+      toFile: () => Promise.resolve()
+    }
+  })
+})
+
 const eventMock = {
   reply: () => {
     jest.fn()
@@ -10,8 +23,7 @@ const eventMock = {
 }
 
 describe('Render all videos as promise chain ', () => {
-  const pathToTestVideos = path.resolve(__dirname, '../../../../tests/e2e/testvideos')
-  const pathToTestImages = path.resolve(__dirname, '../../../../tests/e2e/testimages')
+  const finalVideoPath = '/wontbeused.mp4'
 
   it('reject an empty render list', async () => {
     const videos = []
@@ -26,41 +38,35 @@ describe('Render all videos as promise chain ', () => {
   })
 
   it('renders one video to tmp', async () => {
-    jest.setTimeout(15000)
     const videos = [
-      new DailyMedia(2020, 1, 1, path.resolve(pathToTestVideos, 'familie.mp4'), 'video')
+      new DailyMedia(2020, 1, 1, '/doesntmatter.mp4', 'video')
     ]
-    const finalVideoPath = '/tmp/oneVideo.mp4'
     return expect(run(finalVideoPath, videos, '/tmp', eventMock)).resolves.toBe(finalVideoPath)
   })
 
   it('renders two videos to tmp', async () => {
-    jest.setTimeout(15000)
     const videos = [
-      new DailyMedia(2020, 1, 1, path.resolve(pathToTestVideos, 'familie.mp4'), 'video'),
-      new DailyMedia(2020, 1, 2, path.resolve(pathToTestVideos, 'vacation.mp4'), 'video')
+      new DailyMedia(2020, 1, 1, '/doesntmatter.mp4', 'video'),
+      new DailyMedia(2020, 1, 2, '/doesntmatter.mp4', 'video')
     ]
-    const finalVideoPath = '/tmp/twoVideos.mp4'
     return expect(run(finalVideoPath, videos, '/tmp', eventMock)).resolves.toBe(finalVideoPath)
   })
 
   it('renders an image to tmp', async () => {
     const testMediaObjects = [
-      new DailyMedia(2020, 1, 2, path.resolve(pathToTestImages, 'beach.jpg'), 'image')
+      new DailyMedia(2020, 1, 2, '/doesntmatter.jpg', 'image')
     ]
-    const finalVideoPath = '/tmp/fromImage.mp4'
     return expect(run(finalVideoPath, testMediaObjects, '/tmp', eventMock)).resolves.toBe(finalVideoPath)
   })
 
   it('renders two videos and two images to tmp', async () => {
     jest.setTimeout(15000)
     const testMediaObjects = [
-      new DailyMedia(2020, 1, 1, path.resolve(pathToTestVideos, 'familie.mp4'), 'video'),
-      new DailyMedia(2020, 1, 2, path.resolve(pathToTestImages, 'beach.jpg'), 'image'),
-      new DailyMedia(2020, 1, 3, path.resolve(pathToTestVideos, 'vacation.mp4'), 'video'),
-      new DailyMedia(2020, 1, 4, path.resolve(pathToTestImages, 'cliff.jpg'), 'image')
+      new DailyMedia(2020, 1, 1, '/doesntmatter.mp4', 'video'),
+      new DailyMedia(2020, 1, 2, '/doesntmatter.jpg', 'image'),
+      new DailyMedia(2020, 1, 3, '/doesntmatter.mp4', 'video'),
+      new DailyMedia(2020, 1, 4, '/doesntmatter.jpg', 'image')
     ]
-    const finalVideoPath = '/tmp/twovidstwoimages.mp4'
     return expect(run(finalVideoPath, testMediaObjects, '/tmp', eventMock)).resolves.toBe(finalVideoPath)
   })
 })
