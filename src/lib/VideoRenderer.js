@@ -186,7 +186,7 @@ function prepareVideoClip (dailyMedia, tmpFolder, mediaDateString, dateName, tmp
       .addDateText(dateName)
       .setOutputParameters(tmpFileName)
       .on('error', (e) => {
-        reject(e)
+        reject(Error(e))
       })
       .on('start', function () {
         console.log('Rendering started')
@@ -260,7 +260,7 @@ const mergeVideos = (videoPaths, outputPath, event) => {
         fs.statSync(path)
       } catch (e) {
         console.log('File does not exist.')
-        reject(e)
+        reject(Error(e))
       }
       mergeCommand.addInput(path)
     })
@@ -270,7 +270,7 @@ const mergeVideos = (videoPaths, outputPath, event) => {
         resolve(outputPath)
       })
       .on('error', (e) => {
-        reject(e)
+        reject(Error(e))
       })
       .on('start', () => {
         event.reply('render-update', null, 90)

@@ -71,7 +71,7 @@ describe('Render all videos as promise chain ', () => {
     FfmpegCommand.prototype.run.mockImplementation(function () {
       this.emit('error', 'A Video Crashed')
     })
-    return expect(run(finalVideoPath, videos, '/tmp', eventMock)).rejects.toEqual('A Video Crashed')
+    return expect(run(finalVideoPath, videos, '/tmp', eventMock)).rejects.toThrow('A Video Crashed')
   })
 
   it('merging two videos crashes', async () => {
@@ -82,7 +82,7 @@ describe('Render all videos as promise chain ', () => {
     FfmpegCommand.prototype.mergeToFile.mockImplementation(function () {
       this.emit('error', 'A Merge Crashed')
     })
-    return expect(run(finalVideoPath, videos, '/tmp', eventMock)).rejects.toEqual('A Merge Crashed')
+    return expect(run(finalVideoPath, videos, '/tmp', eventMock)).rejects.toThrow('A Merge Crashed')
   })
 
   it('renders an image to tmp', async () => {
