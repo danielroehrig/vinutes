@@ -23,11 +23,7 @@ FfmpegCommand.prototype.videoCodec = function () { return this }
 FfmpegCommand.prototype.autopad = function () { return this }
 FfmpegCommand.prototype.output = function () { return this }
 FfmpegCommand.prototype.setOutputParameters = function () { return this }
-FfmpegCommand.prototype.mergeToFile = function () {
-  this.emit('end')
-}
-FfmpegCommand.prototype.run = function () {
-  this.emit('end')
-}
+FfmpegCommand.prototype.mergeToFile = jest.fn()
+FfmpegCommand.prototype.run = jest.fn()
 
 module.exports = FfmpegCommand

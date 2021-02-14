@@ -1,10 +1,9 @@
 import DailyMedia from '@/lib/DailyMedia'
 
 const { run } = require('@/lib/VideoRenderer')
-const path = require('path')
+const FfmpegCommand = require('fluent-ffmpeg')
 
 jest.mock('fs')
-
 jest.mock('sharp')
 const sharp = require('sharp')
 const mockSharpResize = jest.fn()
@@ -29,6 +28,12 @@ describe('Render all videos as promise chain ', () => {
   const finalVideoPath = '/wontbeused.mp4'
   beforeEach(() => {
     mockSharpToFile.mockImplementation(() => Promise.resolve())
+    FfmpegCommand.prototype.mergeToFile.mockImplementation(function () {
+      this.emit('end')
+    })
+    FfmpegCommand.prototype.run.mockImplementation(function () {
+      this.emit('end')
+    })
   })
 
   it('reject an empty render list', async () => {
@@ -38,7 +43,7 @@ describe('Render all videos as promise chain ', () => {
 
   it('reject an unsupported file type', async () => {
     const videos = [
-      new DailyMedia(2020, 1, 1, path.resolve('/tmp', 'whatevs.txt'), 'text')
+      new DailyMedia(2020, 1, 1, '/tmp/whatevs.txt', 'text')
     ]
     return expect(run('/tmp/unsupportedType.mp4', videos, '/tmp', eventMock)).rejects.toThrow('Unsupported file type')
   })
@@ -56,6 +61,28 @@ describe('Render all videos as promise chain ', () => {
       new DailyMedia(2020, 1, 2, '/doesntmatter.mp4', 'video')
     ]
     return expect(run(finalVideoPath, videos, '/tmp', eventMock)).resolves.toBe(finalVideoPath)
+  })
+
+  it('rendering a video crashes', async () => {
+    const videos = [
+      new DailyMedia(2020, 1, 1, '/doesntmatter.mp4', 'video'),
+      new DailyMedia(2020, 1, 2, '/doesntmatter.mp4', 'video')
+    ]
+    FfmpegCommand.prototype.run.mockImplementation(function () {
+      this.emit('error', 'A Video Crashed')
+    })
+    return expect(run(finalVideoPath, videos, '/tmp', eventMock)).rejects.toEqual('A Video Crashed')
+  })
+
+  it('merging two videos crashes', async () => {
+    const videos = [
+      new DailyMedia(2020, 1, 1, '/doesntmatter.mp4', 'video'),
+      new DailyMedia(2020, 1, 2, '/doesntmatter.mp4', 'video')
+    ]
+    FfmpegCommand.prototype.mergeToFile.mockImplementation(function () {
+      this.emit('error', 'A Merge Crashed')
+    })
+    return expect(run(finalVideoPath, videos, '/tmp', eventMock)).rejects.toEqual('A Merge Crashed')
   })
 
   it('renders an image to tmp', async () => {

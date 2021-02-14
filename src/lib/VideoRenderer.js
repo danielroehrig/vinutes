@@ -270,7 +270,6 @@ const mergeVideos = (videoPaths, outputPath, event) => {
         resolve(outputPath)
       })
       .on('error', (e) => {
-        console.log('e')
         reject(e)
       })
       .on('start', () => {
