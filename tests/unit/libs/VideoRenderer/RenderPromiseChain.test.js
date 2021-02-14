@@ -27,6 +27,9 @@ const eventMock = {
 
 describe('Render all videos as promise chain ', () => {
   const finalVideoPath = '/wontbeused.mp4'
+  beforeEach(() => {
+    mockSharpToFile.mockImplementation(() => Promise.resolve())
+  })
 
   it('reject an empty render list', async () => {
     const videos = []
@@ -59,7 +62,17 @@ describe('Render all videos as promise chain ', () => {
     const testMediaObjects = [
       new DailyMedia(2020, 1, 2, '/doesntmatter.jpg', 'image')
     ]
-    return expect(run(finalVideoPath, testMediaObjects, '/tmp', eventMock)).resolves.toBe(finalVideoPath)
+    await expect(run(finalVideoPath, testMediaObjects, '/tmp', eventMock)).resolves.toBe(finalVideoPath)
+    expect(mockSharpResize).toHaveBeenCalledTimes(1)
+  })
+
+  it('renders an image to tmp crashes chain', async () => {
+    const testMediaObjects = [
+      new DailyMedia(2020, 1, 2, '/doesntmatter.jpg', 'image')
+    ]
+    mockSharpToFile.mockImplementation(() => Promise.reject(Error('Some Sharp Error')))
+    await expect(run(finalVideoPath, testMediaObjects, '/tmp', eventMock)).rejects.toThrow('Some Sharp Error')
+    expect(mockSharpResize).toHaveBeenCalledTimes(1)
   })
 
   it('renders two videos and two images to tmp', async () => {
