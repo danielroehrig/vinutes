@@ -36,5 +36,6 @@
   "month": "Month",
   "custom": "Custom",
   "preferences": "Preferences",
-  "timestamp-format": "Timestamp format"
+  "timestamp-format": "Timestamp format",
+  "render-progress": "Render Progress"
 }

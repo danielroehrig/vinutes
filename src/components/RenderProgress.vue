@@ -8,12 +8,12 @@
 
           </div>
           <div class="card-content">
-            <h3 class="card-header-title">Render Progress</h3>
+            <h3 class="card-header-title">{{ $t('render-progress') }}</h3>
             <b-progress type="is-primary" :value="renderProgress" show-value format="percent"></b-progress>
           </div>
           <footer class="card-footer">
             <div class="card-footer-item">
-              <b-button type="is-danger is-light" @click="cancelRendering">Cancel</b-button>
+              <b-button type="is-danger is-light" @click="cancelRendering">{{ $t('button.cancel') }}</b-button>
             </div>
           </footer>
         </div>
