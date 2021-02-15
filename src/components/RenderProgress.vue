@@ -1,5 +1,5 @@
 <template>
-    <b-modal :can-cancel=false v-model="isActive">
+    <b-modal :can-cancel=false :width=480 v-model="isActive">
         <div class="card">
           <div v-if="currentImage" class="card-image">
               <b-image
