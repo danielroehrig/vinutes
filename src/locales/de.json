@@ -13,7 +13,8 @@
     "render-whole-timeline": "Vom ersten bis zum letzten Video",
     "render-current-month": "Den gesamten aktuellen Monat",
     "render-current-year": "Das gesamte aktuelle Jahr",
-    "render-custom": "Wähle die Zeitspanne zum Rendern aus"
+    "render-custom": "Wähle die Zeitspanne zum Rendern aus",
+    "render-complete": "Video gespeichert!"
   },
   "placeholder": {
     "enter-new-timeline-name": "Name der Zeitlinie",

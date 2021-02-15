@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
-import Buefy from 'buefy'
+import Buefy, { ToastProgrammatic as Toast } from 'buefy'
 import store from './store'
 import './../css/vinutes.css'
 import './../node_modules/@mdi/font/css/materialdesignicons.css'
@@ -34,4 +34,10 @@ ipcRenderer.on('render-update', (event, dailyMediaObject, percentage) => {
 
 ipcRenderer.on('render-done', event => {
   store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+  const message = i18n.t('text.render-complete')
+  Toast.open({
+    message: message,
+    type: 'is-primary',
+    position: 'is-bottom'
+  })
 })

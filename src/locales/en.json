@@ -13,7 +13,8 @@
     "render-whole-timeline": "Render everything from the first to the last day",
     "render-current-month": "Render the current month",
     "render-current-year": "Render the current year",
-    "render-custom": "Select the time span to render"
+    "render-custom": "Select the time span to render",
+    "render-complete": "Video saved!"
   },
   "placeholder": {
     "enter-new-timeline-name": "Name timeline",
