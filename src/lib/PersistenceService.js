@@ -30,7 +30,6 @@ export const loadLastState = () => {
  * TODO: Make non-blocking somehow
  */
 export const handleStoreMutation = (mutation, state) => {
-  // console.log('Handling store mutation: ' + JSON.stringify(mutation) + ' ' + JSON.stringify(state))
   let updateStatement
   switch (mutation.type) {
     case 'changeLanguage':

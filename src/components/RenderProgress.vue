@@ -1,30 +1,42 @@
 <template>
-    <div class="modal is-active">
-        <div class="modal-background"></div>
-        <div class="modal-content">
-            <div class="columns">
-                <div class="column">
-                    <progress class="progress is-primary" :value="progress" max="100">{{ progress }}%</progress>
-                </div>
-            </div>
-            <div class="columns">
-                <div class="column"><button class="button" value="Cancel">Cancel</button></div>
-            </div>
-        </div>
-        <button class="modal-close is-large"></button>
-    </div>
-</template>
+    <b-modal :can-cancel=false :width=480 v-model="isActive">
+        <div class="card">
+          <div v-if="currentImage" class="card-image">
+              <b-image
+                  :src="currentImage"
+              ></b-image>
 
+          </div>
+          <div class="card-content">
+            <h3 class="card-header-title">{{ $t('render-progress') }}</h3>
+            <b-progress type="is-primary" :value="renderProgress" show-value format="percent"></b-progress>
+          </div>
+          <footer class="card-footer">
+            <div class="card-footer-item">
+              <b-button type="is-danger is-light" @click="cancelRendering">{{ $t('button.cancel') }}</b-button>
+            </div>
+          </footer>
+        </div>
+    </b-modal>
+</template>
 <script>
 export default {
   name: 'RenderProgress',
   props: {
-    progress: Number
+    isActive: Boolean
   },
   computed: {
-
+    renderProgress () {
+      return this.$store.state.renderPercentage
+    },
+    currentImage () {
+      return this.$store.state.renderCurrentDailyMedia ? 'data:image/jpg;base64,' + this.$store.state.renderCurrentDailyMedia.previewImage : null
+    }
   },
   methods: {
+    cancelRendering () {
+      ipcRenderer.send('cancel-rendering')
+    }
   }
 }
 </script>
@@ -35,5 +47,8 @@ export default {
     }
     .modal-content{
         overflow: hidden;
+    }
+    button.modal-close {
+      display: none;
     }
 </style>

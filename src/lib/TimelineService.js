@@ -38,14 +38,13 @@ export const loadDailyMediaForTimeline = (id, startDate, endDate) => {
  * @returns {array} DailyMedia
  */
 export const getDailyMediaForTimeline = (timelineId) => {
-  const dbResults = db.prepare('SELECT mediaDate, path, videoTimestamp, mediaType FROM media WHERE timelineId=$id ORDER BY mediaDate ASC;').all({
+  const dbResults = db.prepare('SELECT m.mediaDate, m.path, m.videoTimestamp, m.mediaType, vs.data AS previewImage FROM media m LEFT JOIN videoStills vS on m.timelineId = vS.timelineId and m.mediaDate = vS.mediaDate WHERE m.timelineId=2 ORDER BY m.mediaDate ASC;').all({
     id: timelineId
   })
 
   return dbResults.map(row => {
-    console.log(JSON.stringify(row))
     const mediaDate = moment(row.mediaDate)
-    return new DailyMedia(mediaDate.year(), mediaDate.month(), mediaDate.date(), row.path, row.mediaType, row.videoTimestamp)
+    return new DailyMedia(mediaDate.year(), mediaDate.month(), mediaDate.date(), row.path, row.mediaType, row.videoTimestamp, row.previewImage)
   })
 }
 
@@ -57,7 +56,7 @@ export const getDailyMediaForTimeline = (timelineId) => {
  * @returns {array} DailyMedia
  */
 export const getDailyMediaForTimelineAndTimeRange = (timelineId, startDate, endDate) => {
-  const dbResults = db.prepare('SELECT mediaDate, path, videoTimestamp, mediaType FROM media WHERE timelineId=$id AND mediaDate BETWEEN $startDate AND $endDate ORDER BY mediaDate ASC;').all({
+  const dbResults = db.prepare('SELECT m.mediaDate, m.path, m.videoTimestamp, m.mediaType, vs.data AS previewImage FROM media m LEFT JOIN videoStills vS on m.timelineId = vS.timelineId and m.mediaDate = vS.mediaDate WHERE m.timelineId=2 AND m.mediaDate BETWEEN $startDate AND $endDate ORDER BY m.mediaDate ASC;').all({
     id: timelineId,
     startDate: startDate,
     endDate: endDate
@@ -65,7 +64,7 @@ export const getDailyMediaForTimelineAndTimeRange = (timelineId, startDate, endD
 
   return dbResults.map(row => {
     const mediaDate = moment(row.mediaDate)
-    return new DailyMedia(mediaDate.year(), mediaDate.month(), mediaDate.date(), row.path, row.mediaType, row.videoTimestamp)
+    return new DailyMedia(mediaDate.year(), mediaDate.month(), mediaDate.date(), row.path, row.mediaType, row.videoTimestamp, row.previewImage)
   })
 }
 

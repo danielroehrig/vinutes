@@ -1,10 +1,10 @@
 'use strict'
-import { app, protocol, BrowserWindow, dialog } from 'electron'
+import { app, protocol, BrowserWindow, dialog, shell } from 'electron'
 import {
   createProtocol
 } from 'vue-cli-plugin-electron-builder/lib'
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import DailyMedia, { fileTypeCategory } from './lib/DailyMedia'
+import { cancelRendering } from '@/lib/VideoRenderer'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const { ipcMain } = require('electron')
@@ -36,18 +36,24 @@ function createWindow () {
         nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
         preload: path.join(__dirname, 'preload.js'),
         webSecurity: false
-      }
+      },
+      autoHideMenuBar: true
     })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    if (!process.env.IS_TEST) win.webContents.openDevTools()
+    // if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
     createProtocol('app')
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
+
+  win.webContents.on('new-window', function (event, url) {
+    event.preventDefault()
+    shell.openExternal(url)
+  })
 
   win.on('closed', () => {
     win = null
@@ -75,13 +81,6 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
-  if (isDevelopment && !process.env.IS_TEST) {
-    try {
-      await installExtension(VUEJS_DEVTOOLS)
-    } catch (e) {
-      console.error('Vue Devtools failed to install:', e.toString())
-    }
-  }
   const protocolName = 'file'
   protocol.registerFileProtocol(protocolName, (request, callback) => {
     const url = request.url.replace(`${protocolName}://`, '')
@@ -174,20 +173,29 @@ ipcMain.on('get-user-path', (event) => {
   event.returnValue = app.getPath('userData')
 })
 
-const renderedTempPath = path.join(app.getPath('temp'), 'vinutes-rendered')
-ipcMain.on('render-video', (event, dailyMedia) => {
-  console.log('start render file')
+ipcMain.on('start-rendering', (event, filePath, mediaFiles) => {
+  const renderedTempPath = path.join(app.getPath('temp'), 'vinutes-rendered')
+  console.log('start rendering files')
   try {
     fs.mkdirSync(renderedTempPath)
   } catch (e) {
     console.log('path exists presumably')
   }
-  VideoRenderer.renderVideo(dailyMedia, renderedTempPath, event)
+  VideoRenderer
+    .run(filePath, mediaFiles, renderedTempPath, event)
+    .then(
+      () => {
+        event.reply('render-done')
+        console.log('rendering done')
+      }
+    )
+    .catch(error => {
+      event.reply('render-cancelled', error)
+    })
 })
 
-ipcMain.on('merge-videos', (event, filePaths, outputPath) => {
-  console.log('start merging videos to ' + outputPath)
-  VideoRenderer.mergeVideos(filePaths, outputPath, event)
+ipcMain.on('cancel-rendering', (event) => {
+  cancelRendering()
 })
 
 ipcMain.on('render-image-preview', async (event, dailyMedia) => {

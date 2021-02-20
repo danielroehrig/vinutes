@@ -40,6 +40,11 @@ jobs:
       with:
         name: linux-appimage
         path: "./dist_electron/vinutes*.AppImage"
+    - name: Upload Pacman
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux-pacman
+        path: "./dist_electron/vinutes*.pacman"
 
   windows_build:
     name: Create the windows build
@@ -119,6 +124,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: linux-appimage
+      - name: Download the linux Pacman
+        uses: actions/download-artifact@v2
+        with:
+          name: linux-pacman
       - name: Download the mac dmg
         uses: actions/download-artifact@v2
         with:
@@ -126,7 +135,7 @@ jobs:
       - name: start the release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "vinutes*.msi, vinutes*.AppImage, vinutes*.dmg"
+          artifacts: "vinutes*.msi, vinutes*.AppImage, vinutes*.pacman, vinutes*.dmg"
           bodyFile: "RELEASE.md"
           token: ${{ secrets.GITHUB_TOKEN }}
           commit: "master"
