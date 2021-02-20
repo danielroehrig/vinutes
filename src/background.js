@@ -1,5 +1,5 @@
 'use strict'
-import { app, protocol, BrowserWindow, dialog } from 'electron'
+import { app, protocol, BrowserWindow, dialog, shell } from 'electron'
 import {
   createProtocol
 } from 'vue-cli-plugin-electron-builder/lib'
@@ -49,6 +49,11 @@ function createWindow () {
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
+
+  win.webContents.on('new-window', function (event, url) {
+    event.preventDefault()
+    shell.openExternal(url)
+  })
 
   win.on('closed', () => {
     win = null
