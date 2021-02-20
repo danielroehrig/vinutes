@@ -9,28 +9,25 @@
         :on-cancel="close"
         :open="visible"
     >
-      <div class="container mt-4">
-        <h1 class="subtitle">{{ $t('preferences') }}</h1>
-        <div class="field has-text-left">
-          <label class="label" for="preferences-language-select">{{ $t('language') }}</label>
-          <div class="control">
-            <div class="select">
-              <select v-model="language" id="preferences-language-select">
+      <div class="m-4">
+        <img
+            src="img/heartlogo_slogan.png"
+            class="mb-4"
+        />
+        <b-menu>
+          <b-menu-list :label="$t('preferences')">
+              <b-field :label="$t('language')">
+              <b-select v-model="language" :placeholder="$t('language')" id="preferences-language-select">
                 <option value="de">Deutsch</option>
                 <option value="en">English</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="field has-text-left">
-          <label class="label">{{ $t("timestamp-format") }}</label>
-          <div class="control">
-            <input class="input" type="text" v-model="timestampFormat">
-          </div>
-        </div>
-        <div class="control mt-4">
-          <button class="button is-primary" @click="close">{{ $t('button.accept') }}</button>
-        </div>
+              </b-select>
+            </b-field>
+            <b-field :label="$t('timestamp-format')">
+              <b-input v-model="timestampFormat"></b-input>
+            </b-field>
+            <b-button type="is-primary" @click="close">{{ $t('button.accept') }}</b-button>
+          </b-menu-list>
+        </b-menu>
       </div>
     </b-sidebar>
   </section>
