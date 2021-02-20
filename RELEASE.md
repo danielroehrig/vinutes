@@ -3,6 +3,7 @@
 Focusing a bit on the design for a bit. As good as I can.
 ### Functionality
  * Add Drag & Drop support for media files directly into the calendar
+ * Add cancel render button that actually stops the rendering
 
 ### UI
  * Remove scrollbar
@@ -12,6 +13,7 @@ Focusing a bit on the design for a bit. As good as I can.
  * Use buefy navbar instead of bulma's
  * Make the timestamp watermark smaller
  * An image viewer for those days when you only had an image but not a video available
+ * Show render progress with preview images
 
 ### Bugfixes
  * Clicking on an image caused a very confused video player to appear
@@ -20,6 +22,7 @@ Focusing a bit on the design for a bit. As good as I can.
  * No more vue router
  * Use [buefy](https://buefy.org)
  * Bump electron to version 9.4
+ * Promise chains for everything
 
 ### Platforms
  * Add pacman (mainly because I use manjaro)
