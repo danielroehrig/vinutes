@@ -41,3 +41,13 @@ ipcRenderer.on('render-done', event => {
     position: 'is-bottom'
   })
 })
+
+ipcRenderer.on('render-cancelled', event => {
+  store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+  const message = i18n.t('text.render-cancelled')
+  Toast.open({
+    message: message,
+    type: 'is-danger',
+    position: 'is-bottom'
+  })
+})

@@ -4,6 +4,7 @@ import {
   createProtocol
 } from 'vue-cli-plugin-electron-builder/lib'
 import DailyMedia, { fileTypeCategory } from './lib/DailyMedia'
+import { cancelRendering } from '@/lib/VideoRenderer'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const { ipcMain } = require('electron')
@@ -184,8 +185,12 @@ ipcMain.on('start-rendering', (event, filePath, mediaFiles) => {
       }
     )
     .catch(error => {
-      console.log('Arrrghhh: ' + error)
+      event.reply('render-cancelled', error)
     })
+})
+
+ipcMain.on('cancel-rendering', (event) => {
+  cancelRendering()
 })
 
 ipcMain.on('render-image-preview', async (event, dailyMedia) => {

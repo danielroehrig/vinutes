@@ -20,7 +20,6 @@
     </b-modal>
 </template>
 <script>
-import * as sc from '@/store-constants'
 export default {
   name: 'RenderProgress',
   props: {
@@ -36,7 +35,7 @@ export default {
   },
   methods: {
     cancelRendering () {
-      this.$store.commit('changeAppState', sc.APP_STATE_UNKNOWN)// TODO: Render Progress
+      ipcRenderer.send('cancel-rendering')
     }
   }
 }
