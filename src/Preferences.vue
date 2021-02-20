@@ -29,6 +29,16 @@
           </b-menu-list>
         </b-menu>
       </div>
+      <footer class="footer">
+        <div class="content">
+          <p class="has-text-weight-light is-size-7">Version 0.3 - 2021-02-20</p>
+          <p>
+            <strong>Vinutes</strong> by <a href="https://github.com/danielroehrig" target="_blank">Daniel Röhrig</a>. The
+            <a href="https://github.com/danielroehrig/vinutes" target="_blank">source code</a> is licensed
+            <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
+          </p>
+        </div>
+      </footer>
     </b-sidebar>
   </section>
 </template>
@@ -67,3 +77,9 @@ export default {
   }
 }
 </script>
+<style scoped>
+  .footer{
+    position: absolute;
+    bottom: 0;
+  }
+</style>
