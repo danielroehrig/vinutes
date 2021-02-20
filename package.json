@@ -23,6 +23,7 @@
   },
   "scripts": {
     "serve": "vue-cli-service electron:serve --remote-debugging-port=9223",
+    "debug-main": "vue-cli-service electron:serve --debug",
     "build": "vue-cli-service electron:build",
     "css-build": "node-sass --omit-source-map-url sass/vinutes.scss css/vinutes.css",
     "test:unit": "vue-cli-service test:unit unit",

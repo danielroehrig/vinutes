@@ -13,7 +13,9 @@
     "render-whole-timeline": "Vom ersten bis zum letzten Video",
     "render-current-month": "Den gesamten aktuellen Monat",
     "render-current-year": "Das gesamte aktuelle Jahr",
-    "render-custom": "Wähle die Zeitspanne zum Rendern aus"
+    "render-custom": "Wähle die Zeitspanne zum Rendern aus",
+    "render-complete": "Video gespeichert!",
+    "render-cancelled": "Vorgang abgebrochen!"
   },
   "placeholder": {
     "enter-new-timeline-name": "Name der Zeitlinie",
@@ -35,5 +37,6 @@
   "month": "Monat",
   "custom": "Benutzerdefiniert",
   "preferences": "Einstellungen",
-  "timestamp-format": "Zeitstempel format"
+  "timestamp-format": "Zeitstempel format",
+  "render-progress": "Render-Fortschritt"
 }

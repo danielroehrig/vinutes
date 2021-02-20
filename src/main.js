@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
-import Buefy from 'buefy'
+import Buefy, { ToastProgrammatic as Toast } from 'buefy'
 import store from './store'
 import './../css/vinutes.css'
 import './../node_modules/@mdi/font/css/materialdesignicons.css'
@@ -27,12 +27,27 @@ ipcRenderer.on('screenshot-created', (event, dailyMedia) => {
   store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
 })
 
-ipcRenderer.on('video-rendered', (event, dailyMedia) => {
-  console.log('Store says, render next!')
-  store.dispatch('renderNextInQueue', dailyMedia)
+ipcRenderer.on('render-update', (event, dailyMediaObject, percentage) => {
+  store.commit('changeAppState', sc.APP_STATE_RENDERING_TIMELINE)
+  store.commit('renderUpdate', { dailyMedia: dailyMediaObject || null, percentage: percentage })
 })
-ipcRenderer.on('video-merged', (event, dailyMedia) => {
-  console.log('Store says, everything is merged!')
-  store.commit('setRenderOutputPath', null)
-  store.commit('clearRenderQueues')
+
+ipcRenderer.on('render-done', event => {
+  store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+  const message = i18n.t('text.render-complete')
+  Toast.open({
+    message: message,
+    type: 'is-primary',
+    position: 'is-bottom'
+  })
+})
+
+ipcRenderer.on('render-cancelled', event => {
+  store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+  const message = i18n.t('text.render-cancelled')
+  Toast.open({
+    message: message,
+    type: 'is-danger',
+    position: 'is-bottom'
+  })
 })

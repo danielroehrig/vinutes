@@ -4,6 +4,7 @@ import {
   createProtocol
 } from 'vue-cli-plugin-electron-builder/lib'
 import DailyMedia, { fileTypeCategory } from './lib/DailyMedia'
+import { cancelRendering } from '@/lib/VideoRenderer'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const { ipcMain } = require('electron')
@@ -167,20 +168,29 @@ ipcMain.on('get-user-path', (event) => {
   event.returnValue = app.getPath('userData')
 })
 
-const renderedTempPath = path.join(app.getPath('temp'), 'vinutes-rendered')
-ipcMain.on('render-video', (event, dailyMedia) => {
-  console.log('start render file')
+ipcMain.on('start-rendering', (event, filePath, mediaFiles) => {
+  const renderedTempPath = path.join(app.getPath('temp'), 'vinutes-rendered')
+  console.log('start rendering files')
   try {
     fs.mkdirSync(renderedTempPath)
   } catch (e) {
     console.log('path exists presumably')
   }
-  VideoRenderer.renderVideo(dailyMedia, renderedTempPath, event)
+  VideoRenderer
+    .run(filePath, mediaFiles, renderedTempPath, event)
+    .then(
+      () => {
+        event.reply('render-done')
+        console.log('rendering done')
+      }
+    )
+    .catch(error => {
+      event.reply('render-cancelled', error)
+    })
 })
 
-ipcMain.on('merge-videos', (event, filePaths, outputPath) => {
-  console.log('start merging videos to ' + outputPath)
-  VideoRenderer.mergeVideos(filePaths, outputPath, event)
+ipcMain.on('cancel-rendering', (event) => {
+  cancelRendering()
 })
 
 ipcMain.on('render-image-preview', async (event, dailyMedia) => {

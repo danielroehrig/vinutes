@@ -13,7 +13,9 @@
     "render-whole-timeline": "Render everything from the first to the last day",
     "render-current-month": "Render the current month",
     "render-current-year": "Render the current year",
-    "render-custom": "Select the time span to render"
+    "render-custom": "Select the time span to render",
+    "render-complete": "Video saved!",
+    "render-cancelled": "Rendering cancelled!"
   },
   "placeholder": {
     "enter-new-timeline-name": "Name timeline",
@@ -35,5 +37,6 @@
   "month": "Month",
   "custom": "Custom",
   "preferences": "Preferences",
-  "timestamp-format": "Timestamp format"
+  "timestamp-format": "Timestamp format",
+  "render-progress": "Render Progress"
 }

@@ -1,4 +1,5 @@
-export const APP_STATE_CONFIRM_TIMELINE_DELETE = 'confirm timline delete'
+export const APP_STATE_RENDERING_TIMELINE = 'rendering timeline'
+export const APP_STATE_CONFIRM_TIMELINE_DELETE = 'confirm timeline delete'
 export const APP_STATE_CHOOSE_RENDER_TIME_SPAN = 'choose render time span'
 export const APP_STATE_CONFIRM_MEDIA_DELETE = 'confirm media delete'
 export const APP_STATE_UNKNOWN = 'unknown'
