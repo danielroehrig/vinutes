@@ -1,4 +1,4 @@
-# Version 0.2.5 - I am Prrrrutty!
+# Version 0.3.0 - I am Prrrrutty!
 
 Focusing a bit on the design for a bit. As good as I can.
 ### Functionality
