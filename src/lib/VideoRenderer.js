@@ -280,6 +280,14 @@ const mergeVideos = (videoPaths, outputPath, event) => {
   })
 }
 
+/**
+ * Cancel the current running ffmpeg command
+ */
+const cancelRendering = () => {
+  currentFFmpegCommand.kill('SIGKILL')
+}
+
 module.exports.createScreenshot = createScreenshot
 module.exports.run = run
 module.exports.createImagePreview = createImagePreview
+module.exports.cancelRendering = cancelRendering
