@@ -127,7 +127,7 @@ export default {
           break
       }
       if (mediaFiles.length === 0) {
-        return
+        return// TODO this should trigger a little warning saying: no files selected
       }
       const filePath = ipcRenderer.sendSync('show-save-dialog')
       if (filePath === null) {

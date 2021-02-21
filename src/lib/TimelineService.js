@@ -38,7 +38,7 @@ export const loadDailyMediaForTimeline = (id, startDate, endDate) => {
  * @returns {array} DailyMedia
  */
 export const getDailyMediaForTimeline = (timelineId) => {
-  const dbResults = db.prepare('SELECT m.mediaDate, m.path, m.videoTimestamp, m.mediaType, vs.data AS previewImage FROM media m LEFT JOIN videoStills vS on m.timelineId = vS.timelineId and m.mediaDate = vS.mediaDate WHERE m.timelineId=2 ORDER BY m.mediaDate ASC;').all({
+  const dbResults = db.prepare('SELECT m.mediaDate, m.path, m.videoTimestamp, m.mediaType, vs.data AS previewImage FROM media m LEFT JOIN videoStills vS on m.timelineId = vS.timelineId and m.mediaDate = vS.mediaDate WHERE m.timelineId=$id ORDER BY m.mediaDate ASC;').all({
     id: timelineId
   })
 
@@ -56,7 +56,7 @@ export const getDailyMediaForTimeline = (timelineId) => {
  * @returns {array} DailyMedia
  */
 export const getDailyMediaForTimelineAndTimeRange = (timelineId, startDate, endDate) => {
-  const dbResults = db.prepare('SELECT m.mediaDate, m.path, m.videoTimestamp, m.mediaType, vs.data AS previewImage FROM media m LEFT JOIN videoStills vS on m.timelineId = vS.timelineId and m.mediaDate = vS.mediaDate WHERE m.timelineId=2 AND m.mediaDate BETWEEN $startDate AND $endDate ORDER BY m.mediaDate ASC;').all({
+  const dbResults = db.prepare('SELECT m.mediaDate, m.path, m.videoTimestamp, m.mediaType, vs.data AS previewImage FROM media m LEFT JOIN videoStills vS on m.timelineId = vS.timelineId and m.mediaDate = vS.mediaDate WHERE m.timelineId=$id AND m.mediaDate BETWEEN $startDate AND $endDate ORDER BY m.mediaDate ASC;').all({
     id: timelineId,
     startDate: startDate,
     endDate: endDate
