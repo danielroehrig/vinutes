@@ -34,11 +34,11 @@
         </div>
       </section>
       <footer class="modal-card-foot">
-        <button class="button" @click="cancel">{{ $t('button.cancel') }}</button>
-        <button class="button is-success" @click="accept" :disabled="!acceptButtonEnabled">{{
+        <b-button type="is-primary" @click="accept" :disabled="!acceptButtonEnabled">{{
             $t('button.render')
           }}
-        </button>
+        </b-button>
+        <b-button @click="cancel">{{ $t('button.cancel') }}</b-button>
       </footer>
     </div>
   </div>
