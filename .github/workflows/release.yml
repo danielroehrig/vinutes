@@ -103,6 +103,8 @@ jobs:
       - name: Install node packages
         run: yarn install --frozen-lockfile
       - name: Build for macos
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn run build
       - name: Upload dmg
         uses: actions/upload-artifact@v2
