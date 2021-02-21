@@ -27,9 +27,9 @@ function createWindow () {
   // Create the browser window.
   win = new BrowserWindow(
     {
-      width: 1024,
+      width: 1048,
       height: 800,
-      minWidth: 1024,
+      minWidth: 1048,
       // TODO: Make scalable
       icon: path.join(__static, 'icons', '48x48.png'),
       webPreferences: {
