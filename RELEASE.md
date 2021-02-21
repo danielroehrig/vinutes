@@ -1,4 +1,7 @@
-# Version 0.3.0 - I am Prrrrutty!
+# Version 0.3.1 - I made a whoopsie
+
+Let's pretend it's still version 0.3.0 and I did not just found some 
+hardcoded values in the SQL queries.
 
 Focusing a bit on the design for a bit. As good as I can.
 ### Functionality
