@@ -12,6 +12,8 @@ jobs:
     name: Create all the linux builds
     runs-on: ubuntu-20.04
     steps:
+    - name: Install bsdtar for electron builder
+      run: sudo apt install libarchive-tools
     - name: Checkout
       uses: actions/checkout@v2
     - name: Cache node modules
