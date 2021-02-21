@@ -17,6 +17,7 @@ export default {
   name: 'MonthSelector',
   computed: {
     formattedDate () {
+      moment.locale(this.$store.state.language)
       return moment({ year: this.$store.state.currentYear, month: this.$store.state.currentMonth }).format('MMMM, Y')
     },
     isNextMonthFuture () {
