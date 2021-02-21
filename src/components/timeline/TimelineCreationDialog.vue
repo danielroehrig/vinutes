@@ -1,7 +1,7 @@
 <template>
   <div class="modal" :class="{'is-active': isTimelineCreationModalShown }" id="timelineCreationDialog">
     <div class="modal-background"></div>
-    <div class="modal-content">
+    <div class="modal-content" style="width: 80%">
       <div class="box">
         <div class="field">
           <label class="label">{{ $t('action.create-new-project') }}</label>
@@ -21,16 +21,10 @@
           {{ errorMessage }}
         </div>
         <div class="field is-grouped">
-          <div class="control">
-            <button class="button is-link" @click="createNewTimeline" id="timelineCreationDialogButtonSubmit"
-                    :disabled="!isNameAcceptable">{{ $t('button.accept') }}
-            </button>
-          </div>
-          <div class="control">
-            <button class="button is-link is-light" @click="cancelTimelineCreation"
-                    id="timelineCreationDialogButtonCancel">{{ $t('button.cancel') }}
-            </button>
-          </div>
+          <b-button type="is-primary mr-3" @click="createNewTimeline" id="timelineCreationDialogButtonSubmit"
+                      :disabled="!isNameAcceptable">{{ $t('button.accept') }}</b-button>
+          <b-button @click="cancelTimelineCreation"
+                    id="timelineCreationDialogButtonCancel">{{ $t('button.cancel') }}</b-button>
         </div>
       </div>
     </div>
