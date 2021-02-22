@@ -1,37 +1,30 @@
-## Welcome to GitHub Pages
+## ![Vinutes](https://raw.githubusercontent.com/danielroehrig/vinutes/master/public/icons/32x32.png) Vinutes
 
-You can use the [editor on GitHub](https://github.com/danielroehrig/vinutes/edit/develop/docs/index.md) to maintain and preview the content for your website in Markdown files.
+Chose one video or image for every day of your life (or maybe your cat's life, we are not judging) and combine them to a video.
+Powered by ffmpeg and electron and inspired by the android app _1-Second-Everyday_ but for free, open source, and on the desktop.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Help Wanted!
 
-### Markdown
+This is currently a one-man-show and this man doesn't have UX/UI skill, no Mac and hates to fire up
+Windows. I could really need some help in those areas. And everywhere else, to be honest.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## Screenshots
+![Calendar View](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/calendar-view-filled.png)
+![Calendar View](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/timeline-creation-dialog.png)
+![Calendar View](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/video-preview-dialog.png)
+![Calendar View](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/delete-media-dialog.png)
+![Calendar View](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/render-dialog.png)
+![Calendar View](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/render-progress.png)
+![Calendar View](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/preferences.png)
 
-```markdown
-Syntax highlighted code block
+## Features
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/danielroehrig/vinutes/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+* cross platform (runs on linux, windows and [almost mac](https://github.com/danielroehrig/vinutes/issues/34))
+* multiple timelines
+* support for videos and images
+* choose position of the video
+* multiple render options (whole timeline, month or custom time span)
+* Drag images and videos from your file manager directly into the calendar
+* display date in rendered video
+* multi language support (currently english and german)
+* custom date formats
