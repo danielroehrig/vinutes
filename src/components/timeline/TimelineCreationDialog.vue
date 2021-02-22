@@ -21,9 +21,9 @@
           {{ errorMessage }}
         </div>
         <div class="field is-grouped">
-          <b-button type="is-primary mr-3" @click="createNewTimeline" id="timelineCreationDialogButtonSubmit"
+          <b-button type="is-primary mr-3" @click.native="createNewTimeline" id="timelineCreationDialogButtonSubmit"
                       :disabled="!isNameAcceptable">{{ $t('button.accept') }}</b-button>
-          <b-button @click="cancelTimelineCreation"
+          <b-button @click.native="cancelTimelineCreation"
                     id="timelineCreationDialogButtonCancel">{{ $t('button.cancel') }}</b-button>
         </div>
       </div>

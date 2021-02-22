@@ -5,8 +5,11 @@ import Vuex from 'vuex'
 import Vue from 'vue'
 import * as sc from '@/store-constants'
 import { createNewTimeline } from '@/lib/TimelineService'
+import Buefy from 'buefy'
 
 Vue.use(Vuex)
+Vue.use(Buefy)
+
 jest.mock('@/lib/TimelineService', () => ({
   createNewTimeline: jest.fn(name => 1)
 }))
@@ -35,12 +38,12 @@ describe('TimelineCreationDialog.vue', () => {
     await wrapper.setData({ newTimelineName: null })
     const submitButton = wrapper.get('#timelineCreationDialogButtonSubmit')
     const input = wrapper.get('#timelineCreationDialogInputTimelineName')
-    expect(submitButton.attributes()).toHaveProperty('disabled', 'disabled')
+    expect(submitButton.attributes()).toHaveProperty('disabled', 'true')
     await input.setValue('a')
     expect(wrapper.vm.$data.newTimelineName).toBe('a')
     expect(submitButton.attributes()).not.toHaveProperty('disabled')
     await input.setValue(' ')
-    expect(submitButton.attributes()).toHaveProperty('disabled')
+    expect(submitButton.attributes()).toHaveProperty('disabled', 'true')
   })
   it('cancel clears name', async () => {
     const fakeChangeAppStateFunction = jest.fn()
@@ -62,6 +65,7 @@ describe('TimelineCreationDialog.vue', () => {
     await input.setValue('New Timeline Name')
     expect(wrapper.vm.$data.newTimelineName).toBe('New Timeline Name')
     await cancelButton.trigger('click')
+    wrapper.find('#timelineCreationDialogButtonCancel').sim
     expect(wrapper.vm.$data.newTimelineName).toBe(null)
     expect(fakeChangeAppStateFunction).toHaveBeenCalledWith(expect.anything(), sc.APP_STATE_CALENDAR_VIEW)
   })
