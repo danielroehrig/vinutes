@@ -189,7 +189,7 @@ function prepareVideoClip (dailyMedia, tmpFolder, mediaDateString, dateName, tmp
         reject(Error(e))
       })
       .on('start', function () {
-        console.log('Rendering started')
+        console.log('Rendering started for ' + dailyMedia.filePath + ' at position ' + dailyMedia.timeStamp)
       })
       .on('end', function () {
         console.log('Finished processing ' + mediaDateString)

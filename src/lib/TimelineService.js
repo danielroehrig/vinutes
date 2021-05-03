@@ -61,6 +61,7 @@ export const getDailyMediaForTimelineAndTimeRange = (timelineId, startDate, endD
     startDate: startDate,
     endDate: endDate
   })
+  dbResults.forEach(row => console.log('Timestamp: ' + row.videoTimestamp))
 
   return dbResults.map(row => {
     const mediaDate = moment(row.mediaDate)
