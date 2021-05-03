@@ -10,12 +10,12 @@ Windows. I could really need some help in those areas. And everywhere else, to b
 
 ## Screenshots
 ![Calendar View](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/calendar-view-filled.png)
-![Calendar View](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/timeline-creation-dialog.png)
-![Calendar View](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/video-preview-dialog.png)
-![Calendar View](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/delete-media-dialog.png)
-![Calendar View](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/render-dialog.png)
-![Calendar View](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/render-progress.png)
-![Calendar View](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/preferences.png)
+![Timeline Creation Dialog](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/timeline-creation-dialog.png)
+![Video Preview Dialog](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/video-preview-dialog.png)
+![Delete Media Confirmation Dialog](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/delete-media-dialog.png)
+![Render Dialog](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/render-dialog.png)
+![Render Progress](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/render-progress.png)
+![Preferences](https://raw.githubusercontent.com/danielroehrig/vinutes/master/docs/img/preferences.png)
 
 ## Features
 
