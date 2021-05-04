@@ -8,35 +8,3 @@ Which is a nice way of saying: "The timestamp for every video clip was always ze
 ### Internals
 * Replace node-sass with dart-sass
 * Rename `master` branch to `main`
-# Version 0.3.1 - I made a whoopsie
-
-Let's pretend it's still version 0.3.0 and I did not just found some 
-hardcoded values in the SQL queries.
-
-Focusing a bit on the design for a bit. As good as I can.
-### Functionality
- * Add Drag & Drop support for media files directly into the calendar
- * Add cancel render button that actually stops the rendering
-
-### UI
- * Remove scrollbar
- * Hide menu bar
- * Enable SASS and change the primary color
- * Change the preferences menu from router link to sidebar component
- * Use buefy navbar instead of bulma's
- * Make the timestamp watermark smaller
- * An image viewer for those days when you only had an image but not a video available
- * Show render progress with preview images
- * Links to source code in the preferences
-
-### Bugfixes
- * Clicking on an image caused a very confused video player to appear
-
-### Internals
- * No more vue router
- * Use [buefy](https://buefy.org)
- * Bump electron to version 9.4
- * Promise chains for everything
-
-### Platforms
- * Add pacman (mainly because I use manjaro)
