@@ -21,7 +21,7 @@ export default class DailyMedia {
     this.month = month
     this.day = day
     this.filePath = filePath
-    this.timeStamp = 0.0
+    this.timeStamp = timeStamp
     this.previewImage = previewImage
     this.mediaType = mediaType
   }
