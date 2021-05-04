@@ -142,4 +142,4 @@ jobs:
           artifacts: "vinutes*.msi, vinutes*.AppImage, vinutes*.pacman, vinutes*.dmg"
           bodyFile: "RELEASE.md"
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit: "master"
+          commit: "main"
