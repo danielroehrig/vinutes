@@ -13,6 +13,7 @@ import {
 } from '@/lib/TimelineService'
 
 Vue.use(Vuex)
+const supportedLanguages = ['en', 'de']
 
 const store = new Vuex.Store({
   state: {
@@ -91,7 +92,14 @@ const store = new Vuex.Store({
       })
     },
     applyConfig (state, databaseRow) {
-      state.language = databaseRow.language ? databaseRow.language : 'en'// TODO: Use system default language
+      console.log('System Language: ' + navigator.language)
+      if (databaseRow.language) {
+        state.language = databaseRow.language
+      } else if (supportedLanguages.includes(navigator.language)) {
+        state.language = navigator.language
+      } else {
+        state.language = 'en'
+      }
     },
     /**
      * Change the current state of the app
