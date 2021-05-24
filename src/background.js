@@ -22,8 +22,6 @@ let win
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
 
 function createWindow () {
-  // TODO: Only when env variable set (debug mode) also delete old logs!
-  log.info('Window created')
   // Create the browser window.
   win = new BrowserWindow(
     {
@@ -111,6 +109,7 @@ if (isDevelopment) {
 ipcMain.on('show-open-dialog', (event, year, month, day) => {
   console.log(`Open File Dialog for ${year} ${month} ${day}`)
   let filePaths = []
+  // Test path. Yes, this seems like the "right" way to do this
   if (process.env.SPECTRON) {
     if (day === 3) {
       filePaths = [path.join(__dirname, '..', 'tests', 'e2e/testvideos/', 'familie.mp4')]
@@ -149,6 +148,7 @@ ipcMain.on('show-open-dialog', (event, year, month, day) => {
 })
 
 ipcMain.on('show-save-dialog', (event) => {
+  // Again, testing is weird in electron
   if (process.env.SPECTRON) {
     event.returnValue = path.join(os.tmpdir(), 'spectronoutput.mp4')
     return
@@ -206,8 +206,6 @@ ipcMain.on('render-image-preview', async (event, dailyMedia) => {
 ipcMain.on('exit-app', (event, exitCode) => {
   if (exitCode > 0) {
     log.error('App exited abnormally!')
-  } else {
-    log.info('App exited normally!')
   }
   app.exit(exitCode)
 })
