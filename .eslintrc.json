@@ -26,6 +26,7 @@
     "describe": "readonly",
     "it": "readonly",
     "jest": "readonly",
-    "expect": "readonly"
+    "expect": "readonly",
+    "log": "readonly"
   }
 }

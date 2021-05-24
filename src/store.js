@@ -92,7 +92,7 @@ const store = new Vuex.Store({
       })
     },
     applyConfig (state, databaseRow) {
-      console.log('System Language: ' + navigator.language)
+      log.debug('System Language: ' + navigator.language)
       if (databaseRow.language) {
         state.language = databaseRow.language
       } else if (supportedLanguages.includes(navigator.language)) {
