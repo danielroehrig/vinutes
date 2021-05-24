@@ -1,10 +1,11 @@
-# Version 0.3.2 - From zero to hero
+# Version 0.3.5 - Going slow
 
-Which is a nice way of saying: "The timestamp for every video clip was always zero" and I am an idiot.
+I will change this when I'm not that tired. Definitely. Possibly.
+
+### Features
+* Use system language, if that's one the TWO languages I currently support
+* Logging in renderer thread
 
 ### Bugfixes
- * Position of video clip is ignored while rendering
 
 ### Internals
-* Replace node-sass with dart-sass
-* Rename `master` branch to `main`
