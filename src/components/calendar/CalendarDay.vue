@@ -110,6 +110,8 @@ export default {
     droppedFile (ev) {
       this.draggedOver = false
       const file = ev.dataTransfer.items[0].getAsFile()
+      const metaData = ipcRenderer.sendSync('check-media-file', file.path)
+      console.dir(metaData)
       const dailyMedia = new DailyMedia(this.currentYear, this.currentMonth + 1, this.day, file.path, fileTypeCategory(file.path))
       if (dailyMedia.mediaType === 'image') {
         ipcRenderer.send('render-image-preview', dailyMedia)
