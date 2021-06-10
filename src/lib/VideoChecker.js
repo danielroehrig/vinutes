@@ -1,6 +1,9 @@
 const { app } = require('electron')
 const path = require('path')
 const os = require('os')
+const fs = require('fs')
+const fsPromises = require('fs').promises
+
 let ffmpegPath = null
 const FfmpegCommand = require('fluent-ffmpeg')
 switch (os.type()) {
@@ -55,29 +58,93 @@ const probeVideo = (filePath) => {
   })
 }
 
-const assertVideoSupported = async (event, filePath) => {
-  const codecs = await availableCodecs
+function getMediaHeader (filePath) {
+  return new Promise((resolve, reject) => {
+    fsPromises.open(filePath, 'r')
+      .then(fd => {
+        const buffer = Buffer.alloc(16)
+        return fd.read(buffer, 0, 16, 0)
+      })
+      .then((buffer) => {
+        const mediaHeadHexCode = buffer.buffer.toString('hex')
+        resolve(mediaHeadHexCode)
+      })
+      .catch(err => {
+        reject(err)
+      })
+  })
+}
 
-  function compareMediaDataWithAvailableCodecs (metadata, codecs) {
-    console.log('here be metadata' + JSON.stringify(metadata))
-    const videoStreams = metadata.streams.filter(stream => {
-      return stream.codec_type === 'video'
-    })
-    if (videoStreams.length === 0) {
-      log.debug('No video stream found')
-      event.returnValue = null
-    }
-    // I just assume, that the video will be the FIRST found video stream
-    const codecName = videoStreams[0].codec_name
-    event.returnValue = Object.keys(codecs).includes(codecName)
+function getMediaExtension (mediaHeadHexCode) {
+  // GIF
+  // 47 49 46 38 37 61
+  // 47 49 46 38 39 61
+  const mediaHeadHexCodeUpper = mediaHeadHexCode.toUpperCase()
+  // The letter G gets repeated every 188 bytes and it CAN be a MPEG Transport Stream (MPEG-2 Part 1)
+  if (mediaHeadHexCodeUpper.substr(0, 2) === '47') {
+    return 'mpg'
   }
+  let type = null
+  switch (mediaHeadHexCodeUpper.substr(0, 8)) {
+    // JPG:
+    case 'FFD8FFDB':
+    case 'FFD8FFE0':
+    case 'FFD8FFEE':
+    case 'FFD8FFE1':
+      type = 'jpg'
+      break
+    // PNG
+    case '89504E47':
+      type = 'png'
+      break
+    // OGV
+    case '4F676753':
+      type = 'ogv'
+      break
+    // AVI
+    case '52494646':
+      if (mediaHeadHexCodeUpper.substr(16, 8) === '41564920') {
+        type = 'avi'
+      }
+      break
+    // MKV
+    case '1A45DFA3':
+      type = 'mkv'
+      break
+    // MPG
+    case '000001BA':
+    case '000001B3':
+      type = 'mpg'
+      break
+    // MP4
+    case '66747970':
+      if (mediaHeadHexCodeUpper.substr(8, 8) === '69736F6D') {
+        type = 'mp4'
+      }
+      break
+  }
+  return type
+}
 
-  probeVideo(filePath)
-    .then(
-      (metadata) => compareMediaDataWithAvailableCodecs(metadata, codecs)
-    ).catch(err => {
-      log.debug(err)
-      event.returnValue = null
+const getMediaTypeFromExtension = (extension) => {
+  if (['mp4', 'mpg', 'mkv', 'avi', 'ogv'].includes(extension)) {
+    return 'video'
+  } else if (['jpg', 'png'].includes(extension)) {
+    return 'image'
+  }
+  return null
+}
+
+const assertVideoSupported = async (event, filePath) => {
+  getMediaHeader(filePath)
+    .then(mediaHeadHexCode => {
+      const typeExtension = getMediaExtension(mediaHeadHexCode)
+      const mediaType = getMediaTypeFromExtension(typeExtension)
+      if (['video', 'image'].includes(mediaType)) {
+        event.returnValue = true
+      } else {
+        event.returnValue = null
+      }
     })
 }
 
