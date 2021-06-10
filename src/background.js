@@ -5,7 +5,10 @@ import {
 } from 'vue-cli-plugin-electron-builder/lib'
 import DailyMedia, { fileTypeCategory } from './lib/DailyMedia'
 import { cancelRendering } from '@/lib/VideoRenderer'
-import { assertVideoSupported } from '@/lib/VideoChecker'
+import {
+  getMediaExtension,
+  getMediaHeader, getMediaTypeFromExtension
+} from '@/lib/VideoChecker'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const { ipcMain } = require('electron')
@@ -108,7 +111,11 @@ if (isDevelopment) {
 }
 
 ipcMain.on('check-media-file', (event, file) => {
-  assertVideoSupported(event, file)
+  getMediaHeader(file)
+    .then(mediaHeadHexCode => {
+      const typeExtension = getMediaExtension(mediaHeadHexCode)
+      event.returnValue = getMediaTypeFromExtension(typeExtension)
+    })
 })
 
 ipcMain.on('show-open-dialog', (event, year, month, day) => {

@@ -135,17 +135,6 @@ const getMediaTypeFromExtension = (extension) => {
   return null
 }
 
-const assertVideoSupported = async (event, filePath) => {
-  getMediaHeader(filePath)
-    .then(mediaHeadHexCode => {
-      const typeExtension = getMediaExtension(mediaHeadHexCode)
-      const mediaType = getMediaTypeFromExtension(typeExtension)
-      if (['video', 'image'].includes(mediaType)) {
-        event.returnValue = true
-      } else {
-        event.returnValue = null
-      }
-    })
-}
-
-module.exports.assertVideoSupported = assertVideoSupported
+module.exports.getMediaHeader = getMediaHeader
+module.exports.getMediaExtension = getMediaExtension
+module.exports.getMediaTypeFromExtension = getMediaTypeFromExtension
