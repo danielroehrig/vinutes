@@ -29,7 +29,8 @@
     "close": "Close"
   },
   "error": {
-    "create-timeline-error": "Timeline could not be created!"
+    "create-timeline-error": "Timeline could not be created!",
+    "unknown-media-type": "Unknown media type!"
   },
   "language": "Language",
   "whole-time-line": "Whole time line",
