@@ -15,6 +15,8 @@ import moment from 'moment'
 import { mapActions, mapMutations, mapState } from 'vuex'
 import * as sc from '@/store-constants'
 import DailyMedia, { fileTypeCategory } from '@/lib/DailyMedia'
+import store from '@/store'
+import i18n from '@/i18n'
 
 export default {
   name: 'CalendarDay',
@@ -111,7 +113,16 @@ export default {
       this.draggedOver = false
       const file = ev.dataTransfer.items[0].getAsFile()
       const mediaType = ipcRenderer.sendSync('check-media-file', file.path)
-      // TODO: mediaType === null = unsupported media
+      if (mediaType === null) {
+        store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+        const unknownMediaMessage = i18n.t('error.unknown-media-type').toString()
+        this.$buefy.toast.open({
+          message: unknownMediaMessage,
+          position: 'is-bottom',
+          type: 'is-danger'
+        })
+        return
+      }
       const dailyMedia = new DailyMedia(this.currentYear, this.currentMonth + 1, this.day, file.path, mediaType)
       if (dailyMedia.mediaType === 'image') {
         ipcRenderer.send('render-image-preview', dailyMedia)
