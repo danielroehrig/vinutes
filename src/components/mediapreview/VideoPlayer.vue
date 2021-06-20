@@ -24,6 +24,7 @@
 
 <script>
 import * as sc from '@/store-constants'
+import i18n from '@/i18n'
 
 export default {
   name: 'VideoPlayer',
@@ -47,6 +48,25 @@ export default {
       ipcRenderer.send('create-video-screenshot', currentDailyMedia, currentTimeline)
       this.$store.commit('setCurrentDailyMedia', null)
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+    }
+  },
+  watch: {
+    videoSrc: function (newSrc, oldSrc) {
+      console.log('new Source ' + newSrc + ' old Source ' + oldSrc)
+      if (newSrc) {
+        this.$nextTick(function () {
+          const lastVideoSource = document.querySelector('source:last-child')// TODO: Document might be replacable by something that only searches within this component
+          lastVideoSource.addEventListener('error', (event) => {
+            const unknownMediaMessage = i18n.t('error.unknown-media-type').toString()
+            this.$buefy.toast.open({
+              message: unknownMediaMessage,
+              position: 'is-bottom',
+              type: 'is-danger'
+            })
+            this.closeVideoPlayer()
+          })
+        })
+      }
     }
   }
 }
