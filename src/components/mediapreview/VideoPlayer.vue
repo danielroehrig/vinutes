@@ -51,9 +51,8 @@ export default {
     }
   },
   watch: {
-    videoSrc: function (newSrc, oldSrc) {
-      console.log('new Source ' + newSrc + ' old Source ' + oldSrc)
-      if (newSrc) {
+    isVisible: function (isVisible, wasVisible) {
+      if (isVisible) {
         this.$nextTick(function () {
           const lastVideoSource = document.querySelector('source:last-child')// TODO: Document might be replacable by something that only searches within this component
           lastVideoSource.addEventListener('error', (event) => {
