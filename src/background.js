@@ -8,7 +8,7 @@ import { cancelRendering } from '@/lib/VideoRenderer'
 import {
   getMediaExtension,
   getMediaHeader, getMediaTypeFromExtension
-} from '@/lib/VideoChecker'
+} from '@/lib/MediumRecognizer'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const { ipcMain } = require('electron')
