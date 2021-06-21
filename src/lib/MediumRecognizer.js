@@ -4,6 +4,11 @@
 const fsPromises = require('fs').promises
 const log = require('electron-log')
 
+/**
+ * Get the first 24 bytes of the given file as a hex encoded string
+ * @param {string} filePath
+ * @return {Promise<string>}
+ */
 function getMediaHeader (filePath) {
   return new Promise((resolve, reject) => {
     fsPromises.open(filePath, 'r')
@@ -21,6 +26,11 @@ function getMediaHeader (filePath) {
   })
 }
 
+/**
+ * Take a hex encoded string and try to interpret as as a multimedia file descriptor
+ * @param {string} mediaHeadHexCode
+ * @return {string|null} The recognized media extension (e.g. mp4)
+ */
 function getMediaExtension (mediaHeadHexCode) {
   // GIF
   // 47 49 46 38 37 61
@@ -72,6 +82,11 @@ function getMediaExtension (mediaHeadHexCode) {
   return type
 }
 
+/**
+ * Classify an extension (e.g. mp4) as a video or an image
+ * @param {string} extension
+ * @return {string|null} "video", "image" or null
+ */
 const getMediaTypeFromExtension = (extension) => {
   if (['mp4', 'mpg', 'mkv', 'avi', 'ogv'].includes(extension)) {
     return 'video'
