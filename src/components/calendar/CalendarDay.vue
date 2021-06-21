@@ -112,7 +112,7 @@ export default {
     droppedFile (ev) {
       this.draggedOver = false
       const file = ev.dataTransfer.items[0].getAsFile()
-      const mediaType = ipcRenderer.sendSync('check-media-file', file.path)
+      const mediaType = ipcRenderer.sendSync('get-media-type', file.path)
       if (mediaType === null) {
         store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
         const unknownMediaMessage = i18n.t('error.unknown-media-type').toString()

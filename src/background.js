@@ -110,7 +110,8 @@ if (isDevelopment) {
   }
 }
 
-ipcMain.on('check-media-file', (event, file) => {
+// Gets the media type (video or image) from the file
+ipcMain.on('get-media-type', (event, file) => {
   getMediaHeader(file)
     .then(mediaHeadHexCode => {
       const typeExtension = getMediaExtension(mediaHeadHexCode)
