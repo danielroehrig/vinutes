@@ -142,11 +142,10 @@ ipcMain.on('show-open-dialog', (event, year, month, day) => {
             'mpeg',
             'jpg',
             'jpeg',
-            'gif',
             'png']
         },
         { name: 'Videos', extensions: ['mp4', 'mov', 'avi', 'mpg', 'mpeg'] },
-        { name: 'Images', extensions: ['jpg', 'jpeg', 'gif', 'png'] }
+        { name: 'Images', extensions: ['jpg', 'jpeg', 'png'] }
       ],
       properties: ['openFile']
     })
