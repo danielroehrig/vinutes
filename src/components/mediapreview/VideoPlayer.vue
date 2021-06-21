@@ -56,11 +56,12 @@ export default {
         this.$nextTick(function () {
           const lastVideoSource = document.querySelector('source:last-child')// TODO: Document might be replacable by something that only searches within this component
           lastVideoSource.addEventListener('error', (event) => {
-            const unknownMediaMessage = i18n.t('error.unknown-media-type').toString()
+            const unplayableMediumMessage = i18n.t('error.unplayable-media').toString()
             this.$buefy.toast.open({
-              message: unknownMediaMessage,
+              message: unplayableMediumMessage,
               position: 'is-bottom',
-              type: 'is-danger'
+              type: 'is-danger',
+              duration: '3000'
             })
             this.closeVideoPlayer()
           })
