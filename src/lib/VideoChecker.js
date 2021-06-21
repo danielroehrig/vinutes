@@ -1,25 +1,8 @@
-const { app } = require('electron')
-const path = require('path')
-const os = require('os')
+/**
+ * Functions that help determine the type of a given file
+ */
 const fsPromises = require('fs').promises
 const log = require('electron-log')
-
-let ffmpegPath = null
-const FfmpegCommand = require('fluent-ffmpeg')
-switch (os.type()) {
-  case 'Linux':
-    ffmpegPath = path.join(app.getAppPath(), '..', 'bin', 'amd64', 'ffmpeg')
-    break
-  case 'Windows_NT':
-    ffmpegPath = path.join(app.getAppPath(), '..', 'bin', 'win64', 'ffmpeg.exe')
-    FfmpegCommand.setFfprobePath(path.join(app.getAppPath(), '..', 'bin', 'win64', 'ffprobe.exe'))
-    break
-  case 'Darwin':
-    ffmpegPath = path.join(app.getAppPath(), '..', 'bin', 'macos', 'ffmpeg')
-    FfmpegCommand.setFfprobePath(path.join(app.getAppPath(), '..', 'bin', 'macos', 'ffprobe'))
-    break
-}
-FfmpegCommand.setFfmpegPath(ffmpegPath)
 
 function getMediaHeader (filePath) {
   return new Promise((resolve, reject) => {
