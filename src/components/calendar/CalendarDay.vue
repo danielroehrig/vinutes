@@ -14,7 +14,7 @@
 import moment from 'moment'
 import { mapActions, mapMutations, mapState } from 'vuex'
 import * as sc from '@/store-constants'
-import DailyMedia, { fileTypeCategory } from '@/lib/DailyMedia'
+import DailyMedia from '@/lib/DailyMedia'
 import store from '@/store'
 import i18n from '@/i18n'
 
@@ -93,7 +93,7 @@ export default {
       const mediaFile = this.mediaFiles[this.day]
       if (mediaFile) {
         this.setCurrentDailyMedia(mediaFile)
-        const newState = fileTypeCategory(mediaFile.filePath) === 'video' ? sc.APP_STATE_VIDEO_PLAYER : sc.APP_STATE_IMAGE_VIEWER
+        const newState = mediaFile.mediaType === 'video' ? sc.APP_STATE_VIDEO_PLAYER : sc.APP_STATE_IMAGE_VIEWER
         this.changeAppState(newState)
         return
       }
