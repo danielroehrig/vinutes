@@ -2,7 +2,6 @@
  * Functions that help determine the type of a given file
  */
 const fsPromises = require('fs').promises
-const log = require('electron-log')
 
 /**
  * Get the first 24 bytes of the given file as a hex encoded string
@@ -76,8 +75,6 @@ function getMediaExtension (mediaHeadHexCode) {
     case '000001B3':
       type = 'mpg'
       break
-    default:
-      log.debug('Media head unknown magic bytes', mediaHeadHexCodeUpper)
   }
   return type
 }
@@ -96,6 +93,26 @@ const getMediaTypeFromExtension = (extension) => {
   return null
 }
 
+/**
+ * Gets the media type (image or video) from a given file
+ * @param filepath
+ * @returns {Promise<string>}
+ */
+const getMediaTypeFromFile = (filepath) => {
+  return new Promise((resolve, reject) => {
+    getMediaHeader(filepath)
+      .then(mediaHeadHexCode => {
+        const typeExtension = getMediaExtension(mediaHeadHexCode)
+        const typeFromExtension = getMediaTypeFromExtension(typeExtension)
+        if (typeFromExtension == null) {
+          reject(new Error('Could not determine type from extension'))
+        }
+        resolve(typeFromExtension)
+      })
+  })
+}
+
 module.exports.getMediaHeader = getMediaHeader
 module.exports.getMediaExtension = getMediaExtension
 module.exports.getMediaTypeFromExtension = getMediaTypeFromExtension
+module.exports.getMediaTypeFromFile = getMediaTypeFromFile
