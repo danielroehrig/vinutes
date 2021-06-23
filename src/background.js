@@ -7,7 +7,7 @@ import DailyMedia, { fileTypeCategory } from './lib/DailyMedia'
 import { cancelRendering } from '@/lib/VideoRenderer'
 import {
   getMediaExtension,
-  getMediaHeader, getMediaTypeFromExtension
+  getMediaHeader, getMediaTypeFromExtension, getMediaTypeFromFile
 } from '@/lib/MediumRecognizer'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -112,10 +112,13 @@ if (isDevelopment) {
 
 // Gets the media type (video or image) from the file
 ipcMain.on('get-media-type', (event, file) => {
-  getMediaHeader(file)
-    .then(mediaHeadHexCode => {
-      const typeExtension = getMediaExtension(mediaHeadHexCode)
-      event.returnValue = getMediaTypeFromExtension(typeExtension)
+  getMediaTypeFromFile(file)
+    .then(mediaType => {
+      event.returnValue = mediaType
+    })
+    .catch(error => {
+      log.debug(error)
+      event.returnValue = null
     })
 })
 
@@ -153,7 +156,14 @@ ipcMain.on('show-open-dialog', (event, year, month, day) => {
   }
   if (filePaths) {
     const filePath = filePaths[0]
-    event.returnValue = new DailyMedia(year, month, day, filePath, fileTypeCategory(filePath))
+    getMediaTypeFromFile(filePath)
+      .then(mediaType => {
+        event.returnValue = new DailyMedia(year, month, day, filePath, mediaType)
+      })
+      .catch(error => {
+        log.debug(error)
+        event.returnValue = null
+      })
   } else {
     event.returnValue = null
   }
