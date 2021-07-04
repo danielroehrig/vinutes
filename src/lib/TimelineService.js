@@ -1,4 +1,4 @@
-import DailyMedia, { dateAsIso, fileTypeCategory } from './DailyMedia'
+import DailyMedia, { dateAsIso } from './DailyMedia'
 
 import moment from 'moment'
 
@@ -78,7 +78,7 @@ export const safeDailyMediaForTimeline = (timelineId, dailyMedia) => {
         mediaDate: dateAsIso(dailyMedia),
         path: dailyMedia.filePath,
         videoTimestamp: dailyMedia.timeStamp,
-        mediaType: fileTypeCategory(dailyMedia.filePath)
+        mediaType: dailyMedia.mediaType
       })
     deletePreviewImageFromTimeline(timelineId, dailyMedia)
     if (dailyMedia.previewImage) {

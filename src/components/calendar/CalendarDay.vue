@@ -14,7 +14,9 @@
 import moment from 'moment'
 import { mapActions, mapMutations, mapState } from 'vuex'
 import * as sc from '@/store-constants'
-import DailyMedia, { fileTypeCategory } from '@/lib/DailyMedia'
+import DailyMedia from '@/lib/DailyMedia'
+import store from '@/store'
+import i18n from '@/i18n'
 
 export default {
   name: 'CalendarDay',
@@ -91,7 +93,7 @@ export default {
       const mediaFile = this.mediaFiles[this.day]
       if (mediaFile) {
         this.setCurrentDailyMedia(mediaFile)
-        const newState = fileTypeCategory(mediaFile.filePath) === 'video' ? sc.APP_STATE_VIDEO_PLAYER : sc.APP_STATE_IMAGE_VIEWER
+        const newState = mediaFile.mediaType === 'video' ? sc.APP_STATE_VIDEO_PLAYER : sc.APP_STATE_IMAGE_VIEWER
         this.changeAppState(newState)
         return
       }
@@ -110,7 +112,18 @@ export default {
     droppedFile (ev) {
       this.draggedOver = false
       const file = ev.dataTransfer.items[0].getAsFile()
-      const dailyMedia = new DailyMedia(this.currentYear, this.currentMonth + 1, this.day, file.path, fileTypeCategory(file.path))
+      const mediaType = ipcRenderer.sendSync('get-media-type', file.path)
+      if (mediaType === null) {
+        store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+        const unknownMediaMessage = i18n.t('error.unknown-media-type').toString()
+        this.$buefy.toast.open({
+          message: unknownMediaMessage,
+          position: 'is-bottom',
+          type: 'is-danger'
+        })
+        return
+      }
+      const dailyMedia = new DailyMedia(this.currentYear, this.currentMonth + 1, this.day, file.path, mediaType)
       if (dailyMedia.mediaType === 'image') {
         ipcRenderer.send('render-image-preview', dailyMedia)
         return

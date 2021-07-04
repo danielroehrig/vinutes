@@ -5,6 +5,10 @@ import {
 } from 'vue-cli-plugin-electron-builder/lib'
 import DailyMedia, { fileTypeCategory } from './lib/DailyMedia'
 import { cancelRendering } from '@/lib/VideoRenderer'
+import {
+  getMediaExtension,
+  getMediaHeader, getMediaTypeFromExtension, getMediaTypeFromFile
+} from '@/lib/MediumRecognizer'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const { ipcMain } = require('electron')
@@ -106,6 +110,18 @@ if (isDevelopment) {
   }
 }
 
+// Gets the media type (video or image) from the file
+ipcMain.on('get-media-type', (event, file) => {
+  getMediaTypeFromFile(file)
+    .then(mediaType => {
+      event.returnValue = mediaType
+    })
+    .catch(error => {
+      log.debug(error)
+      event.returnValue = null
+    })
+})
+
 ipcMain.on('show-open-dialog', (event, year, month, day) => {
   console.log(`Open File Dialog for ${year} ${month} ${day}`)
   let filePaths = []
@@ -130,18 +146,24 @@ ipcMain.on('show-open-dialog', (event, year, month, day) => {
             'mpeg',
             'jpg',
             'jpeg',
-            'gif',
             'png']
         },
         { name: 'Videos', extensions: ['mp4', 'mov', 'avi', 'mpg', 'mpeg'] },
-        { name: 'Images', extensions: ['jpg', 'jpeg', 'gif', 'png'] }
+        { name: 'Images', extensions: ['jpg', 'jpeg', 'png'] }
       ],
       properties: ['openFile']
     })
   }
   if (filePaths) {
     const filePath = filePaths[0]
-    event.returnValue = new DailyMedia(year, month, day, filePath, fileTypeCategory(filePath))
+    getMediaTypeFromFile(filePath)
+      .then(mediaType => {
+        event.returnValue = new DailyMedia(year, month, day, filePath, mediaType)
+      })
+      .catch(error => {
+        log.debug(error)
+        event.returnValue = null
+      })
   } else {
     event.returnValue = null
   }

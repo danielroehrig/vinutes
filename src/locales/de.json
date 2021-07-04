@@ -29,7 +29,9 @@
     "close": "Schließen"
   },
   "error": {
-    "create-timeline-error": "Zeitline konnte nicht erstellt werden!"
+    "create-timeline-error": "Zeitline konnte nicht erstellt werden!",
+    "unknown-media-type": "Unbekanntes Medium!",
+    "unplayable-media": "Video konnte nicht abgespielt werden!"
   },
   "language": "Sprache",
   "whole-time-line": "Gesamtes Zeitline",
