@@ -12,7 +12,7 @@
 
 <script>
 import moment from 'moment'
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 import * as sc from '@/store-constants'
 import DailyMedia from '@/lib/DailyMedia'
 import store from '@/store'
@@ -72,9 +72,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions({
-      clicked: 'calendarDayClicked'
-    }),
     ...mapMutations([
       'changeAppState',
       'setCurrentDaySelected',
