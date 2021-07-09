@@ -22,7 +22,7 @@ import { initDBStructure } from './lib/PersistenceService'
 import { mapState } from 'vuex'
 import * as sc from '@/store-constants'
 import Calendar from '@/components/calendar/Calendar'
-import Preferences from '@/Preferences'
+import Preferences from '@/components/Preferences'
 
 export default {
   components: { Preferences, Calendar, Navbar },
