@@ -1,10 +1,4 @@
-import mime from 'mime'
 import moment from 'moment'
-import {
-  getMediaExtension,
-  getMediaHeader,
-  getMediaTypeFromExtension
-} from '@/lib/MediumRecognizer'
 
 /**
  * Class for a medium for one day
