@@ -1,15 +1,29 @@
-import DailyMedia, { dateAsIso, fileTypeCategory } from './DailyMedia'
+import DailyMedia, { dateAsIso } from './DailyMedia'
 
 import moment from 'moment'
+import Timeline from '@/lib/Timeline'
 
+/**
+ * Load the timeline metadata
+ * @param {int} id
+ * @returns {Timeline}
+ */
 export const loadTimeline = (id) => {
   console.log(`Loading timeline ${id}`)
-  return db.prepare('SELECT * FROM timeline WHERE id=$id;').get({ id: id })
+  const timelineData = db.prepare('SELECT * FROM timeline WHERE id=$id;').get({ id: id })
+
+  return new Timeline(timelineData.name, timelineData.id)
 }
 
+/**
+ * Get all timeline metadata
+ * @returns {Timeline[]}
+ */
 export const getAllTimelines = () => {
   console.log('Get all timelines')
-  return db.prepare('SELECT * FROM timeline ORDER BY name ASC;').all()
+  const timelineData = db.prepare('SELECT * FROM timeline ORDER BY name ASC;').all()
+
+  return timelineData.map(timeline => new Timeline(timeline.name, timeline.id))
 }
 
 /**
@@ -78,7 +92,7 @@ export const safeDailyMediaForTimeline = (timelineId, dailyMedia) => {
         mediaDate: dateAsIso(dailyMedia),
         path: dailyMedia.filePath,
         videoTimestamp: dailyMedia.timeStamp,
-        mediaType: fileTypeCategory(dailyMedia.filePath)
+        mediaType: dailyMedia.mediaType
       })
     deletePreviewImageFromTimeline(timelineId, dailyMedia)
     if (dailyMedia.previewImage) {

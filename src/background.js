@@ -3,8 +3,9 @@ import { app, protocol, BrowserWindow, dialog, shell } from 'electron'
 import {
   createProtocol
 } from 'vue-cli-plugin-electron-builder/lib'
-import DailyMedia, { fileTypeCategory } from './lib/DailyMedia'
+import DailyMedia from './lib/DailyMedia'
 import { cancelRendering } from '@/lib/VideoRenderer'
+import { getMediaTypeFromFile } from '@/lib/MediumRecognizer'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const { ipcMain } = require('electron')
@@ -22,8 +23,6 @@ let win
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
 
 function createWindow () {
-  // TODO: Only when env variable set (debug mode) also delete old logs!
-  log.info('Window created')
   // Create the browser window.
   win = new BrowserWindow(
     {
@@ -108,9 +107,22 @@ if (isDevelopment) {
   }
 }
 
+// Gets the media type (video or image) from the file
+ipcMain.on('get-media-type', (event, file) => {
+  getMediaTypeFromFile(file)
+    .then(mediaType => {
+      event.returnValue = mediaType
+    })
+    .catch(error => {
+      log.debug(error)
+      event.returnValue = null
+    })
+})
+
 ipcMain.on('show-open-dialog', (event, year, month, day) => {
   console.log(`Open File Dialog for ${year} ${month} ${day}`)
   let filePaths = []
+  // Test path. Yes, this seems like the "right" way to do this
   if (process.env.SPECTRON) {
     if (day === 3) {
       filePaths = [path.join(__dirname, '..', 'tests', 'e2e/testvideos/', 'familie.mp4')]
@@ -131,24 +143,31 @@ ipcMain.on('show-open-dialog', (event, year, month, day) => {
             'mpeg',
             'jpg',
             'jpeg',
-            'gif',
             'png']
         },
         { name: 'Videos', extensions: ['mp4', 'mov', 'avi', 'mpg', 'mpeg'] },
-        { name: 'Images', extensions: ['jpg', 'jpeg', 'gif', 'png'] }
+        { name: 'Images', extensions: ['jpg', 'jpeg', 'png'] }
       ],
       properties: ['openFile']
     })
   }
   if (filePaths) {
     const filePath = filePaths[0]
-    event.returnValue = new DailyMedia(year, month, day, filePath, fileTypeCategory(filePath))
+    getMediaTypeFromFile(filePath)
+      .then(mediaType => {
+        event.returnValue = new DailyMedia(year, month, day, filePath, mediaType)
+      })
+      .catch(error => {
+        log.debug(error)
+        event.returnValue = null
+      })
   } else {
     event.returnValue = null
   }
 })
 
 ipcMain.on('show-save-dialog', (event) => {
+  // Again, testing is weird in electron
   if (process.env.SPECTRON) {
     event.returnValue = path.join(os.tmpdir(), 'spectronoutput.mp4')
     return
@@ -206,8 +225,6 @@ ipcMain.on('render-image-preview', async (event, dailyMedia) => {
 ipcMain.on('exit-app', (event, exitCode) => {
   if (exitCode > 0) {
     log.error('App exited abnormally!')
-  } else {
-    log.info('App exited normally!')
   }
   app.exit(exitCode)
 })

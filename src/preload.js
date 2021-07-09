@@ -9,6 +9,8 @@ if (process.env.WEBPACK_DEV_SERVER_URL) {
 const Database = require('better-sqlite3')
 const db = new Database(dbPath, { verbose: console.log })
 
+const log = require('electron-log')
+
 // We need require to run our tests
 if (process.env.NODE_ENV === 'test') {
   window.electronRequire = require
@@ -17,3 +19,4 @@ if (process.env.NODE_ENV === 'test') {
 // Expose these functions and variables to the renderer thread
 window.ipcRenderer = ipcRenderer
 window.db = db
+window.log = log

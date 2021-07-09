@@ -20,7 +20,8 @@ const mountWithStore = (store) => {
     store: store,
     mocks: {
       $t
-    }
+    },
+    attachTo: document.body
   })
 }
 
@@ -65,7 +66,7 @@ describe('TimelineCreationDialog.vue', () => {
     await input.setValue('New Timeline Name')
     expect(wrapper.vm.$data.newTimelineName).toBe('New Timeline Name')
     await cancelButton.trigger('click')
-    wrapper.find('#timelineCreationDialogButtonCancel').sim
+    wrapper.find('#timelineCreationDialogButtonCancel')
     expect(wrapper.vm.$data.newTimelineName).toBe(null)
     expect(fakeChangeAppStateFunction).toHaveBeenCalledWith(expect.anything(), sc.APP_STATE_CALENDAR_VIEW)
   })

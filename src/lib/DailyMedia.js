@@ -1,4 +1,3 @@
-import mime from 'mime'
 import moment from 'moment'
 
 /**
@@ -41,19 +40,6 @@ export default class DailyMedia {
   get [Symbol.toStringTag] () {
     return 'DailyMedia'
   }
-}
-
-/**
- * Get the file type category for a given Daily Media.
- * TODO: Unit Test because something that is not image or video or does not follow category/type convention will crash
- *
- * @param {string} filePath
- *
- * @returns {string} "image" or "video"
- * @deprecated Use isSupportedImage and isSupportedVideo instead
- */
-export const fileTypeCategory = (filePath) => {
-  return mime.getType(filePath).split('/')[0]
 }
 
 /**

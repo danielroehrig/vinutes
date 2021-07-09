@@ -1,10 +1,12 @@
-# Version 0.3.2 - From zero to hero
+# Version 0.3.3 - Going slow, Steam Summer Sale, Gimme a Break
 
-Which is a nice way of saying: "The timestamp for every video clip was always zero" and I am an idiot.
+I will change this when I'm not that tired. Definitely. Possibly.
 
-### Bugfixes
- * Position of video clip is ignored while rendering
+### Features
+* Use system language, if that's one of the TWO languages I currently support
+* Logging in renderer thread
+* Catch media files that are not supported when trying to insert them into the timeline
 
 ### Internals
-* Replace node-sass with dart-sass
-* Rename `master` branch to `main`
+* Remove the fileTypeCategory catastrophe of a function from the DailyMedia class
+* Updated almost all dependencies like electron 11

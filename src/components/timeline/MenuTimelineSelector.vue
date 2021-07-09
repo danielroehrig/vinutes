@@ -14,10 +14,12 @@
   </b-navbar-dropdown>
 </template>
 <script>
+import Timeline from '@/lib/Timeline'
+
 export default {
   name: 'MenuTimelineSelector',
   props: {
-    currentTimeline: Object,
+    currentTimeline: Timeline,
     timelines: Array
   },
   computed: {
