@@ -3,12 +3,9 @@ import { app, protocol, BrowserWindow, dialog, shell } from 'electron'
 import {
   createProtocol
 } from 'vue-cli-plugin-electron-builder/lib'
-import DailyMedia, { fileTypeCategory } from './lib/DailyMedia'
+import DailyMedia from './lib/DailyMedia'
 import { cancelRendering } from '@/lib/VideoRenderer'
-import {
-  getMediaExtension,
-  getMediaHeader, getMediaTypeFromExtension, getMediaTypeFromFile
-} from '@/lib/MediumRecognizer'
+import { getMediaTypeFromFile } from '@/lib/MediumRecognizer'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const { ipcMain } = require('electron')
