@@ -1,5 +1,5 @@
 <template>
-    <b-modal :can-cancel=false :width=480 v-model="isActive">
+    <b-modal :can-cancel=false :width=480 :active="showIfActive">
         <div class="card">
           <div v-if="currentImage" class="card-image">
               <b-image
@@ -31,6 +31,9 @@ export default {
     },
     currentImage () {
       return this.$store.state.renderCurrentDailyMedia ? 'data:image/jpg;base64,' + this.$store.state.renderCurrentDailyMedia.previewImage : null
+    },
+    showIfActive () {
+      return this.isActive
     }
   },
   methods: {
