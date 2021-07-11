@@ -45,6 +45,7 @@ export default {
       const currentDailyMedia = this.$store.state.currentDailyMediaShown
       const currentTimeline = this.$store.state.currentTimeline
       this.$store.dispatch('acceptVideo', videoPreviewPlayer.currentTime)
+      // TODO: creating a video screenshot fails, nothing happens and I'm not sure if that crashes the app
       ipcRenderer.send('create-video-screenshot', currentDailyMedia, currentTimeline)
       this.$store.commit('setCurrentDailyMedia', null)
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
