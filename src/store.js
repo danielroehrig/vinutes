@@ -76,6 +76,11 @@ const store = new Vuex.Store({
     changeTimeline (state, timeline) {
       state.currentTimeline = timeline
     },
+
+    /**
+     * Load media files for the current month
+     * @param state
+     */
     loadDailyMedia (state) {
       const startPoint = moment(
         { year: state.currentYear, month: state.currentMonth, day: 1 })
@@ -87,6 +92,7 @@ const store = new Vuex.Store({
         Vue.set(state.mediaFiles, media.day, media)
       })
     },
+
     applyConfig (state, databaseRow) {
       log.debug('System Language: ' + navigator.language)
       if (databaseRow.language) {

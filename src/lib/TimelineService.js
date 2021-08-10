@@ -62,7 +62,7 @@ export const getDailyMediaForTimelineAndRange = (timelineId, startDate, endDate)
 /**
  * Get all daily medias for a timeline
  * @param {int} timelineId
- * @returns {array} DailyMedia
+ * @returns {DailyMedia[]}
  */
 export const getDailyMediaForTimeline = (timelineId) => {
   const dbResults = db.prepare('SELECT m.mediaDate, m.path, m.videoTimestamp, m.mediaType, vs.data AS previewImage FROM media m LEFT JOIN videoStills vS on m.timelineId = vS.timelineId and m.mediaDate = vS.mediaDate WHERE m.timelineId=$id ORDER BY m.mediaDate ASC;').all({
