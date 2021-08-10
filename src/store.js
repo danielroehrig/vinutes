@@ -83,12 +83,8 @@ const store = new Vuex.Store({
       const allMedia = loadDailyMediaForTimeline(state.currentTimeline,
         startPoint.format('YYYY-MM-DD'), endPoint.format('YYYY-MM-DD'))
       state.mediaFiles = {}
-      allMedia.forEach((row) => {
-        const mediaMoment = moment(row.mediaDate)
-        Vue.set(state.mediaFiles, mediaMoment.date(),
-          new DailyMedia(mediaMoment.year(), mediaMoment.month(),
-            mediaMoment.date(), row.path, row.mediaType, row.videoTimestamp,
-            row.videoStill))
+      allMedia.forEach(media => {
+        Vue.set(state.mediaFiles, media.day, media)
       })
     },
     applyConfig (state, databaseRow) {

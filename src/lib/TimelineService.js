@@ -44,6 +44,12 @@ export const loadDailyMediaForTimeline = (id, startDate, endDate) => {
     startDate: startDate,
     endDate: endDate
   })
+  return rows.map(row => {
+    const mediaMoment = moment(row.mediaDate)
+    return new DailyMedia(mediaMoment.year(), mediaMoment.month(),
+      mediaMoment.date(), row.path, row.mediaType, row.videoTimestamp,
+      row.videoStill)
+  })
 }
 
 /**
