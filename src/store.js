@@ -6,7 +6,7 @@ import { handleStoreMutation, loadLastState } from '@/lib/PersistenceService'
 import * as sc from './store-constants'
 import {
   getAllTimelines,
-  loadDailyMediaForTimeline,
+  getDailyMediaForTimelineAndRange,
   loadTimeline,
   deleteMediaFileFromTimeline,
   deleteTimeline
@@ -80,7 +80,7 @@ const store = new Vuex.Store({
       const startPoint = moment(
         { year: state.currentYear, month: state.currentMonth, day: 1 })
       const endPoint = moment(startPoint).endOf('month')
-      const allMedia = loadDailyMediaForTimeline(state.currentTimeline,
+      const allMedia = getDailyMediaForTimelineAndRange(state.currentTimeline,
         startPoint.format('YYYY-MM-DD'), endPoint.format('YYYY-MM-DD'))
       state.mediaFiles = {}
       allMedia.forEach(media => {

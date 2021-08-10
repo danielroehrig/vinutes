@@ -38,9 +38,16 @@ export const createNewTimeline = (name) => {
   return insertResult.lastInsertRowid
 }
 
-export const loadDailyMediaForTimeline = (id, startDate, endDate) => {
-  return db.prepare('SELECT m.*, vS.data AS videoStill FROM media AS m LEFT JOIN videoStills vS ON m.timelineId = vS.timelineId AND m.mediaDate = vS.mediaDate WHERE m.timelineId=$id AND m.mediaDate >= $startDate AND m.mediaDate <= $endDate;').all({
-    id: id,
+/**
+ * Get all Daily Media Files within the given time frame
+ * @param {int} timelineId Timeline id
+ * @param {string} startDate in ISO format
+ * @param {string} endDate in ISO format
+ * @returns {DailyMedia[]}
+ */
+export const getDailyMediaForTimelineAndRange = (timelineId, startDate, endDate) => {
+  const rows = db.prepare('SELECT m.*, vS.data AS videoStill FROM media AS m LEFT JOIN videoStills vS ON m.timelineId = vS.timelineId AND m.mediaDate = vS.mediaDate WHERE m.timelineId=$id AND m.mediaDate >= $startDate AND m.mediaDate <= $endDate;').all({
+    id: timelineId,
     startDate: startDate,
     endDate: endDate
   })
