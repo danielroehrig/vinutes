@@ -1,7 +1,7 @@
 <template>
   <div class="column">
     <button v-if="isVisible && hasMedia" class="delete is-pulled-right removeMedia" @click="removeMedia" :id="deleteButtonId"></button>
-    <div class="box calendar-day" :id="dayId" :class="{'inactive': !isVisible, 'withMedia': (hasMedia), 'dragged': this.draggedOver }" :style="styling"
+    <div class="box calendar-day" :id="dayId" :class="{'inactive': !isVisible, 'withMedia': hasMedia, 'missing': fileMissing, 'dragged': this.draggedOver }" :style="styling"
          @click="calendarDayClicked" @drop.prevent="droppedFile" @dragover.prevent @dragenter.prevent="draggedFile" @dragleave="leaveDrag">
       <div class="date">
         {{ isVisible ? timestampString : '' }}
@@ -48,6 +48,9 @@ export default {
     },
     isVisible () {
       return this.day !== 0
+    },
+    fileMissing () {
+      return this.dailyMedia && this.dailyMedia.missing
     },
     timestampString () {
       moment.locale(this.language)
@@ -146,6 +149,12 @@ div.withMedia {
   background-size: cover;
   color: white;
   text-shadow: 1px 1px #333333;
+}
+
+div.withMedia.missing {
+  box-shadow: inset 0 0 0 5px red;
+  box-sizing: border-box;
+  filter: grayscale(100%);
 }
 
 div.box {

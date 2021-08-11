@@ -87,10 +87,12 @@ const store = new Vuex.Store({
       const endPoint = moment(startPoint).endOf('month')
       const allMedia = getDailyMediaForTimelineAndRange(state.currentTimeline,
         startPoint.format('YYYY-MM-DD'), endPoint.format('YYYY-MM-DD'))
+
       state.mediaFiles = {}
       allMedia.forEach(media => {
         Vue.set(state.mediaFiles, media.day, media)
       })
+      ipcRenderer.send('find-missing-files', allMedia, state.currentYear, state.currentMonth)
     },
 
     applyConfig (state, databaseRow) {
@@ -146,7 +148,6 @@ const store = new Vuex.Store({
      * @param {int} timeline
      */
     changeTimeline (context, timeline) {
-      console.log('Change Timeline')
       const currentTimeline = loadTimeline(timeline)
       context.commit('changeTimeline', currentTimeline.id)
       context.commit('loadDailyMedia')
@@ -209,7 +210,24 @@ const store = new Vuex.Store({
     loadTimelines (context) {
       const timelines = getAllTimelines()
       context.commit('setTimelines', timelines)
+    },
+
+    /**
+     * Mark daily medias where the filepath no longer exists as missing
+     * @param state
+     * @param {DailyMedia[]} missingFiles
+     * @param {int} year
+     * @param {int} month
+     */
+    markMissingFiles ({ state }, { missingFiles, year, month }) {
+      if (year !== state.currentYear || month !== state.currentMonth) {
+        return
+      }
+      missingFiles.forEach(media => {
+        Vue.set(state.mediaFiles, media.day, media)
+      })
     }
+
   },
   getters: {
     timelineNames: state => {

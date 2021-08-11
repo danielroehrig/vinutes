@@ -232,6 +232,17 @@ ipcMain.on('render-image-preview', async (event, dailyMedia) => {
   await VideoRenderer.createImagePreview(dailyMedia, event)
 })
 
+ipcMain.on('find-missing-files', (event, mediaFiles, year, month) => {
+  getMissingFiles(mediaFiles).then(missingFiles => {
+    missingFiles.forEach(missingFile => {
+      missingFile.missing = true
+    })
+    if (missingFiles.length > 0) {
+      event.reply('missing-files-found', missingFiles, year, month)
+    }
+  })
+})
+
 ipcMain.on('exit-app', (event, exitCode) => {
   if (exitCode > 0) {
     log.error('App exited abnormally!')
