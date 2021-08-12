@@ -4,7 +4,7 @@
     <div class="box calendar-day" :id="dayId" :class="{'inactive': !isVisible, 'withMedia': hasMedia, 'missing': fileMissing, 'dragged': this.draggedOver }" :style="styling"
          @click="calendarDayClicked" @drop.prevent="droppedFile" @dragover.prevent @dragenter.prevent="draggedFile" @dragleave="leaveDrag">
       <div class="date">
-        {{ isVisible ? timestampString : '' }}
+        <div v-if="fileMissing"><span class="icon mdi mdi-24px mdi-alert"></span><br>MISSING</div> {{ isVisible && !fileMissing ? timestampString : '' }}
       </div>
     </div>
   </div>
@@ -162,12 +162,13 @@ div.withMedia {
 div.withMedia.missing {
   box-shadow: inset 0 0 0 3px red;
   box-sizing: border-box;
+  color: red;
 }
 
 div.box {
   width: 100%;
   padding: 56.25% 0 0 0;
-  position: relative; /* If you want text inside of it */
+  position: relative;
 }
 
 div.date {
