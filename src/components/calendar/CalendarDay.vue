@@ -67,6 +67,12 @@ export default {
     styling () {
       const mediaFile = this.dailyMedia
       if (mediaFile && mediaFile.previewImage) {
+        if (mediaFile.missing) {
+          return {
+            backgroundImage: 'linear-gradient(black, black), url(\'data:image/jpeg;charset=utf-8;base64,' + mediaFile.previewImage + '\')',
+            'background-blend-mode': 'saturation'
+          }
+        }
         return {
           backgroundImage: 'url(\'data:image/jpeg;charset=utf-8;base64,' + mediaFile.previewImage + '\')'
         }
@@ -147,14 +153,15 @@ div.inactive {
 div.withMedia {
   background-position: center;
   background-size: cover;
+  background-color: unset;
   color: white;
   text-shadow: 1px 1px #333333;
+
 }
 
 div.withMedia.missing {
-  box-shadow: inset 0 0 0 5px red;
+  box-shadow: inset 0 0 0 3px red;
   box-sizing: border-box;
-  filter: grayscale(100%);
 }
 
 div.box {
@@ -188,6 +195,10 @@ div.box:hover {
 div.box:hover, div.box.dragged {
   background-color: $primary;
   color: white;
+}
+
+div.box.missing:hover, div.box.missing.dragged {
+  background-color: unset;
 }
 
 div.box.dragged {
