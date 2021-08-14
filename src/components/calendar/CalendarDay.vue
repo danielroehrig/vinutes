@@ -3,8 +3,8 @@
     <button v-if="isVisible && hasMedia" class="delete is-pulled-right removeMedia" @click="removeMedia" :id="deleteButtonId"></button>
     <div class="box calendar-day" :id="dayId" :class="{'inactive': !isVisible, 'withMedia': hasMedia, 'missing': fileMissing, 'dragged': this.draggedOver }" :style="styling"
          @click="calendarDayClicked" @drop.prevent="droppedFile" @dragover.prevent @dragenter.prevent="draggedFile" @dragleave="leaveDrag">
-      <div class="date">
-        <div v-if="fileMissing"><span class="icon mdi mdi-24px mdi-alert"></span><br>MISSING</div> {{ isVisible && !fileMissing ? timestampString : '' }}
+      <div class="date" :class="{ 'missing': fileMissing }">
+        <div v-if="fileMissing"><span class="icon mdi mdi-24px mdi-alert"></span><br>{{ $t('missing') }}!</div> {{ isVisible && !fileMissing ? timestampString : '' }}
       </div>
     </div>
   </div>
@@ -163,6 +163,7 @@ div.withMedia.missing {
   box-shadow: inset 0 0 0 3px red;
   box-sizing: border-box;
   color: red;
+  padding: 56.25% 0 0 0;
 }
 
 div.box {
@@ -178,6 +179,10 @@ div.date {
   bottom: 0;
   right: 0;
   padding: 20px;
+}
+
+div.date.missing {
+  padding: 10px;
 }
 
 button.removeMedia {

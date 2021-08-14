@@ -34,6 +34,7 @@ export const de = {
     'unplayable-media': 'Video konnte nicht abgespielt werden!'
   },
   language: 'Sprache',
+  missing: 'Fehlt',
   'whole-time-line': 'Gesamtes Zeitline',
   year: 'Jahr',
   month: 'Monat',
