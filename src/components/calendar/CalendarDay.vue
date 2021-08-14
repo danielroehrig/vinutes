@@ -97,7 +97,7 @@ export default {
       }
       this.setCurrentDaySelected(this.day)
       const mediaFile = this.mediaFiles[this.day]
-      if (mediaFile) {
+      if (mediaFile && !mediaFile.missing) {
         this.setCurrentDailyMedia(mediaFile)
         const newState = mediaFile.mediaType === 'video' ? sc.APP_STATE_VIDEO_PLAYER : sc.APP_STATE_IMAGE_VIEWER
         this.changeAppState(newState)
@@ -205,6 +205,7 @@ div.box:hover, div.box.dragged {
 
 div.box.missing:hover, div.box.missing.dragged {
   background-color: unset;
+  color: red;
 }
 
 div.box.dragged {
