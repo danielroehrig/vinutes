@@ -31,7 +31,7 @@
       </div>
       <footer class="footer">
         <div class="content">
-          <p class="has-text-weight-light is-size-7">Version 0.3.3-1 - 2021-07-11</p>
+          <p class="has-text-weight-light is-size-7">Version 0.3.4 - 2021-10-15</p>
           <p>
             <strong>Vinutes</strong> by <a href="https://github.com/danielroehrig" target="_blank">Daniel Röhrig</a>. The
             <a href="https://github.com/danielroehrig/vinutes" target="_blank">source code</a> is licensed

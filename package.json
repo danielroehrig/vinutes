@@ -43,6 +43,7 @@
     "bulma": "^0.9.3",
     "bulma-calendar": "^6.1.8",
     "calendar": "^0.1.1",
+    "dayjs": "^1.10.6",
     "electron-log": "^4.3.5",
     "fluent-ffmpeg": "^2.1.2",
     "mime": "^2.4.6",
