@@ -58,6 +58,7 @@ export const en =
           'Unplayable video!'
       },
     language: 'Language',
+    missing: 'Missing',
     'whole-time-line': 'Whole time line',
     year: 'Year',
     month: 'Month',

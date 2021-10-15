@@ -92,7 +92,10 @@ const run = (filePath, dailyMediaObjects, tmpFolder, event) => {
         return mergeVideos(filePaths, filePath, event)
       }
     )
-    .catch(error => log.error('Video render process failed with error: ' + error.message))
+    .catch(error => {
+      log.error('Video render process failed with error: ' + error.message)
+      throw error
+    })
 }
 
 /**

@@ -1,10 +1,10 @@
 <template>
   <div class="column">
     <button v-if="isVisible && hasMedia" class="delete is-pulled-right removeMedia" @click="removeMedia" :id="deleteButtonId"></button>
-    <div class="box calendar-day" :id="dayId" :class="{'inactive': !isVisible, 'withMedia': (hasMedia), 'dragged': this.draggedOver }" :style="styling"
+    <div class="box calendar-day" :id="dayId" :class="{'inactive': !isVisible, 'withMedia': hasMedia, 'missing': fileMissing, 'dragged': this.draggedOver }" :style="styling"
          @click="calendarDayClicked" @drop.prevent="droppedFile" @dragover.prevent @dragenter.prevent="draggedFile" @dragleave="leaveDrag">
-      <div class="date">
-        {{ isVisible ? timestampString : '' }}
+      <div class="date" :class="{ 'missing': fileMissing }">
+        <div v-if="fileMissing"><span class="icon mdi mdi-24px mdi-alert"></span><br>{{ $t('missing') }}!</div> {{ isVisible && !fileMissing ? timestampString : '' }}
       </div>
     </div>
   </div>
@@ -49,6 +49,9 @@ export default {
     isVisible () {
       return this.day !== 0
     },
+    fileMissing () {
+      return this.dailyMedia && this.dailyMedia.missing
+    },
     timestampString () {
       moment.locale(this.language)
       const currentMoment = moment({
@@ -64,6 +67,12 @@ export default {
     styling () {
       const mediaFile = this.dailyMedia
       if (mediaFile && mediaFile.previewImage) {
+        if (mediaFile.missing) {
+          return {
+            backgroundImage: 'linear-gradient(black, black), url(\'data:image/jpeg;charset=utf-8;base64,' + mediaFile.previewImage + '\')',
+            'background-blend-mode': 'saturation'
+          }
+        }
         return {
           backgroundImage: 'url(\'data:image/jpeg;charset=utf-8;base64,' + mediaFile.previewImage + '\')'
         }
@@ -88,7 +97,7 @@ export default {
       }
       this.setCurrentDaySelected(this.day)
       const mediaFile = this.mediaFiles[this.day]
-      if (mediaFile) {
+      if (mediaFile && !mediaFile.missing) {
         this.setCurrentDailyMedia(mediaFile)
         const newState = mediaFile.mediaType === 'video' ? sc.APP_STATE_VIDEO_PLAYER : sc.APP_STATE_IMAGE_VIEWER
         this.changeAppState(newState)
@@ -144,14 +153,23 @@ div.inactive {
 div.withMedia {
   background-position: center;
   background-size: cover;
+  background-color: unset;
   color: white;
   text-shadow: 1px 1px #333333;
+
+}
+
+div.withMedia.missing {
+  box-shadow: inset 0 0 0 3px red;
+  box-sizing: border-box;
+  color: red;
+  padding: 56.25% 0 0 0;
 }
 
 div.box {
   width: 100%;
   padding: 56.25% 0 0 0;
-  position: relative; /* If you want text inside of it */
+  position: relative;
 }
 
 div.date {
@@ -161,6 +179,10 @@ div.date {
   bottom: 0;
   right: 0;
   padding: 20px;
+}
+
+div.date.missing {
+  padding: 10px;
 }
 
 button.removeMedia {
@@ -179,6 +201,11 @@ div.box:hover {
 div.box:hover, div.box.dragged {
   background-color: $primary;
   color: white;
+}
+
+div.box.missing:hover, div.box.missing.dragged {
+  background-color: unset;
+  color: red;
 }
 
 div.box.dragged {

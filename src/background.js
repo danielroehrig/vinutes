@@ -12,7 +12,8 @@ const { ipcMain } = require('electron')
 const path = require('path')
 const fs = require('fs')
 const log = require('electron-log')
-const VideoRenderer = require('./lib/VideoRenderer')
+const VideoRenderer = require('@/lib/VideoRenderer')
+const { getMissingFiles } = require('@/lib/FileChecker')
 const os = require('os')
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -192,23 +193,32 @@ ipcMain.on('get-user-path', (event) => {
   event.returnValue = app.getPath('userData')
 })
 
-ipcMain.on('start-rendering', (event, filePath, mediaFiles) => {
+ipcMain.on('start-rendering', async (event, filePath, mediaFiles) => {
   const renderedTempPath = path.join(app.getPath('temp'), 'vinutes-rendered')
-  console.log('start rendering files')
+  log.debug('Start rendering')
   try {
     fs.mkdirSync(renderedTempPath)
   } catch (e) {
-    console.log('path exists presumably')
+    // This is the "best practice" for creating a directory only if it not already exists afaik
+    log.debug('Directory for temp files already exists.')
   }
+  const missingFiles = await getMissingFiles(mediaFiles)
+  if (missingFiles.length > 0) {
+    log.error('One or more missing files: ' + missingFiles.map(file => file.filePath).join(', '))
+    event.reply('render-cancelled', new Error('Missing files'))
+    return
+  }
+
   VideoRenderer
     .run(filePath, mediaFiles, renderedTempPath, event)
     .then(
       () => {
         event.reply('render-done')
-        console.log('rendering done')
+        log.debug('Done rendering')
       }
     )
     .catch(error => {
+      log.error('Render failed with error: ' + error.message)
       event.reply('render-cancelled', error)
     })
 })
@@ -220,6 +230,17 @@ ipcMain.on('cancel-rendering', (event) => {
 ipcMain.on('render-image-preview', async (event, dailyMedia) => {
   console.log('creating image preview')
   await VideoRenderer.createImagePreview(dailyMedia, event)
+})
+
+ipcMain.on('find-missing-files', (event, mediaFiles, year, month) => {
+  getMissingFiles(mediaFiles).then(missingFiles => {
+    missingFiles.forEach(missingFile => {
+      missingFile.missing = true
+    })
+    if (missingFiles.length > 0) {
+      event.reply('missing-files-found', missingFiles, year, month)
+    }
+  })
 })
 
 ipcMain.on('exit-app', (event, exitCode) => {

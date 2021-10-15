@@ -51,3 +51,7 @@ ipcRenderer.on('render-cancelled', event => {
     position: 'is-bottom'
   })
 })
+
+ipcRenderer.on('missing-files-found', (event, missingFiles, year, month) => {
+  store.dispatch('markMissingFiles', { missingFiles, year, month })
+})
