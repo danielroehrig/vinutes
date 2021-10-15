@@ -205,7 +205,7 @@ ipcMain.on('start-rendering', async (event, filePath, mediaFiles) => {
   const missingFiles = await getMissingFiles(mediaFiles)
   if (missingFiles.length > 0) {
     log.error('One or more missing files: ' + missingFiles.map(file => file.filePath).join(', '))
-    event.reply('render-cancelled', new Error('Missing files'))
+    event.reply('render-cancelled')
     return
   }
 
@@ -219,7 +219,7 @@ ipcMain.on('start-rendering', async (event, filePath, mediaFiles) => {
     )
     .catch(error => {
       log.error('Render failed with error: ' + error.message)
-      event.reply('render-cancelled', error)
+      event.reply('render-cancelled')
     })
 })
 
