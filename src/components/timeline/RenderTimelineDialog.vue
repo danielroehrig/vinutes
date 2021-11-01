@@ -1,5 +1,5 @@
 <template>
-  <div class="modal" :class="{'is-active': isVisible}" id="deleteMediaDialog">
+  <div class="modal" :class="{'is-active': isVisible}" id="renderTimelineDialog">
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
