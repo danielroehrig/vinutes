@@ -27,10 +27,16 @@
           <i>{{ $t('text.render-current-year') }}</i>
         </div>
         <div class="field" :class="{'is-hidden': !tabSelected('custom')}">
-          <div class="control">
-            <input type="date" id="renderTimeSpanDialogDateSpanChooser" ref='calendarTrigger'>
-            <i>{{ $t('text.render-custom') }}</i>
-          </div>
+          <i>{{ $t('text.render-current-month') }}</i>
+            <b-datepicker
+                placeholder="Click to select..."
+                v-model="dates"
+                inline
+                range
+                v-on:range-start="rangeStart"
+            >
+            </b-datepicker>
+          {{ weirdthing }}
         </div>
       </section>
       <footer class="modal-card-foot">
@@ -44,38 +50,20 @@
   </div>
 </template>
 <script>
-import bulmaCalendar from 'bulma-calendar'
 import { getDailyMediaForTimeline, getDailyMediaForTimelineAndTimeRange } from '@/lib/TimelineService'
 import * as sc from '@/store-constants'
 import { mapState } from 'vuex'
 import moment from 'moment'
 
-let calendar = null
 export default {
   name: 'RenderTimeSpanDialog',
   data: function () {
     return {
       selectedTab: 'whole',
       startDate: null,
-      endDate: null
+      endDate: null,
+      dates: []
     }
-  },
-  mounted () {
-    calendar = bulmaCalendar.attach(this.$refs.calendarTrigger, {
-      type: 'date',
-      isRange: true,
-      dateFormat: 'DD.MM.YYYY',
-      displayMode: 'dialog',
-      showFooter: false
-    })[0]
-    calendar.on('select', (e) => {
-      this.startDate = e.data.startDate
-      this.endDate = e.data.endDate
-    })
-    calendar.on('clear', (e) => {
-      this.startDate = null
-      this.endDate = null
-    })
   },
   computed: {
     ...mapState([
@@ -86,6 +74,10 @@ export default {
     },
     acceptButtonEnabled () {
       return this.selectedTab !== 'custom' || (this.startDate !== null && this.endDate !== null)
+    },
+    weirdthing () {
+      console.log(this.dates)
+      return this.dates
     }
   },
   methods: {
@@ -97,6 +89,9 @@ export default {
     },
     cancel () {
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+    },
+    rangeStart (date) {
+      console.log(date)
     },
     accept () {
       // Set name from timeline plus date range
@@ -140,5 +135,7 @@ export default {
 }
 </script>
 <style>
-@import "~bulma-calendar/dist/css/bulma-calendar.min.css";
+.datepicker-header {
+  border-bottom: none!important;
+}
 </style>

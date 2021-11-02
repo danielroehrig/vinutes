@@ -39,9 +39,8 @@
   "dependencies": {
     "@mdi/font": "^5.9.55",
     "better-sqlite3": "^7.4.1",
-    "buefy": "^0.9.8",
+    "buefy": "^0.9.11",
     "bulma": "^0.9.3",
-    "bulma-calendar": "^6.1.8",
     "calendar": "^0.1.1",
     "dayjs": "^1.10.6",
     "electron-log": "^4.3.5",
