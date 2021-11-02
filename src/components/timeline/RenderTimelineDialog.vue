@@ -75,7 +75,7 @@ export default {
       return this.appState === sc.APP_STATE_CHOOSE_RENDER_TIME_SPAN
     },
     acceptButtonEnabled () {
-      return this.selectedTab !== 'custom' || (this.startDate !== null && this.endDate !== null)
+      return this.selectedTab !== 'custom' || this.dateRange.length === 2
     },
     displayTimeRange () {
       let dateRange = 'please select range'
@@ -124,8 +124,8 @@ export default {
           mediaFiles = getDailyMediaForTimelineAndTimeRange(this.$store.state.currentTimeline, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))
           break
         case 'custom':
-          startDate = moment({ year: this.startDate.getFullYear(), month: this.startDate.getMonth(), day: this.startDate.getDate() })
-          endDate = moment({ year: this.endDate.getFullYear(), month: this.endDate.getMonth(), day: this.endDate.getDate() })
+          startDate = dayjs(this.dateRange[0])
+          endDate = dayjs(this.dateRange[1])
           console.log('custom:  ' + startDate.format('YYYY-MM-DD') + endDate.format('YYYY-MM-DD'))
           mediaFiles = getDailyMediaForTimelineAndTimeRange(this.$store.state.currentTimeline, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))
           break
