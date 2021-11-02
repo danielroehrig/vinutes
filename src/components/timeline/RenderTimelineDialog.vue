@@ -32,6 +32,7 @@
                 v-model="dateRange"
                 inline
                 range
+                :locale="language"
             >
             </b-datepicker>
           <i>{{ displayTimeRange }}</i>
@@ -86,6 +87,9 @@ export default {
         dateRange = (startDate.format('LL')) + ' - ' + endDate.format('LL')
       }
       return dateRange
+    },
+    language () {
+      return this.$store.state.language
     }
   },
   methods: {
