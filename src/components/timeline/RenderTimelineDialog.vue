@@ -27,16 +27,14 @@
           <i>{{ $t('text.render-current-year') }}</i>
         </div>
         <div class="field" :class="{'is-hidden': !tabSelected('custom')}">
-          <i>{{ $t('text.render-current-month') }}</i>
             <b-datepicker
                 placeholder="Click to select..."
-                v-model="dates"
+                v-model="dateRange"
                 inline
                 range
-                v-on:range-start="rangeStart"
             >
             </b-datepicker>
-          {{ weirdthing }}
+          <i>{{ displayTimeRange }}</i>
         </div>
       </section>
       <footer class="modal-card-foot">
@@ -54,6 +52,9 @@ import { getDailyMediaForTimeline, getDailyMediaForTimelineAndTimeRange } from '
 import * as sc from '@/store-constants'
 import { mapState } from 'vuex'
 import moment from 'moment'
+import dayjs from 'dayjs'
+import 'dayjs/locale/de'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
 
 export default {
   name: 'RenderTimeSpanDialog',
@@ -62,7 +63,7 @@ export default {
       selectedTab: 'whole',
       startDate: null,
       endDate: null,
-      dates: []
+      dateRange: []
     }
   },
   computed: {
@@ -75,9 +76,16 @@ export default {
     acceptButtonEnabled () {
       return this.selectedTab !== 'custom' || (this.startDate !== null && this.endDate !== null)
     },
-    weirdthing () {
-      console.log(this.dates)
-      return this.dates
+    displayTimeRange () {
+      let dateRange = 'please select range'
+      if (this.dateRange.length >= 2) {
+        dayjs.locale(this.$store.state.language)
+        dayjs.extend(localizedFormat)
+        const startDate = dayjs(this.dateRange[0])
+        const endDate = dayjs(this.dateRange[1])
+        dateRange = (startDate.format('LL')) + ' - ' + endDate.format('LL')
+      }
+      return dateRange
     }
   },
   methods: {
@@ -89,9 +97,6 @@ export default {
     },
     cancel () {
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
-    },
-    rangeStart (date) {
-      console.log(date)
     },
     accept () {
       // Set name from timeline plus date range
