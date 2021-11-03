@@ -33,6 +33,7 @@
                 inline
                 range
                 :locale="language"
+                v-on:range-start="rangeStart"
             >
             </b-datepicker>
           <i>{{ displayTimeRange }}</i>
@@ -78,14 +79,17 @@ export default {
       return this.selectedTab !== 'custom' || this.dateRange.length === 2
     },
     displayTimeRange () {
+      console.log('display setup')
       let dateRange = 'please select range'
       if (this.dateRange.length >= 2) {
+        console.log('bigger 2')
         dayjs.locale(this.$store.state.language)
         dayjs.extend(localizedFormat)
         const startDate = dayjs(this.dateRange[0])
         const endDate = dayjs(this.dateRange[1])
         dateRange = (startDate.format('LL')) + ' - ' + endDate.format('LL')
       }
+      console.log(dateRange)
       return dateRange
     },
     language () {
@@ -98,6 +102,10 @@ export default {
     },
     selectTab (tab) {
       this.selectedTab = tab
+    },
+    rangeStart () {
+      console.log('Range Start')
+      this.dateRange = []
     },
     cancel () {
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
