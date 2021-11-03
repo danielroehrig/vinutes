@@ -28,7 +28,6 @@
         </div>
         <div class="field" :class="{'is-hidden': !tabSelected('custom')}">
             <b-datepicker
-                placeholder="Click to select..."
                 v-model="dateRange"
                 inline
                 range
@@ -79,10 +78,8 @@ export default {
       return this.selectedTab !== 'custom' || this.dateRange.length === 2
     },
     displayTimeRange () {
-      console.log('display setup')
-      let dateRange = 'please select range'
+      let dateRange = this.$t('text.select-render-range')
       if (this.dateRange.length >= 2) {
-        console.log('bigger 2')
         dayjs.locale(this.$store.state.language)
         dayjs.extend(localizedFormat)
         const startDate = dayjs(this.dateRange[0])

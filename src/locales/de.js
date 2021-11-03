@@ -15,7 +15,8 @@ export const de = {
     'render-current-year': 'Das gesamte aktuelle Jahr',
     'render-custom': 'Wähle die Zeitspanne zum Rendern aus',
     'render-complete': 'Video gespeichert!',
-    'render-cancelled': 'Vorgang abgebrochen!'
+    'render-cancelled': 'Vorgang abgebrochen!',
+    'select-render-range': 'Bitte Zeitspanne auswählen'
   },
   placeholder: {
     'enter-new-timeline-name': 'Name der Zeitlinie',
