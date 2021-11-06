@@ -31,7 +31,9 @@ export const en =
         'render-complete':
           'Video saved!',
         'render-cancelled':
-          'Rendering cancelled!'
+          'Rendering cancelled!',
+        'select-render-range':
+          'Please select range'
       },
     placeholder:
       {

@@ -1,5 +1,5 @@
 <template>
-  <div class="modal" :class="{'is-active': isVisible}" id="deleteMediaDialog">
+  <div class="modal" :class="{'is-active': isVisible}" id="renderTimelineDialog">
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
@@ -27,10 +27,15 @@
           <i>{{ $t('text.render-current-year') }}</i>
         </div>
         <div class="field" :class="{'is-hidden': !tabSelected('custom')}">
-          <div class="control">
-            <input type="date" id="renderTimeSpanDialogDateSpanChooser" ref='calendarTrigger'>
-            <i>{{ $t('text.render-custom') }}</i>
-          </div>
+            <b-datepicker
+                v-model="dateRange"
+                inline
+                range
+                :locale="language"
+                v-on:range-start="rangeStart"
+            >
+            </b-datepicker>
+          <i>{{ displayTimeRange }}</i>
         </div>
       </section>
       <footer class="modal-card-foot">
@@ -44,38 +49,23 @@
   </div>
 </template>
 <script>
-import bulmaCalendar from 'bulma-calendar'
 import { getDailyMediaForTimeline, getDailyMediaForTimelineAndTimeRange } from '@/lib/TimelineService'
 import * as sc from '@/store-constants'
 import { mapState } from 'vuex'
 import moment from 'moment'
+import dayjs from 'dayjs'
+import 'dayjs/locale/de'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
 
-let calendar = null
 export default {
   name: 'RenderTimeSpanDialog',
   data: function () {
     return {
       selectedTab: 'whole',
       startDate: null,
-      endDate: null
+      endDate: null,
+      dateRange: []
     }
-  },
-  mounted () {
-    calendar = bulmaCalendar.attach(this.$refs.calendarTrigger, {
-      type: 'date',
-      isRange: true,
-      dateFormat: 'DD.MM.YYYY',
-      displayMode: 'dialog',
-      showFooter: false
-    })[0]
-    calendar.on('select', (e) => {
-      this.startDate = e.data.startDate
-      this.endDate = e.data.endDate
-    })
-    calendar.on('clear', (e) => {
-      this.startDate = null
-      this.endDate = null
-    })
   },
   computed: {
     ...mapState([
@@ -85,7 +75,22 @@ export default {
       return this.appState === sc.APP_STATE_CHOOSE_RENDER_TIME_SPAN
     },
     acceptButtonEnabled () {
-      return this.selectedTab !== 'custom' || (this.startDate !== null && this.endDate !== null)
+      return this.selectedTab !== 'custom' || this.dateRange.length === 2
+    },
+    displayTimeRange () {
+      let dateRange = this.$t('text.select-render-range')
+      if (this.dateRange.length >= 2) {
+        dayjs.locale(this.$store.state.language)
+        dayjs.extend(localizedFormat)
+        const startDate = dayjs(this.dateRange[0])
+        const endDate = dayjs(this.dateRange[1])
+        dateRange = (startDate.format('LL')) + ' - ' + endDate.format('LL')
+      }
+      console.log(dateRange)
+      return dateRange
+    },
+    language () {
+      return this.$store.state.language
     }
   },
   methods: {
@@ -94,6 +99,10 @@ export default {
     },
     selectTab (tab) {
       this.selectedTab = tab
+    },
+    rangeStart () {
+      console.log('Range Start')
+      this.dateRange = []
     },
     cancel () {
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
@@ -120,8 +129,8 @@ export default {
           mediaFiles = getDailyMediaForTimelineAndTimeRange(this.$store.state.currentTimeline, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))
           break
         case 'custom':
-          startDate = moment({ year: this.startDate.getFullYear(), month: this.startDate.getMonth(), day: this.startDate.getDate() })
-          endDate = moment({ year: this.endDate.getFullYear(), month: this.endDate.getMonth(), day: this.endDate.getDate() })
+          startDate = dayjs(this.dateRange[0])
+          endDate = dayjs(this.dateRange[1])
           console.log('custom:  ' + startDate.format('YYYY-MM-DD') + endDate.format('YYYY-MM-DD'))
           mediaFiles = getDailyMediaForTimelineAndTimeRange(this.$store.state.currentTimeline, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))
           break
@@ -140,5 +149,7 @@ export default {
 }
 </script>
 <style>
-@import "~bulma-calendar/dist/css/bulma-calendar.min.css";
+.datepicker-header {
+  border-bottom: none!important;
+}
 </style>
