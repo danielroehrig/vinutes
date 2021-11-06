@@ -38,7 +38,7 @@
   "main": "background.js",
   "dependencies": {
     "@mdi/font": "^6.4.95",
-    "better-sqlite3": "^7.4.1",
+    "better-sqlite3": "^7.4.4",
     "buefy": "^0.9.11",
     "bulma": "^0.9.3",
     "calendar": "^0.1.1",
