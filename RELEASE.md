@@ -1,12 +1,12 @@
-# Version 0.3.3 - Going slow, Steam Summer Sale, Gimme a Break
+# Version 0.3.4 - The illusion of safety
 
-I will change this when I'm not that tired. Definitely. Possibly.
+Sometimes, things go absolutely horribly wrong. Let's try and catch at least
+the most obvious errors.
 
 ### Features
-* Use system language, if that's one of the TWO languages I currently support
-* Logging in renderer thread
-* Catch media files that are not supported when trying to insert them into the timeline
+* Find missing files before rendering and warning the user about that
+* Much more logging, so in case things go south, we at least have a chance of finding the issue
+* Replacing the bulma calendar that stuck out like a sour thumb with buefy calendar for date range rendering
 
 ### Internals
-* Remove the fileTypeCategory catastrophe of a function from the DailyMedia class
-* Updated almost all dependencies like electron 11
+* Moving away from momentjs to dayjs

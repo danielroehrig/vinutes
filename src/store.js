@@ -6,7 +6,7 @@ import { handleStoreMutation, loadLastState } from '@/lib/PersistenceService'
 import * as sc from './store-constants'
 import {
   getAllTimelines,
-  loadDailyMediaForTimeline,
+  getDailyMediaForTimelineAndRange,
   loadTimeline,
   deleteMediaFileFromTimeline,
   deleteTimeline
@@ -76,21 +76,25 @@ const store = new Vuex.Store({
     changeTimeline (state, timeline) {
       state.currentTimeline = timeline
     },
+
+    /**
+     * Load media files for the current month
+     * @param state
+     */
     loadDailyMedia (state) {
       const startPoint = moment(
         { year: state.currentYear, month: state.currentMonth, day: 1 })
       const endPoint = moment(startPoint).endOf('month')
-      const allMedia = loadDailyMediaForTimeline(state.currentTimeline,
+      const allMedia = getDailyMediaForTimelineAndRange(state.currentTimeline,
         startPoint.format('YYYY-MM-DD'), endPoint.format('YYYY-MM-DD'))
+
       state.mediaFiles = {}
-      allMedia.forEach((row) => {
-        const mediaMoment = moment(row.mediaDate)
-        Vue.set(state.mediaFiles, mediaMoment.date(),
-          new DailyMedia(mediaMoment.year(), mediaMoment.month(),
-            mediaMoment.date(), row.path, row.mediaType, row.videoTimestamp,
-            row.videoStill))
+      allMedia.forEach(media => {
+        Vue.set(state.mediaFiles, media.day, media)
       })
+      ipcRenderer.send('find-missing-files', allMedia, state.currentYear, state.currentMonth)
     },
+
     applyConfig (state, databaseRow) {
       log.debug('System Language: ' + navigator.language)
       if (databaseRow.language) {
@@ -144,7 +148,6 @@ const store = new Vuex.Store({
      * @param {int} timeline
      */
     changeTimeline (context, timeline) {
-      console.log('Change Timeline')
       const currentTimeline = loadTimeline(timeline)
       context.commit('changeTimeline', currentTimeline.id)
       context.commit('loadDailyMedia')
@@ -207,7 +210,24 @@ const store = new Vuex.Store({
     loadTimelines (context) {
       const timelines = getAllTimelines()
       context.commit('setTimelines', timelines)
+    },
+
+    /**
+     * Mark daily medias where the filepath no longer exists as missing
+     * @param state
+     * @param {DailyMedia[]} missingFiles
+     * @param {int} year
+     * @param {int} month
+     */
+    markMissingFiles ({ state }, { missingFiles, year, month }) {
+      if (year !== state.currentYear || month !== state.currentMonth) {
+        return
+      }
+      missingFiles.forEach(media => {
+        Vue.set(state.mediaFiles, media.day, media)
+      })
     }
+
   },
   getters: {
     timelineNames: state => {

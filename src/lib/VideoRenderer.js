@@ -7,17 +7,21 @@ let ffmpegPath = null
 const silenceMP3Path = path.resolve(path.join(app.getAppPath(), '..', 'public', 'silence.mp3'))
 const FfmpegCommand = require('fluent-ffmpeg')
 const sharp = require('sharp')
+const log = require('electron-log')
 switch (os.type()) {
   case 'Linux':
     ffmpegPath = path.join(app.getAppPath(), '..', 'bin', 'amd64', 'ffmpeg')
+    log.debug('OS detected as Linux')
     break
   case 'Windows_NT':
     ffmpegPath = path.join(app.getAppPath(), '..', 'bin', 'win64', 'ffmpeg.exe')
     FfmpegCommand.setFfprobePath(path.join(app.getAppPath(), '..', 'bin', 'win64', 'ffprobe.exe'))
+    log.debug('OS detected as Windows')
     break
   case 'Darwin':
     ffmpegPath = path.join(app.getAppPath(), '..', 'bin', 'macos', 'ffmpeg')
     FfmpegCommand.setFfprobePath(path.join(app.getAppPath(), '..', 'bin', 'macos', 'ffprobe'))
+    log.debug('OS detected as Darwin')
     break
 }
 
@@ -43,6 +47,8 @@ const createScreenshot = (dailyMedia, timeline, event) => {
     const buff = fs.readFileSync(path.join(app.getPath('temp'), screenshotName))
     dailyMedia.previewImage = buff.toString('base64')
     event.reply('screenshot-created', dailyMedia)
+  }).on('error', function () {
+    log.error('Could not create screenshot for ' + screenshotName)
   })
 }
 
@@ -63,6 +69,11 @@ const createImagePreview = (dailyMedia, event) => {
       dailyMedia.previewImage = outputBuffer.toString('base64')
       event.reply('screenshot-created', dailyMedia)
     })
+    .catch(error => {
+      log.error(
+        'Could not create a thumbnail for the image ' + dailyMedia.filePath +
+      ' with error ' + error.message)
+    })
 }
 
 /**
@@ -81,6 +92,10 @@ const run = (filePath, dailyMediaObjects, tmpFolder, event) => {
         return mergeVideos(filePaths, filePath, event)
       }
     )
+    .catch(error => {
+      log.error('Video render process failed with error: ' + error.message)
+      throw error
+    })
 }
 
 /**
@@ -129,7 +144,7 @@ const renderToVideoClip = (dailyMedia, tmpFolder) => {
   } else if (dailyMedia.mediaType === 'image') {
     return prepareStillImageVideo(dailyMedia, tmpFolder, mediaDateString, dateName, tmpFileName)
   } else {
-    return Promise.reject(new Error('Unsupported file type'))
+    return Promise.reject(new Error('Unsupported file type for ' + dailyMedia.filePath))
   }
 }
 
@@ -176,7 +191,8 @@ FfmpegCommand.prototype.setOutputParameters = function (tmpFileName) {
  * @param {string}tmpFileName
  * @return {Promise<unknown>}
  */
-function prepareVideoClip (dailyMedia, tmpFolder, mediaDateString, dateName, tmpFileName) {
+function prepareVideoClip (
+  dailyMedia, tmpFolder, mediaDateString, dateName, tmpFileName) {
   return new Promise((resolve, reject) => {
     const ffmpeg = new FfmpegCommand()
     currentFFmpegCommand = ffmpeg
@@ -186,7 +202,7 @@ function prepareVideoClip (dailyMedia, tmpFolder, mediaDateString, dateName, tmp
       .addDateText(dateName)
       .setOutputParameters(tmpFileName)
       .on('error', (e) => {
-        reject(Error(e))
+        reject(Error('Render failed for file ' + dailyMedia.filePath + ' with ffmpeg error: ' + e))
       })
       .on('start', function () {
         console.log('Rendering started for ' + dailyMedia.filePath + ' at position ' + dailyMedia.timeStamp)
@@ -268,15 +284,12 @@ const mergeVideos = (videoPaths, outputPath, event) => {
       .on('end', () => {
         console.log('merging ended')
         resolve(outputPath)
-      })
-      .on('error', (e) => {
+      }).on('error', (e) => {
         reject(Error(e))
-      })
-      .on('start', () => {
+      }).on('start', () => {
         event.reply('render-update', null, 90)
         console.log('merging started')
-      })
-      .mergeToFile(outputPath, app.getPath('temp'))
+      }).mergeToFile(outputPath, app.getPath('temp'))
   })
 }
 

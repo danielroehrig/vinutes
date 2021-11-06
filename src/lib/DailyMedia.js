@@ -23,6 +23,7 @@ export default class DailyMedia {
     this.timeStamp = timeStamp
     this.previewImage = previewImage
     this.mediaType = mediaType
+    this._missing = false
   }
 
   get dateAsIso () {
@@ -31,6 +32,18 @@ export default class DailyMedia {
 
   get dateAsMoment () {
     return dateAsMoment(this)
+  }
+
+  get missing () {
+    return this._missing
+  }
+
+  /**
+   * Marks the DailyMedia as "missing", e.g. deleted or moved
+   * @param {boolean} isMissing
+   */
+  set missing (isMissing) {
+    this._missing = isMissing
   }
 
   /**

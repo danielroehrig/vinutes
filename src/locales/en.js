@@ -31,7 +31,9 @@ export const en =
         'render-complete':
           'Video saved!',
         'render-cancelled':
-          'Rendering cancelled!'
+          'Rendering cancelled!',
+        'select-render-range':
+          'Please select range'
       },
     placeholder:
       {
@@ -58,6 +60,7 @@ export const en =
           'Unplayable video!'
       },
     language: 'Language',
+    missing: 'Missing',
     'whole-time-line': 'Whole time line',
     year: 'Year',
     month: 'Month',

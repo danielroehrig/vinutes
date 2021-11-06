@@ -15,7 +15,8 @@ export const de = {
     'render-current-year': 'Das gesamte aktuelle Jahr',
     'render-custom': 'Wähle die Zeitspanne zum Rendern aus',
     'render-complete': 'Video gespeichert!',
-    'render-cancelled': 'Vorgang abgebrochen!'
+    'render-cancelled': 'Vorgang abgebrochen!',
+    'select-render-range': 'Bitte Zeitspanne auswählen'
   },
   placeholder: {
     'enter-new-timeline-name': 'Name der Zeitlinie',
@@ -34,6 +35,7 @@ export const de = {
     'unplayable-media': 'Video konnte nicht abgespielt werden!'
   },
   language: 'Sprache',
+  missing: 'Fehlt',
   'whole-time-line': 'Gesamtes Zeitline',
   year: 'Jahr',
   month: 'Monat',

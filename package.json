@@ -6,7 +6,7 @@
     "diary"
   ],
   "homepage": "http://vinutes.org",
-  "version": "0.3.3",
+  "version": "0.3.3-1",
   "private": true,
   "author": {
     "name": "Daniel Röhrig",
@@ -39,10 +39,10 @@
   "dependencies": {
     "@mdi/font": "^5.9.55",
     "better-sqlite3": "^7.4.1",
-    "buefy": "^0.9.8",
+    "buefy": "^0.9.11",
     "bulma": "^0.9.3",
-    "bulma-calendar": "^6.1.8",
     "calendar": "^0.1.1",
+    "dayjs": "^1.10.6",
     "electron-log": "^4.3.5",
     "fluent-ffmpeg": "^2.1.2",
     "mime": "^2.4.6",
