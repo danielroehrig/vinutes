@@ -6,6 +6,7 @@ the most obvious errors.
 ### Features
 * Find missing files before rendering and warning the user about that
 * Much more logging, so in case things go south, we at least have a chance of finding the issue
+* Replacing the bulma calendar that stuck out like a sour thumb with buefy calendar for date range rendering
 
 ### Internals
 * Moving away from momentjs to dayjs
