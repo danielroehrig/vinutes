@@ -52,7 +52,7 @@ export default {
     language: {
       set (language) {
         this.$store.commit('changeLanguage', language)
-        ipcRenderer.send('update-config', 'language', language)
+        window.ipc.switchLanguage(language)
       },
       get () {
         return this.$store.state.language

@@ -2,15 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import moment from 'moment'
 import DailyMedia from './lib/DailyMedia'
-import { handleStoreMutation, loadLastState } from '@/lib/PersistenceService'
 import * as sc from './store-constants'
-import {
-  getAllTimelines,
-  getDailyMediaForTimelineAndRange,
-  loadTimeline,
-  deleteMediaFileFromTimeline,
-  deleteTimeline
-} from '@/lib/TimelineService'
 
 Vue.use(Vuex)
 const supportedLanguages = ['en', 'de']
@@ -45,6 +37,7 @@ const store = new Vuex.Store({
       state.currentYear = currentMoment.year()
     },
     moveToNextMonth (state) {
+      console.log('next Month')
       const currentMoment = moment(
         { year: state.currentYear, month: state.currentMonth })
       currentMoment.add(1, 'month')
@@ -54,6 +47,7 @@ const store = new Vuex.Store({
       }
     },
     changeMediaFile (state, dailyMedia) {
+      console.log('++++ Change Media File')
       Vue.set(state.mediaFiles, dailyMedia.day, dailyMedia)
     },
     /**
@@ -85,18 +79,18 @@ const store = new Vuex.Store({
       const startPoint = moment(
         { year: state.currentYear, month: state.currentMonth, day: 1 })
       const endPoint = moment(startPoint).endOf('month')
-      const allMedia = getDailyMediaForTimelineAndRange(state.currentTimeline,
+      const allMedia = window.db.getDailyMediaForTimelineAndRange(state.currentTimeline,
         startPoint.format('YYYY-MM-DD'), endPoint.format('YYYY-MM-DD'))
 
       state.mediaFiles = {}
       allMedia.forEach(media => {
         Vue.set(state.mediaFiles, media.day, media)
       })
-      ipcRenderer.send('find-missing-files', allMedia, state.currentYear, state.currentMonth)
+      window.ipc.findMissingFiles(allMedia, state.currentYear, state.currentMonth)
     },
 
     applyConfig (state, databaseRow) {
-      log.debug('System Language: ' + navigator.language)
+      window.log.debug('System Language: ' + navigator.language)
       if (databaseRow.language) {
         state.language = databaseRow.language
       } else if (supportedLanguages.includes(navigator.language)) {
@@ -148,7 +142,7 @@ const store = new Vuex.Store({
      * @param {int} timeline
      */
     changeTimeline (context, timeline) {
-      const currentTimeline = loadTimeline(timeline)
+      const currentTimeline = window.db.loadTimeline(timeline)
       context.commit('changeTimeline', currentTimeline.id)
       context.commit('loadDailyMedia')
       context.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
@@ -161,7 +155,7 @@ const store = new Vuex.Store({
      * @param context
      */
     loadLastState (context) {
-      const lastState = loadLastState()
+      const lastState = window.db.loadLastState()
       context.commit('applyConfig', lastState)
       if (lastState.currentTimeline) {
         context.dispatch('changeTimeline', lastState.currentTimeline)
@@ -181,7 +175,7 @@ const store = new Vuex.Store({
      * @param context
      */
     removeCurrentMediaFile (context) {
-      deleteMediaFileFromTimeline(context.state.currentTimeline, new DailyMedia(context.state.currentYear, context.state.currentMonth + 1,
+      window.db.deleteMediaFileFromTimeline(context.state.currentTimeline, new DailyMedia(context.state.currentYear, context.state.currentMonth + 1,
         context.state.currentDaySelected, '', ''))
       context.commit('loadDailyMedia')
       context.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
@@ -194,7 +188,7 @@ const store = new Vuex.Store({
     async deleteCurrentTimeline (context) {
       const currentTimeline = context.state.currentTimeline
       context.commit('changeTimeline', null)
-      deleteTimeline(currentTimeline)
+      window.db.deleteTimeline(currentTimeline)
       await context.dispatch('loadTimelines')
       if (context.state.timelines.length > 0) {
         await context.dispatch('changeTimeline', context.state.timelines[0].id)
@@ -208,7 +202,7 @@ const store = new Vuex.Store({
      * @param context
      */
     loadTimelines (context) {
-      const timelines = getAllTimelines()
+      const timelines = window.db.getAllTimelines()
       context.commit('setTimelines', timelines)
     },
 
@@ -236,6 +230,6 @@ const store = new Vuex.Store({
   }
 })
 // All changes to the state are relayed to the PersistenceService
-store.subscribe(handleStoreMutation)
+store.subscribe(window.db.handleStoreMutation)
 
 export default store

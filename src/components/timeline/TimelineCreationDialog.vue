@@ -34,7 +34,6 @@
 </template>
 <script>
 import * as sc from '@/store-constants'
-import { createNewTimeline } from '@/lib/TimelineService'
 
 export default {
   name: 'TimelineCreationDialog',
@@ -77,7 +76,7 @@ export default {
       }
       this.newTimelineName = this.newTimelineName.trim()
       try {
-        const timelineId = createNewTimeline(this.newTimelineName)
+        const timelineId = window.db.createNewTimeline(this.newTimelineName)
         this.$store.dispatch('loadTimelines')
         this.$store.dispatch('changeTimeline', timelineId)
       } catch (error) {

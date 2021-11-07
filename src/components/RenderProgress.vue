@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     cancelRendering () {
-      ipcRenderer.send('cancel-rendering')
+      window.ipc.cancelRendering()
     }
   }
 }
