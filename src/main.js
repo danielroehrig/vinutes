@@ -7,6 +7,9 @@ import './../node_modules/@mdi/font/css/materialdesignicons.css'
 import i18n from './i18n'
 import * as sc from '@/store-constants'
 
+// All changes to the state are relayed to the PersistenceService
+store.subscribe(window.db.handleStoreMutation)
+
 Vue.use(Buefy)
 Vue.config.productionTip = false
 

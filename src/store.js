@@ -229,7 +229,5 @@ const store = new Vuex.Store({
     }
   }
 })
-// All changes to the state are relayed to the PersistenceService
-store.subscribe(window.db.handleStoreMutation)
 
 export default store
