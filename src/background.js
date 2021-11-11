@@ -120,18 +120,18 @@ ipcMain.on('get-media-type', (event, file) => {
     })
 })
 
-ipcMain.on('show-open-dialog', (event, year, month, day) => {
+ipcMain.on('show-open-dialog', async (event, year, month, day) => {
   console.log(`Open File Dialog for ${year} ${month} ${day}`)
-  let filePaths = []
+  let openDialogResult = {}
   // Test path. Yes, this seems like the "right" way to do this
   if (process.env.SPECTRON) {
     if (day === 3) {
-      filePaths = [path.join(__dirname, '..', 'tests', 'e2e/testvideos/', 'familie.mp4')]
+      openDialogResult.filePaths = [path.join(__dirname, '..', 'tests', 'e2e/testvideos/', 'familie.mp4')]
     } else {
-      filePaths = [path.join(__dirname, '..', 'tests', 'e2e/testvideos/', 'vacation.mp4')]
+      openDialogResult.filePaths = [path.join(__dirname, '..', 'tests', 'e2e/testvideos/', 'vacation.mp4')]
     }
   } else {
-    filePaths = dialog.showOpenDialogSync({
+    openDialogResult = await dialog.showOpenDialog({
       title: 'Choose a video or image',
       filters: [
         {
@@ -152,8 +152,8 @@ ipcMain.on('show-open-dialog', (event, year, month, day) => {
       properties: ['openFile']
     })
   }
-  if (filePaths) {
-    const filePath = filePaths[0]
+  if (!openDialogResult.canceled) {
+    const filePath = openDialogResult.filePaths[0]
     getMediaTypeFromFile(filePath)
       .then(mediaType => {
         event.returnValue = new DailyMedia(year, month, day, filePath, mediaType)
@@ -167,18 +167,18 @@ ipcMain.on('show-open-dialog', (event, year, month, day) => {
   }
 })
 
-ipcMain.on('show-save-dialog', (event) => {
+ipcMain.on('show-save-dialog', async (event) => {
   // Again, testing is weird in electron
   if (process.env.SPECTRON) {
     event.returnValue = path.join(os.tmpdir(), 'spectronoutput.mp4')
     return
   }
-  const filePath = dialog.showSaveDialogSync({
+  const saveDialogObject = await dialog.showSaveDialog({
     title: 'Choose a video or image',
     defaultPath: app.getPath('home')
   })
-  if (filePath) {
-    event.returnValue = filePath
+  if (!saveDialogObject.canceled) {
+    event.returnValue = saveDialogObject.filePath
   } else {
     event.returnValue = null
   }
