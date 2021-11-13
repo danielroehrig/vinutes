@@ -118,7 +118,7 @@ export default {
     droppedFile (ev) {
       this.draggedOver = false
       const file = ev.dataTransfer.items[0].getAsFile()
-      const mediaType = ipcRenderer.sendSync('get-media-type', file.path)
+      const mediaType = window.ipc.getMediaType(file.path)
       if (mediaType === null) {
         store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
         const unknownMediaMessage = i18n.t('error.unknown-media-type').toString()
@@ -131,7 +131,7 @@ export default {
       }
       const dailyMedia = new DailyMedia(this.currentYear, this.currentMonth + 1, this.day, file.path, mediaType)
       if (dailyMedia.mediaType === 'image') {
-        ipcRenderer.send('render-image-preview', dailyMedia)
+        window.ipc.renderImagePreview(dailyMedia)
         return
       }
       this.$store.commit('setCurrentDailyMedia', dailyMedia)
