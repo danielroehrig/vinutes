@@ -18,7 +18,6 @@
 </style>
 <script>
 import Navbar from './components/Navbar'
-import { initDBStructure } from './lib/PersistenceService'
 import { mapState } from 'vuex'
 import * as sc from '@/store-constants'
 import Calendar from '@/components/calendar/Calendar'
@@ -34,7 +33,7 @@ export default {
   // Before any window is created, load database structure
   beforeCreate () {
     // TODO Migration comes here
-    initDBStructure()
+    window.db.initDBStructure()
   },
   computed: mapState(['appState', 'currentYear', 'currentMonth', 'currentDaySelected', 'language']),
   // As soon as app is ready, load the last saved state
@@ -66,13 +65,13 @@ export default {
         {
           // This is confusing, but basically, momentjs uses zero-based months while in the database January starts with 1
           const oneBasedMonthNumeral = this.currentMonth + 1
-          const dailyMedia = ipcRenderer.sendSync('show-open-dialog', this.currentYear, oneBasedMonthNumeral, this.currentDaySelected)
+          const dailyMedia = window.ipc.showOpenDialog(this.currentYear, oneBasedMonthNumeral, this.currentDaySelected)
           if (dailyMedia === null) {
             this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
             return
           }
           if (dailyMedia.mediaType === 'image') {
-            ipcRenderer.send('render-image-preview', dailyMedia)
+            window.ipc.renderImagePreview(dailyMedia)
             return
           }
           this.$store.commit('setCurrentDailyMedia', dailyMedia)

@@ -7,6 +7,9 @@ import './../node_modules/@mdi/font/css/materialdesignicons.css'
 import i18n from './i18n'
 import * as sc from '@/store-constants'
 
+// All changes to the state are relayed to the PersistenceService
+store.subscribe(window.db.handleStoreMutation)
+
 Vue.use(Buefy)
 Vue.config.productionTip = false
 
@@ -22,17 +25,17 @@ new Vue({
  * #################################################
  */
 
-ipcRenderer.on('screenshot-created', (event, dailyMedia) => {
+window.ipc.receive('screenshot-created', (event, dailyMedia) => {
   store.commit('changeMediaFile', dailyMedia)
   store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
 })
 
-ipcRenderer.on('render-update', (event, dailyMediaObject, percentage) => {
+window.ipc.receive('render-update', (event, dailyMediaObject, percentage) => {
   store.commit('changeAppState', sc.APP_STATE_RENDERING_TIMELINE)
   store.commit('renderUpdate', { dailyMedia: dailyMediaObject || null, percentage: percentage })
 })
 
-ipcRenderer.on('render-done', event => {
+window.ipc.receive('render-done', event => {
   store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
   const message = i18n.t('text.render-complete')
   Toast.open({
@@ -42,7 +45,7 @@ ipcRenderer.on('render-done', event => {
   })
 })
 
-ipcRenderer.on('render-cancelled', event => {
+window.ipc.receive('render-cancelled', event => {
   store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
   const message = i18n.t('text.render-cancelled')
   Toast.open({
@@ -52,6 +55,6 @@ ipcRenderer.on('render-cancelled', event => {
   })
 })
 
-ipcRenderer.on('missing-files-found', (event, missingFiles, year, month) => {
+window.ipc.receive('missing-files-found', (event, missingFiles, year, month) => {
   store.dispatch('markMissingFiles', { missingFiles, year, month })
 })

@@ -4,8 +4,8 @@
  */
 import { safeDailyMediaForTimeline } from './TimelineService'
 
-// TODO: This mus run in main thread before any window is created!
-export const initDBStructure = () => {
+// TODO: This must run in main thread before any window is created!
+export const initDBStructure = (db) => {
   db.pragma('foreign_keys = ON')
   db.prepare('CREATE TABLE IF NOT EXISTS timeline (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE);').run()
   db.prepare('CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY, language TEXT, currentTimeline INTEGER, FOREIGN KEY(currentTimeline) REFERENCES timeline (id));').run()
@@ -18,18 +18,19 @@ export const initDBStructure = () => {
  * Load the last (and only) state from the database (with id 1)
  * @returns {object} The row with the last state
  */
-export const loadLastState = () => {
+export const loadLastState = (db) => {
   console.log('Loading last State')
   return db.prepare('SELECT * FROM state WHERE id = 1;').get()
 }
 
 /**
  * Handle a store mutation.
+ * @param {Database} db
  * @param {object} mutation
  * @param {object} state
  * TODO: Make non-blocking somehow
  */
-export const handleStoreMutation = (mutation, state) => {
+export const handleStoreMutation = (db, mutation, state) => {
   let updateStatement
   switch (mutation.type) {
     case 'changeLanguage':
@@ -39,7 +40,7 @@ export const handleStoreMutation = (mutation, state) => {
       updateStatement = db.prepare('UPDATE state set currentTimeline=$payload;')
       break
     case 'changeMediaFile':
-      safeDailyMediaForTimeline(state.currentTimeline, mutation.payload)
+      safeDailyMediaForTimeline(db, state.currentTimeline, mutation.payload)
       return
     default:
       console.log('Unknown mutation: ' + mutation.type)

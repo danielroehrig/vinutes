@@ -4,15 +4,15 @@ import TimelineCreationDialog from '@/components/timeline/TimelineCreationDialog
 import Vuex from 'vuex'
 import Vue from 'vue'
 import * as sc from '@/store-constants'
-import { createNewTimeline } from '@/lib/TimelineService'
 import Buefy from 'buefy'
+
+window.db = {
+  createNewTimeline: jest.fn()
+}
 
 Vue.use(Vuex)
 Vue.use(Buefy)
 
-jest.mock('@/lib/TimelineService', () => ({
-  createNewTimeline: jest.fn(name => 1)
-}))
 const $t = jest.fn()
 
 const mountWithStore = (store) => {
@@ -71,6 +71,7 @@ describe('TimelineCreationDialog.vue', () => {
     expect(fakeChangeAppStateFunction).toHaveBeenCalledWith(expect.anything(), sc.APP_STATE_CALENDAR_VIEW)
   })
   it('return submits timeline name', async () => {
+    window.db.createNewTimeline = jest.fn()
     const fakeChangeAppStateFunction = jest.fn()
     const store = new Vuex.Store({
       state: {},
@@ -92,8 +93,8 @@ describe('TimelineCreationDialog.vue', () => {
     await input.setValue('Some Timeline name')
     expect(wrapper.vm.$data.newTimelineName).toBe('Some Timeline name')
     await input.trigger('keyup.enter')
-    expect(createNewTimeline).toHaveBeenCalledTimes(1)
-    expect(createNewTimeline).toHaveBeenCalledWith('Some Timeline name')
+    expect(window.db.createNewTimeline).toHaveBeenCalledTimes(1)
+    expect(window.db.createNewTimeline).toHaveBeenCalledWith('Some Timeline name')
     expect(wrapper.vm.$data.newTimelineName).toBe(null)
   })
   it('focuses the input field when the app status changes to APP_STATE_CREATE_TIMELINE', async () => {
@@ -166,7 +167,7 @@ describe('TimelineCreationDialog.vue', () => {
     const brokenTimelineCreateCall = jest.fn(name => {
       throw new Error('Some error')
     })
-    createNewTimeline.mockImplementation(brokenTimelineCreateCall)
+    window.db.createNewTimeline = brokenTimelineCreateCall
     const store = new Vuex.Store({
       state: {},
       getters: {

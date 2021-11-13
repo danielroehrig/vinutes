@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import { loadTimeline } from '@/lib/TimelineService'
 import RenderProgress from './RenderProgress'
 import TimelineCreationDialog from '@/components/timeline/TimelineCreationDialog'
 import * as sc from '@/store-constants'
@@ -65,7 +64,7 @@ export default {
       if (currentTimeline === null) {
         return null
       }
-      return loadTimeline(currentTimeline)
+      return window.db.loadTimeline(currentTimeline)
     },
     currentTimelineName: function () {
       if (this.currentTimeline !== null) {

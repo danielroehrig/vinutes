@@ -49,7 +49,6 @@
   </div>
 </template>
 <script>
-import { getDailyMediaForTimeline, getDailyMediaForTimelineAndTimeRange } from '@/lib/TimelineService'
 import * as sc from '@/store-constants'
 import { mapState } from 'vuex'
 import moment from 'moment'
@@ -86,7 +85,6 @@ export default {
         const endDate = dayjs(this.dateRange[1])
         dateRange = (startDate.format('LL')) + ' - ' + endDate.format('LL')
       }
-      console.log(dateRange)
       return dateRange
     },
     language () {
@@ -114,36 +112,36 @@ export default {
       let endDate = null
       switch (this.selectedTab) {
         case 'whole':
-          mediaFiles = getDailyMediaForTimeline(this.$store.state.currentTimeline)
+          mediaFiles = window.db.getDailyMediaForTimeline(this.$store.state.currentTimeline)
           break
         case 'month':
           startDate = moment({ year: this.$store.state.currentYear, month: this.$store.state.currentMonth, day: 1 })
           endDate = moment({ year: this.$store.state.currentYear, month: this.$store.state.currentMonth + 1, day: 1 }).subtract(1, 'day')
           console.log('month: ' + startDate.format('YYYY-MM-DD') + ' ' + endDate.format('YYYY-MM-DD'))
-          mediaFiles = getDailyMediaForTimelineAndTimeRange(this.$store.state.currentTimeline, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))
+          mediaFiles = window.db.getDailyMediaForTimelineAndRange(this.$store.state.currentTimeline, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))
           break
         case 'year':
           startDate = moment({ year: this.$store.state.currentYear, month: 0, day: 1 })
           endDate = moment({ year: this.$store.state.currentYear, month: 11, day: 31 })
           console.log('year:  ' + startDate.format('YYYY-MM-DD') + endDate.format('YYYY-MM-DD'))
-          mediaFiles = getDailyMediaForTimelineAndTimeRange(this.$store.state.currentTimeline, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))
+          mediaFiles = window.db.getDailyMediaForTimelineAndRange(this.$store.state.currentTimeline, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))
           break
         case 'custom':
           startDate = dayjs(this.dateRange[0])
           endDate = dayjs(this.dateRange[1])
           console.log('custom:  ' + startDate.format('YYYY-MM-DD') + endDate.format('YYYY-MM-DD'))
-          mediaFiles = getDailyMediaForTimelineAndTimeRange(this.$store.state.currentTimeline, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))
+          mediaFiles = window.db.getDailyMediaForTimelineAndRange(this.$store.state.currentTimeline, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))
           break
       }
       if (mediaFiles.length === 0) {
         return// TODO this should trigger a little warning saying: no files selected
       }
-      const filePath = ipcRenderer.sendSync('show-save-dialog')
+      const filePath = window.ipc.showSaveDialog()
       if (filePath === null) {
         return
       }
 
-      ipcRenderer.send('start-rendering', filePath, mediaFiles)
+      window.ipc.startRendering(filePath, mediaFiles)
     }
   }
 }

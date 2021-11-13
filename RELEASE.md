@@ -9,4 +9,5 @@ the most obvious errors.
 * Replacing the bulma calendar that stuck out like a sour thumb with buefy calendar for date range rendering
 
 ### Internals
+* Updated electron from ... like 11 to version 15! (do not recommend)
 * Moving away from momentjs to dayjs
