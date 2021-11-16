@@ -7,18 +7,12 @@
           <video width="400" id="videoPreviewPlayer">
             <source :src="videoSrc">
           </video>
-          <div class="videocontrols">
-            <button class="play" data-icon="P" aria-label="play pause toggle" @click="togglePlayPauseVideo">Play</button>
-            <button class="play" data-icon="P" aria-label="play pause toggle" @click="togglePlayPauseLooped">Looped</button>
+          <div class="videocontrols" style="text-align: left;">
+            <b-slider v-model="value" class="pl-3 pr-3"></b-slider>
+            <button class="button ml-2 is-primary"><i class="mdi mdi-play mdi-24px"></i></button>
+            <button class="button ml-2"><i class="mdi mdi-sync mdi-24px"></i></button>
+            <button class="button is-primary is-pulled-right mr-2" @click="acceptVideo" id="videoPlayerAcceptButton">{{ $t('button.accept') }}</button>
           </div>
-        </div>
-      </div>
-      <div class="columns">
-        <div class="column">
-          <button class="button" value="Cancel" @click="closeVideoPlayer">{{ $t('button.cancel') }}</button>
-        </div>
-        <div class="column">
-          <button class="button is-primary" @click="acceptVideo" id="videoPlayerAcceptButton">{{ $t('button.accept') }}</button>
         </div>
       </div>
     </div>
@@ -116,12 +110,21 @@ export default {
 }
 </script>
 
-<style scoped>
-.columns {
-  overflow: hidden;
-}
+<style scoped lang="scss">
+@import "sass/vinutes";
 
 .modal-content {
-  overflow: hidden;
+  overflow: visible;
+}
+
+#videoPreviewPlayer{
+  border: $primary-light 3px solid;
+}
+.videocontrols {
+  width: 400px;
+  background: $primary-light;
+  margin: -7px auto;
+  padding: 5px 0;
+  border-radius: 0 0 5px 5px;
 }
 </style>
