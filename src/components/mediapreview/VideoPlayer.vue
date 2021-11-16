@@ -79,6 +79,7 @@ export default {
       if (this.playLooped && media.currentTime > this.loopStartTime + 1.5) {
         media.currentTime = this.loopStartTime
       }
+      this.sliderPosition = 100 * (media.currentTime / media.duration)
     },
     togglePlayLooped: function () {
       const media = document.getElementById('videoPreviewPlayer')
