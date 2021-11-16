@@ -29,9 +29,20 @@
 <script>
 import * as sc from '@/store-constants'
 import i18n from '@/i18n'
-
+function loopPlayEventHandler (event) {
+  const media = event.currentTarget
+  if (media.currentTime > media.startPoint + 1.5) {
+    media.currentTime = media.startPoint
+  }
+}
 export default {
   name: 'VideoPlayer',
+  data: function () {
+    return {
+      loopStartTime: 0.0,
+      playLooped: false
+    }
+  },
   computed: {
     videoSrc () {
       return this.$store.state.currentDailyMediaShown !== null ? 'file://' + this.$store.state.currentDailyMediaShown.filePath : null
@@ -53,6 +64,31 @@ export default {
       window.ipc.createVideoScreenshot(currentDailyMedia, currentTimeline)
       this.$store.commit('setCurrentDailyMedia', null)
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+    },
+    togglePlayPauseVideo: function () {
+      const media = document.getElementById('videoPreviewPlayer')
+      this.resetLoop()
+      if (media.paused) {
+        media.play()
+      } else { media.pause() }
+    },
+    togglePlayPauseLooped: function () {
+      const media = document.getElementById('videoPreviewPlayer')
+      if (media.paused) {
+        this.loopStartTime = media.currentTime
+        media.startPoint = this.loopStartTime
+        media.addEventListener('timeupdate', loopPlayEventHandler)
+        media.play()
+      } else {
+        media.pause()
+        media.currentTime = this.loopStartTime
+      }
+    },
+    resetLoop () {
+      const media = document.getElementById('videoPreviewPlayer')
+      media.removeEventListener('timeupdate', loopPlayEventHandler)
+      this.loopStartTime = 0.0
+      this.playLooped = false
     }
   },
   watch: {
@@ -71,6 +107,9 @@ export default {
             this.closeVideoPlayer()
           })
         })
+      } else {
+        console.log('closed window')
+        this.resetLoop()
       }
     }
   }
