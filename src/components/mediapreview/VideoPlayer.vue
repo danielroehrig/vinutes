@@ -9,10 +9,10 @@
           <video width="400" id="videoPreviewPlayer">
             <source :src="videoSrc">
           </video>
-          <div class="videocontrols" style="text-align: left;">
+          <div class="videocontrols">
             <b-slider v-model="value" class="pl-3 pr-3"></b-slider>
-            <button class="button ml-2 is-primary"><i class="mdi mdi-play mdi-24px"></i></button>
-            <button class="button ml-2"><i class="mdi mdi-sync mdi-24px"></i></button>
+            <button class="button ml-2 is-primary" @click="togglePlayPauseVideo"><i class="mdi mdi-play mdi-24px"></i></button>
+            <button class="button ml-2" :class="{'is-primary': this.playLooped}" @click="togglePlayLooped" id="buttonTogglePlayLooped"><i class="mdi mdi-sync mdi-24px"></i></button>
             <button class="button is-primary is-pulled-right mr-2" @click="acceptVideo" id="videoPlayerAcceptButton">
               {{ $t('button.accept') }}
             </button>
@@ -39,7 +39,7 @@ export default {
   data: function () {
     return {
       loopStartTime: 0.0,
-      playLooped: false
+      playLooped: false,
     }
   },
   computed: {
@@ -66,21 +66,28 @@ export default {
     },
     togglePlayPauseVideo: function () {
       const media = document.getElementById('videoPreviewPlayer')
-      this.resetLoop()
+
       if (media.paused) {
-        media.play()
-      } else { media.pause() }
-    },
-    togglePlayPauseLooped: function () {
-      const media = document.getElementById('videoPreviewPlayer')
-      if (media.paused) {
-        this.loopStartTime = media.currentTime
-        media.startPoint = this.loopStartTime
-        media.addEventListener('timeupdate', loopPlayEventHandler)
+        if (this.playLooped) {
+          this.loopStartTime = media.currentTime
+          media.startPoint = this.loopStartTime
+          media.addEventListener('timeupdate', loopPlayEventHandler)
+        }
         media.play()
       } else {
         media.pause()
-        media.currentTime = this.loopStartTime
+        if (this.playLooped) {
+          media.currentTime = this.loopStartTime
+        }
+      }
+    },
+    togglePlayLooped: function () {
+      const media = document.getElementById('videoPreviewPlayer')
+      media.pause()
+      if (this.playLooped) {
+        this.resetLoop()
+      } else {
+        this.playLooped = true
       }
     },
     resetLoop () {
@@ -123,11 +130,17 @@ export default {
   margin-bottom: -7px;
 }
 
+#buttonTogglePlayLooped:focus {
+  box-shadow: none;
+  border-color: #dbdbdb;
+}
+
 .videocontrols {
   width: 400px;
   background: $primary-light;
   margin: 0 auto;
   padding: 5px 0;
   border-radius: 0 0 5px 5px;
+  text-align: left;
 }
 </style>
