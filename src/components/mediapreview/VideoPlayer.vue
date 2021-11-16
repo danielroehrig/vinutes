@@ -10,7 +10,7 @@
             <source :src="videoSrc">
           </video>
           <div class="videocontrols">
-            <b-slider v-model="sliderPosition" class="pl-3 pr-3"></b-slider>
+            <b-slider v-model="sliderPosition" class="pl-3 pr-3" v-on:dragstart="sliderDragStart" v-on:dragging="sliderDragged" v-on:dragend="sliderDragend"></b-slider>
             <button class="button ml-2 is-primary" @click="togglePlayPauseVideo"><i class="mdi mdi-play mdi-24px"></i></button>
             <button class="button ml-2" :class="{'is-primary': this.playLooped}" @click="togglePlayLooped" id="buttonTogglePlayLooped"><i class="mdi mdi-sync mdi-24px"></i></button>
             <button class="button is-primary is-pulled-right mr-2" @click="acceptVideo" id="videoPlayerAcceptButton">
@@ -33,7 +33,8 @@ export default {
     return {
       loopStartTime: 0.0,
       playLooped: false,
-      sliderPosition: 0
+      sliderPosition: 0,
+      wasPlaying: false
     }
   },
   computed: {
@@ -91,9 +92,30 @@ export default {
         this.playLooped = false
       }
     },
+    sliderDragStart: function () {
+      const media = document.getElementById('videoPreviewPlayer')
+      this.playLooped = false
+      if (!media.paused) {
+        this.wasPlaying = true
+        media.pause()
+      } else {
+        this.wasPlaying = false
+      }
+    },
+    sliderDragged: function () {
+      const media = document.getElementById('videoPreviewPlayer')
+      media.currentTime = this.sliderPosition / 100 * media.duration
+    },
+    sliderDragend: function () {
+      if (this.wasPlaying) {
+        const media = document.getElementById('videoPreviewPlayer')
+        media.play()
+      }
+    },
     resetLoop () {
       this.loopStartTime = 0.0
       this.playLooped = false
+      this.wasPlaying = false
     }
   },
   watch: {
