@@ -6,11 +6,11 @@
     <div class="modal-content">
       <div class="columns">
         <div class="column">
-          <video width="400" id="videoPreviewPlayer">
+          <video width="400" id="videoPreviewPlayer" v-on:timeupdate="loopPlayEventHandler">
             <source :src="videoSrc">
           </video>
           <div class="videocontrols">
-            <b-slider v-model="value" class="pl-3 pr-3"></b-slider>
+            <b-slider v-model="sliderPosition" class="pl-3 pr-3"></b-slider>
             <button class="button ml-2 is-primary" @click="togglePlayPauseVideo"><i class="mdi mdi-play mdi-24px"></i></button>
             <button class="button ml-2" :class="{'is-primary': this.playLooped}" @click="togglePlayLooped" id="buttonTogglePlayLooped"><i class="mdi mdi-sync mdi-24px"></i></button>
             <button class="button is-primary is-pulled-right mr-2" @click="acceptVideo" id="videoPlayerAcceptButton">
@@ -27,19 +27,13 @@
 import * as sc from '@/store-constants'
 import i18n from '@/i18n'
 
-function loopPlayEventHandler (event) {
-  const media = event.currentTarget
-  if (media.currentTime > media.startPoint + 1.5) {
-    media.currentTime = media.startPoint
-  }
-}
-
 export default {
   name: 'VideoPlayer',
   data: function () {
     return {
       loopStartTime: 0.0,
       playLooped: false,
+      sliderPosition: 0
     }
   },
   computed: {
@@ -71,7 +65,6 @@ export default {
         if (this.playLooped) {
           this.loopStartTime = media.currentTime
           media.startPoint = this.loopStartTime
-          media.addEventListener('timeupdate', loopPlayEventHandler)
         }
         media.play()
       } else {
@@ -81,18 +74,23 @@ export default {
         }
       }
     },
+    loopPlayEventHandler: function (event) {
+      const media = document.getElementById('videoPreviewPlayer')
+      if (this.playLooped && media.currentTime > this.loopStartTime + 1.5) {
+        media.currentTime = this.loopStartTime
+      }
+    },
     togglePlayLooped: function () {
       const media = document.getElementById('videoPreviewPlayer')
       media.pause()
-      if (this.playLooped) {
-        this.resetLoop()
-      } else {
+      if (!this.playLooped) {
+        this.loopStartTime = media.currentTime
         this.playLooped = true
+      } else {
+        this.playLooped = false
       }
     },
     resetLoop () {
-      const media = document.getElementById('videoPreviewPlayer')
-      media.removeEventListener('timeupdate', loopPlayEventHandler)
       this.loopStartTime = 0.0
       this.playLooped = false
     }
@@ -114,7 +112,6 @@ export default {
           })
         })
       } else {
-        console.log('closed window')
         this.resetLoop()
       }
     }
