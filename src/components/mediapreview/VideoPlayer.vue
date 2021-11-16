@@ -1,6 +1,8 @@
 <template>
-  <div class="modal is-active" v-if="isVisible">
-    <div class="modal-background"></div>
+  <b-modal
+      :active="isVisible"
+      v-on:close="closeVideoPlayer"
+  >
     <div class="modal-content">
       <div class="columns">
         <div class="column">
@@ -11,24 +13,27 @@
             <b-slider v-model="value" class="pl-3 pr-3"></b-slider>
             <button class="button ml-2 is-primary"><i class="mdi mdi-play mdi-24px"></i></button>
             <button class="button ml-2"><i class="mdi mdi-sync mdi-24px"></i></button>
-            <button class="button is-primary is-pulled-right mr-2" @click="acceptVideo" id="videoPlayerAcceptButton">{{ $t('button.accept') }}</button>
+            <button class="button is-primary is-pulled-right mr-2" @click="acceptVideo" id="videoPlayerAcceptButton">
+              {{ $t('button.accept') }}
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <button class="modal-close is-large" @click="closeVideoPlayer"></button>
-  </div>
+  </b-modal>
 </template>
 
 <script>
 import * as sc from '@/store-constants'
 import i18n from '@/i18n'
+
 function loopPlayEventHandler (event) {
   const media = event.currentTarget
   if (media.currentTime > media.startPoint + 1.5) {
     media.currentTime = media.startPoint
   }
 }
+
 export default {
   name: 'VideoPlayer',
   data: function () {
@@ -113,17 +118,15 @@ export default {
 <style scoped lang="scss">
 @import "sass/vinutes";
 
-.modal-content {
-  overflow: visible;
+#videoPreviewPlayer {
+  border: $primary-light 3px solid;
+  margin-bottom: -7px;
 }
 
-#videoPreviewPlayer{
-  border: $primary-light 3px solid;
-}
 .videocontrols {
   width: 400px;
   background: $primary-light;
-  margin: -7px auto;
+  margin: 0 auto;
   padding: 5px 0;
   border-radius: 0 0 5px 5px;
 }
