@@ -4,9 +4,13 @@
     <div class="modal-content">
       <div class="columns">
         <div class="column">
-          <video width="400" id="videoPreviewPlayer" controls>
+          <video width="400" id="videoPreviewPlayer">
             <source :src="videoSrc">
           </video>
+          <div class="videocontrols">
+            <button class="play" data-icon="P" aria-label="play pause toggle" @click="togglePlayPauseVideo">Play</button>
+            <button class="play" data-icon="P" aria-label="play pause toggle" @click="togglePlayPauseLooped">Looped</button>
+          </div>
         </div>
       </div>
       <div class="columns">
