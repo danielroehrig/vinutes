@@ -9,8 +9,8 @@
           <video width="400" id="videoPreviewPlayer" v-on:timeupdate="loopPlayEventHandler">
             <source :src="videoSrc">
           </video>
-          <div class="videocontrols">
-            <b-slider v-model="sliderPosition" class="pl-3 pr-3" v-on:dragstart="sliderDragStart" v-on:dragging="sliderDragged" v-on:dragend="sliderDragend" v-on:change="sliderChanged" :custom-formatter="sliderLabel"></b-slider>
+          <div class="video-controls">
+            <b-slider v-model="sliderPosition" class="pl-3 pr-3" v-on:dragstart="sliderDragStart" v-on:dragging="sliderDragged" v-on:dragend="sliderDragEnd" v-on:change="sliderChanged" :custom-formatter="sliderLabel"></b-slider>
             <button class="button ml-2 is-primary" @click="togglePlayPauseVideo"><i class="mdi mdi-24px" :class="{'mdi-play': this.showPlayButton, 'mdi-pause': !this.showPlayButton}"></i></button>
             <button class="button ml-2" :class="{'is-primary': this.playLooped}" @click="togglePlayLooped" id="buttonTogglePlayLooped"><i class="mdi mdi-sync mdi-24px"></i></button>
             <button class="button is-primary is-pulled-right mr-2" @click="acceptVideo" id="videoPlayerAcceptButton">
@@ -69,7 +69,6 @@ export default {
     },
     togglePlayPauseVideo: function () {
       const media = document.getElementById('videoPreviewPlayer')
-
       if (media.paused) {
         if (this.playLooped) {
           this.loopStartTime = media.currentTime
@@ -121,7 +120,7 @@ export default {
       const media = document.getElementById('videoPreviewPlayer')
       media.currentTime = this.sliderPosition / 100 * media.duration
     },
-    sliderDragend: function () {
+    sliderDragEnd: function () {
       if (this.wasPlayingWhenDragged) {
         const media = document.getElementById('videoPreviewPlayer')
         media.play()
@@ -179,7 +178,7 @@ export default {
   border-color: #dbdbdb;
 }
 
-.videocontrols {
+.video-controls {
   width: 400px;
   background: $primary-light;
   margin: 0 auto;
