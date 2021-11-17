@@ -11,7 +11,7 @@
           </video>
           <div class="videocontrols">
             <b-slider v-model="sliderPosition" class="pl-3 pr-3" v-on:dragstart="sliderDragStart" v-on:dragging="sliderDragged" v-on:dragend="sliderDragend"></b-slider>
-            <button class="button ml-2 is-primary" @click="togglePlayPauseVideo"><i class="mdi mdi-play mdi-24px"></i></button>
+            <button class="button ml-2 is-primary" @click="togglePlayPauseVideo"><i class="mdi mdi-24px" :class="{'mdi-play': this.showPlayButton, 'mdi-pause': !this.showPlayButton}"></i></button>
             <button class="button ml-2" :class="{'is-primary': this.playLooped}" @click="togglePlayLooped" id="buttonTogglePlayLooped"><i class="mdi mdi-sync mdi-24px"></i></button>
             <button class="button is-primary is-pulled-right mr-2" @click="acceptVideo" id="videoPlayerAcceptButton">
               {{ $t('button.accept') }}
@@ -34,7 +34,8 @@ export default {
       loopStartTime: 0.0,
       playLooped: false,
       sliderPosition: 0,
-      wasPlaying: false
+      wasPlayingWhenDragged: false,
+      showPlayButton: true
     }
   },
   computed: {
@@ -48,6 +49,7 @@ export default {
   methods: {
     closeVideoPlayer: function () {
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+      this.resetLoop()
     },
     acceptVideo: function () {
       const videoPreviewPlayer = document.getElementById('videoPreviewPlayer')
@@ -67,9 +69,11 @@ export default {
           this.loopStartTime = media.currentTime
           media.startPoint = this.loopStartTime
         }
+        this.showPlayButton = false
         media.play()
       } else {
         media.pause()
+        this.showPlayButton = true
         if (this.playLooped) {
           media.currentTime = this.loopStartTime
         }
@@ -84,7 +88,6 @@ export default {
     },
     togglePlayLooped: function () {
       const media = document.getElementById('videoPreviewPlayer')
-      media.pause()
       if (!this.playLooped) {
         this.loopStartTime = media.currentTime
         this.playLooped = true
@@ -96,10 +99,10 @@ export default {
       const media = document.getElementById('videoPreviewPlayer')
       this.playLooped = false
       if (!media.paused) {
-        this.wasPlaying = true
+        this.wasPlayingWhenDragged = true
         media.pause()
       } else {
-        this.wasPlaying = false
+        this.wasPlayingWhenDragged = false
       }
     },
     sliderDragged: function () {
@@ -107,15 +110,18 @@ export default {
       media.currentTime = this.sliderPosition / 100 * media.duration
     },
     sliderDragend: function () {
-      if (this.wasPlaying) {
+      if (this.wasPlayingWhenDragged) {
         const media = document.getElementById('videoPreviewPlayer')
         media.play()
       }
+      this.wasPlayingWhenDragged = false
     },
     resetLoop () {
       this.loopStartTime = 0.0
       this.playLooped = false
-      this.wasPlaying = false
+      this.wasPlayingWhenDragged = false
+      this.showPlayButton = true
+      this.sliderPosition = 0
     }
   },
   watch: {
