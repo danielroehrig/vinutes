@@ -35,8 +35,7 @@ export default {
       playLooped: false,
       sliderPosition: 0,
       wasPlayingWhenDragged: false,
-      showPlayButton: true,
-      currentTime: 0.0
+      showPlayButton: true
     }
   },
   computed: {
@@ -98,7 +97,6 @@ export default {
       if (playedPercentage === 1) {
         this.showPlayButton = true
       }
-      this.currentTime = currentTime
     },
     togglePlayLooped: function () {
       const media = document.getElementById('videoPreviewPlayer')
@@ -142,7 +140,6 @@ export default {
       this.wasPlayingWhenDragged = false
       this.showPlayButton = true
       this.sliderPosition = 0
-      this.currentTime = 0.0
     }
   },
   watch: {
