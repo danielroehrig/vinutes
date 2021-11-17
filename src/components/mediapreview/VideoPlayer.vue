@@ -10,7 +10,7 @@
             <source :src="videoSrc">
           </video>
           <div class="videocontrols">
-            <b-slider v-model="sliderPosition" class="pl-3 pr-3" v-on:dragstart="sliderDragStart" v-on:dragging="sliderDragged" v-on:dragend="sliderDragend"></b-slider>
+            <b-slider v-model="sliderPosition" class="pl-3 pr-3" v-on:dragstart="sliderDragStart" v-on:dragging="sliderDragged" v-on:dragend="sliderDragend" v-on:change="sliderChanged"></b-slider>
             <button class="button ml-2 is-primary" @click="togglePlayPauseVideo"><i class="mdi mdi-24px" :class="{'mdi-play': this.showPlayButton, 'mdi-pause': !this.showPlayButton}"></i></button>
             <button class="button ml-2" :class="{'is-primary': this.playLooped}" @click="togglePlayLooped" id="buttonTogglePlayLooped"><i class="mdi mdi-sync mdi-24px"></i></button>
             <button class="button is-primary is-pulled-right mr-2" @click="acceptVideo" id="videoPlayerAcceptButton">
@@ -84,7 +84,11 @@ export default {
       if (this.playLooped && media.currentTime > this.loopStartTime + 1.5) {
         media.currentTime = this.loopStartTime
       }
-      this.sliderPosition = 100 * (media.currentTime / media.duration)
+      const playedPercentage = media.currentTime / media.duration
+      this.sliderPosition = 100 * playedPercentage
+      if (playedPercentage === 1) {
+        this.showPlayButton = true
+      }
     },
     togglePlayLooped: function () {
       const media = document.getElementById('videoPreviewPlayer')
@@ -115,6 +119,12 @@ export default {
         media.play()
       }
       this.wasPlayingWhenDragged = false
+    },
+    sliderChanged: function (sliderPosition) {
+      console.log('Slider Changed')
+      const media = document.getElementById('videoPreviewPlayer')
+      media.currentTime = sliderPosition / 100 * media.duration
+      this.loopStartTime = media.currentTime
     },
     resetLoop () {
       this.loopStartTime = 0.0
