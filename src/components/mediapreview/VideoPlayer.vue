@@ -49,6 +49,10 @@ export default {
   methods: {
     sliderLabel: function (val) {
       const media = document.getElementById('videoPreviewPlayer')
+      if (media === null) {
+        console.log('media not yet initialized')
+        return '0:00'
+      }
       const sec = Math.floor(media.currentTime)
       const min = Math.floor(sec / 60)
       return min + ':' + (sec % 60).toString().padStart(2, '0')
