@@ -10,7 +10,7 @@
             <source :src="videoSrc">
           </video>
           <div class="videocontrols">
-            <b-slider v-model="sliderPosition" class="pl-3 pr-3" v-on:dragstart="sliderDragStart" v-on:dragging="sliderDragged" v-on:dragend="sliderDragend" v-on:change="sliderChanged"></b-slider>
+            <b-slider v-model="sliderPosition" class="pl-3 pr-3" v-on:dragstart="sliderDragStart" v-on:dragging="sliderDragged" v-on:dragend="sliderDragend" v-on:change="sliderChanged" :custom-formatter="sliderLabel"></b-slider>
             <button class="button ml-2 is-primary" @click="togglePlayPauseVideo"><i class="mdi mdi-24px" :class="{'mdi-play': this.showPlayButton, 'mdi-pause': !this.showPlayButton}"></i></button>
             <button class="button ml-2" :class="{'is-primary': this.playLooped}" @click="togglePlayLooped" id="buttonTogglePlayLooped"><i class="mdi mdi-sync mdi-24px"></i></button>
             <button class="button is-primary is-pulled-right mr-2" @click="acceptVideo" id="videoPlayerAcceptButton">
@@ -35,7 +35,8 @@ export default {
       playLooped: false,
       sliderPosition: 0,
       wasPlayingWhenDragged: false,
-      showPlayButton: true
+      showPlayButton: true,
+      currentTime: 0.0
     }
   },
   computed: {
@@ -47,6 +48,12 @@ export default {
     }
   },
   methods: {
+    sliderLabel: function (val) {
+      const media = document.getElementById('videoPreviewPlayer')
+      const sec = Math.floor(media.currentTime)
+      const min = Math.floor(sec / 60)
+      return min + ':' + (sec % 60).toString().padStart(2, '0')
+    },
     closeVideoPlayer: function () {
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
       this.resetLoop()
@@ -81,14 +88,17 @@ export default {
     },
     loopPlayEventHandler: function (event) {
       const media = document.getElementById('videoPreviewPlayer')
-      if (this.playLooped && media.currentTime > this.loopStartTime + 1.5) {
+      let currentTime = media.currentTime
+      if (this.playLooped && currentTime > this.loopStartTime + 1.5) {
         media.currentTime = this.loopStartTime
+        currentTime = media.currentTime
       }
-      const playedPercentage = media.currentTime / media.duration
+      const playedPercentage = currentTime / media.duration
       this.sliderPosition = 100 * playedPercentage
       if (playedPercentage === 1) {
         this.showPlayButton = true
       }
+      this.currentTime = currentTime
     },
     togglePlayLooped: function () {
       const media = document.getElementById('videoPreviewPlayer')
@@ -132,6 +142,7 @@ export default {
       this.wasPlayingWhenDragged = false
       this.showPlayButton = true
       this.sliderPosition = 0
+      this.currentTime = 0.0
     }
   },
   watch: {
