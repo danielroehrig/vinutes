@@ -11,7 +11,7 @@
           </video>
           <div class="video-controls">
             <b-slider v-model="sliderPosition" class="pl-3 pr-3" v-on:dragstart="sliderDragStart" v-on:dragging="sliderDragged" v-on:dragend="sliderDragEnd" v-on:change="sliderChanged" :custom-formatter="sliderLabel"></b-slider>
-            <button class="button ml-2 is-primary" @click="togglePlayPauseVideo"><i class="mdi mdi-24px" :class="{'mdi-play': this.showPlayButton, 'mdi-pause': !this.showPlayButton}"></i></button>
+            <button class="button ml-2 is-primary" @click="togglePlayPauseVideo" id="videoPlayerPlayPauseButton"><i class="mdi mdi-24px" :class="{'mdi-play': this.showPlayButton, 'mdi-pause': !this.showPlayButton}"></i></button>
             <button class="button ml-2" :class="{'is-primary': this.playLooped}" @click="togglePlayLooped" id="buttonTogglePlayLooped"><i class="mdi mdi-sync mdi-24px"></i></button>
             <button class="button is-primary is-pulled-right mr-2" @click="acceptVideo" id="videoPlayerAcceptButton">
               {{ $t('button.accept') }}
