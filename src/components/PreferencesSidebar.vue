@@ -44,7 +44,6 @@
 </template>
 <script>
 export default {
-  name: 'Preferences',
   props: {
     open: Boolean
   },

@@ -8,7 +8,6 @@
 import CalendarDay from './CalendarDay'
 
 export default {
-  name: 'CalendarWeek',
   components: { CalendarDay },
   props: {
     days: Array,

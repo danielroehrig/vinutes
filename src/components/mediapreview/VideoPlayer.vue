@@ -28,7 +28,6 @@ import * as sc from '@/store-constants'
 import i18n from '@/i18n'
 
 export default {
-  name: 'VideoPlayer',
   data: function () {
     return {
       loopStartTime: 0.0,

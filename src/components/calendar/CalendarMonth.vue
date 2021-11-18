@@ -19,7 +19,6 @@ const calendar = require('calendar')
 const projectCalendar = new calendar.Calendar(1)
 
 export default {
-  name: 'CalendarMonth',
   components: { ImageViewer, VideoPlayer, CalendarWeek },
   computed: {
     weeks () {
