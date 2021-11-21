@@ -1,13 +1,13 @@
-# Version 0.3.4 - The illusion of safety
+# Version 0.3.5 - Now 17% less ugly
 
-Sometimes, things go absolutely horribly wrong. Let's try and catch at least
-the most obvious errors.
+Finally replaced the stock JavaScript/Chrome video player with something more stylish. And also more functional as
+it now features a loop function that let's you see the 1.5 second loop that is going to be selected.
 
 ### Features
-* Find missing files before rendering and warning the user about that
-* Much more logging, so in case things go south, we at least have a chance of finding the issue
-* Replacing the bulma calendar that stuck out like a sour thumb with buefy calendar for date range rendering
+* New video player
+* Video preview modal now accepts clicks outside and the ESC key as a cancel action
 
 ### Internals
-* Updated electron from ... like 11 to version 15! (do not recommend)
-* Moving away from momentjs to dayjs
+* Updated the dev libs
+* Including lates eslint which in turn forced us to
+* Rename components to respect multi-word-name constraint

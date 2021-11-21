@@ -25,7 +25,6 @@ import * as sc from '@/store-constants'
 import moment from 'moment'
 import { dateAsMoment } from '@/lib/DailyMedia'
 export default {
-  name: 'DeleteMediaDialog',
   computed: {
     ...mapState([
       'appState',

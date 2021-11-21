@@ -47,7 +47,6 @@ import TimelineDeletionDialog from '@/components/timeline/TimelineDeletionDialog
 import MenuTimelineSelector from '@/components/timeline/MenuTimelineSelector'
 
 export default {
-  name: 'Navbar',
   components: {
     MenuTimelineSelector,
     TimelineDeletionDialog,

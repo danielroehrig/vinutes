@@ -1,25 +1,26 @@
 <template>
-  <div class="modal is-active" v-if="isVisible">
-    <div class="modal-background"></div>
+  <b-modal
+      :active="isVisible"
+      v-on:close="closeVideoPlayer"
+  >
     <div class="modal-content">
       <div class="columns">
         <div class="column">
-          <video width="400" id="videoPreviewPlayer" controls>
+          <video width="400" id="videoPreviewPlayer" v-on:timeupdate="loopPlayEventHandler">
             <source :src="videoSrc">
           </video>
-        </div>
-      </div>
-      <div class="columns">
-        <div class="column">
-          <button class="button" value="Cancel" @click="closeVideoPlayer">{{ $t('button.cancel') }}</button>
-        </div>
-        <div class="column">
-          <button class="button is-primary" @click="acceptVideo" id="videoPlayerAcceptButton">{{ $t('button.accept') }}</button>
+          <div class="video-controls">
+            <b-slider v-model="sliderPosition" class="pl-3 pr-3" v-on:dragstart="sliderDragStart" v-on:dragging="sliderDragged" v-on:dragend="sliderDragEnd" v-on:change="sliderChanged" :custom-formatter="sliderLabel"></b-slider>
+            <button class="button ml-2 is-primary" @click="togglePlayPauseVideo" id="videoPlayerPlayPauseButton"><i class="mdi mdi-24px" :class="{'mdi-play': this.showPlayButton, 'mdi-pause': !this.showPlayButton}"></i></button>
+            <button class="button ml-2" :class="{'is-primary': this.playLooped}" @click="togglePlayLooped" id="buttonTogglePlayLooped"><i class="mdi mdi-sync mdi-24px"></i></button>
+            <button class="button is-primary is-pulled-right mr-2" @click="acceptVideo" id="videoPlayerAcceptButton">
+              {{ $t('button.accept') }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
-    <button class="modal-close is-large" @click="closeVideoPlayer"></button>
-  </div>
+  </b-modal>
 </template>
 
 <script>
@@ -27,7 +28,15 @@ import * as sc from '@/store-constants'
 import i18n from '@/i18n'
 
 export default {
-  name: 'VideoPlayer',
+  data: function () {
+    return {
+      loopStartTime: 0.0,
+      playLooped: false,
+      sliderPosition: 0,
+      wasPlayingWhenDragged: false,
+      showPlayButton: true
+    }
+  },
   computed: {
     videoSrc () {
       return this.$store.state.currentDailyMediaShown !== null ? 'file://' + this.$store.state.currentDailyMediaShown.filePath : null
@@ -37,8 +46,19 @@ export default {
     }
   },
   methods: {
+    sliderLabel: function (val) {
+      const media = document.getElementById('videoPreviewPlayer')
+      if (media === null) {
+        console.log('media not yet initialized')
+        return '0:00'
+      }
+      const sec = Math.floor(media.currentTime)
+      const min = Math.floor(sec / 60)
+      return min + ':' + (sec % 60).toString().padStart(2, '0')
+    },
     closeVideoPlayer: function () {
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+      this.resetLoop()
     },
     acceptVideo: function () {
       const videoPreviewPlayer = document.getElementById('videoPreviewPlayer')
@@ -49,6 +69,79 @@ export default {
       window.ipc.createVideoScreenshot(currentDailyMedia, currentTimeline)
       this.$store.commit('setCurrentDailyMedia', null)
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+    },
+    togglePlayPauseVideo: function () {
+      const media = document.getElementById('videoPreviewPlayer')
+      if (media.paused) {
+        if (this.playLooped) {
+          this.loopStartTime = media.currentTime
+          media.startPoint = this.loopStartTime
+        }
+        this.showPlayButton = false
+        media.play()
+      } else {
+        media.pause()
+        this.showPlayButton = true
+        if (this.playLooped) {
+          media.currentTime = this.loopStartTime
+        }
+      }
+    },
+    loopPlayEventHandler: function (event) {
+      const media = document.getElementById('videoPreviewPlayer')
+      let currentTime = media.currentTime
+      if (this.playLooped && currentTime > this.loopStartTime + 1.5) {
+        media.currentTime = this.loopStartTime
+        currentTime = media.currentTime
+      }
+      const playedPercentage = currentTime / media.duration
+      this.sliderPosition = 100 * playedPercentage
+      if (playedPercentage === 1) {
+        this.showPlayButton = true
+      }
+    },
+    togglePlayLooped: function () {
+      const media = document.getElementById('videoPreviewPlayer')
+      if (!this.playLooped) {
+        this.loopStartTime = media.currentTime
+        this.playLooped = true
+      } else {
+        this.playLooped = false
+      }
+    },
+    sliderDragStart: function () {
+      const media = document.getElementById('videoPreviewPlayer')
+      this.playLooped = false
+      if (!media.paused) {
+        this.wasPlayingWhenDragged = true
+        media.pause()
+      } else {
+        this.wasPlayingWhenDragged = false
+      }
+    },
+    sliderDragged: function () {
+      const media = document.getElementById('videoPreviewPlayer')
+      media.currentTime = this.sliderPosition / 100 * media.duration
+    },
+    sliderDragEnd: function () {
+      if (this.wasPlayingWhenDragged) {
+        const media = document.getElementById('videoPreviewPlayer')
+        media.play()
+      }
+      this.wasPlayingWhenDragged = false
+    },
+    sliderChanged: function (sliderPosition) {
+      console.log('Slider Changed')
+      const media = document.getElementById('videoPreviewPlayer')
+      media.currentTime = sliderPosition / 100 * media.duration
+      this.loopStartTime = media.currentTime
+    },
+    resetLoop () {
+      this.loopStartTime = 0.0
+      this.playLooped = false
+      this.wasPlayingWhenDragged = false
+      this.showPlayButton = true
+      this.sliderPosition = 0
     }
   },
   watch: {
@@ -67,18 +160,33 @@ export default {
             this.closeVideoPlayer()
           })
         })
+      } else {
+        this.resetLoop()
       }
     }
   }
 }
 </script>
 
-<style scoped>
-.columns {
-  overflow: hidden;
+<style scoped lang="scss">
+@import "sass/vinutes";
+
+#videoPreviewPlayer {
+  border: $primary-light 3px solid;
+  margin-bottom: -7px;
 }
 
-.modal-content {
-  overflow: hidden;
+#buttonTogglePlayLooped:focus {
+  box-shadow: none;
+  border-color: #dbdbdb;
+}
+
+.video-controls {
+  width: 400px;
+  background: $primary-light;
+  margin: 0 auto;
+  padding: 5px 0;
+  border-radius: 0 0 5px 5px;
+  text-align: left;
 }
 </style>

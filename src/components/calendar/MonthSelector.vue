@@ -14,7 +14,6 @@
 <script>
 import moment from 'moment'
 export default {
-  name: 'MonthSelector',
   computed: {
     formattedDate () {
       moment.locale(this.$store.state.language)
