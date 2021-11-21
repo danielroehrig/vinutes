@@ -22,6 +22,8 @@
   "globals": {
     "__static": "readonly",
     "describe": "readonly",
+    "beforeEach": "readonly",
+    "afterEach": "readonly",
     "it": "readonly",
     "jest": "readonly",
     "expect": "readonly",
