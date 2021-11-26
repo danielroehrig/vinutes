@@ -156,7 +156,7 @@ ipcMain.on('show-open-dialog', async (event, year, month, day) => {
     const filePath = openDialogResult.filePaths[0]
     getMediaTypeFromFile(filePath)
       .then(mediaType => {
-        event.returnValue = new DailyMedia(year, month, day, filePath, mediaType)
+        event.returnValue = new DailyMedia(year, month, day, filePath, mediaType, 0)
       })
       .catch(error => {
         log.debug(error)

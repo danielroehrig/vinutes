@@ -176,7 +176,7 @@ const store = new Vuex.Store({
      */
     removeCurrentMediaFile (context) {
       window.db.deleteMediaFileFromTimeline(context.state.currentTimeline, new DailyMedia(context.state.currentYear, context.state.currentMonth + 1,
-        context.state.currentDaySelected, '', ''))
+        context.state.currentDaySelected, '', '', 0))
       context.commit('loadDailyMedia')
       context.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
     },

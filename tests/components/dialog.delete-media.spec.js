@@ -42,7 +42,7 @@ describe('DeleteMediaDialog.vue', () => {
     })
   })
   it('gets full date depending on language and date in mediafile', async () => {
-    const testMediaFile = new DailyMedia(2018, 3, 2, 'some/path', 'video', 0.0)
+    const testMediaFile = new DailyMedia(2018, 3, 2, 'some/path', 'video', 0, 0.0)
     const store = new Vuex.Store({
       state: {
         appState: sc.APP_STATE_CONFIRM_MEDIA_DELETE,
@@ -69,8 +69,8 @@ describe('DeleteMediaDialog.vue', () => {
     })
   })
   it('switch media files', async () => {
-    const testMediaFile = new DailyMedia(2018, 3, 2, 'some/path', 'video')
-    const secondTestMediaFile = new DailyMedia(2018, 3, 4, 'some/other/path', 'video')
+    const testMediaFile = new DailyMedia(2018, 3, 2, 'some/path', 'video', 0)
+    const secondTestMediaFile = new DailyMedia(2018, 3, 4, 'some/other/path', 'video', 0)
     const store = new Vuex.Store({
       state: {
         appState: sc.APP_STATE_CONFIRM_MEDIA_DELETE,

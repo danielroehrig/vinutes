@@ -57,8 +57,9 @@ export const getDailyMediaForTimelineAndRange = (db, timelineId, startDate, endD
   })
   return rows.map(row => {
     const mediaMoment = moment(row.mediaDate)
+    // TODO Rotation of database
     return new DailyMedia(mediaMoment.year(), mediaMoment.month(),
-      mediaMoment.date(), row.path, row.mediaType, row.videoTimestamp,
+      mediaMoment.date(), row.path, row.mediaType, 0, row.videoTimestamp,
       row.videoStill)
   })
 }
@@ -76,7 +77,8 @@ export const getDailyMediaForTimeline = (db, timelineId) => {
 
   return dbResults.map(row => {
     const mediaDate = moment(row.mediaDate)
-    return new DailyMedia(mediaDate.year(), mediaDate.month(), mediaDate.date(), row.path, row.mediaType, row.videoTimestamp, row.previewImage)
+    // Todo rotation from database
+    return new DailyMedia(mediaDate.year(), mediaDate.month(), mediaDate.date(), row.path, row.mediaType, 0, row.videoTimestamp, row.previewImage)
   })
 }
 
