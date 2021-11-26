@@ -6,13 +6,15 @@
     <div class="modal-content">
       <div class="columns">
         <div class="column">
-          <video width="400" id="videoPreviewPlayer" v-on:timeupdate="loopPlayEventHandler">
-            <source :src="videoSrc">
-          </video>
+          <div><video id="videoPreviewPlayer" v-on:timeupdate="loopPlayEventHandler" class="video-player" :class="{'video-no-rotation':this.rotation===0, 'video-90-rotation':this.rotation===90, 'video-180-rotation':this.rotation===180, 'video-270-rotation':this.rotation===270}">
+            <source :src="videoSrc" :class="{'video-no-rotation':this.rotation===0, 'video-90-rotation':this.rotation===90, 'video-180-rotation':this.rotation===180, 'video-270-rotation':this.rotation===270}">
+          </video></div>
           <div class="video-controls">
             <b-slider v-model="sliderPosition" class="pl-3 pr-3" v-on:dragstart="sliderDragStart" v-on:dragging="sliderDragged" v-on:dragend="sliderDragEnd" v-on:change="sliderChanged" :custom-formatter="sliderLabel"></b-slider>
             <button class="button ml-2 is-primary" @click="togglePlayPauseVideo" id="videoPlayerPlayPauseButton"><i class="mdi mdi-24px" :class="{'mdi-play': this.showPlayButton, 'mdi-pause': !this.showPlayButton}"></i></button>
             <button class="button ml-2" :class="{'is-primary': this.playLooped}" @click="togglePlayLooped" id="buttonTogglePlayLooped"><i class="mdi mdi-sync mdi-24px"></i></button>
+            <button class="button ml-2" id="videoPlayerButtonRotateLeft" @click="rotateLeft"><i class="mdi mdi-rotate-left mdi-24px"></i></button>
+            <button class="button ml-2" id="videoPlayerButtonRotateRight" @click="rotateRight"><i class="mdi mdi-rotate-right mdi-24px"></i></button>
             <button class="button is-primary is-pulled-right mr-2" @click="acceptVideo" id="videoPlayerAcceptButton">
               {{ $t('button.accept') }}
             </button>
@@ -34,7 +36,8 @@ export default {
       playLooped: false,
       sliderPosition: 0,
       wasPlayingWhenDragged: false,
-      showPlayButton: true
+      showPlayButton: true,
+      rotation: 0
     }
   },
   computed: {
@@ -142,6 +145,18 @@ export default {
       this.wasPlayingWhenDragged = false
       this.showPlayButton = true
       this.sliderPosition = 0
+    },
+    rotateLeft () {
+      this.rotation -= 90
+      if (this.rotation < 0) {
+        this.rotation += 360
+      }
+    },
+    rotateRight () {
+      this.rotation += 90
+      if (this.rotation >= 360) {
+        this.rotation -= 360
+      }
     }
   },
   watch: {
@@ -188,5 +203,37 @@ export default {
   padding: 5px 0;
   border-radius: 0 0 5px 5px;
   text-align: left;
+}
+
+.video-player {
+  overflow: hidden;
+  margin: 0 auto;
+  background: black;
+}
+
+.video-no-rotation {
+  max-height: 400px;
+  width: 400px;
+}
+
+.video-90-rotation {
+  height: 400px;
+  max-width: 400px;
+  transform: rotate(
+          90deg);
+}
+
+.video-180-rotation {
+  max-height: 400px;
+  width: 400px;
+  transform: rotate(
+          180deg);
+}
+
+.video-270-rotation {
+  height: 400px;
+  max-width: 400px;
+  transform: rotate(
+          270deg);
 }
 </style>
