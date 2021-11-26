@@ -51,8 +51,8 @@ export default {
   methods: {
     sliderLabel: function (val) {
       const media = document.getElementById('videoPreviewPlayer')
+      // Slider not yet initialized
       if (media === null) {
-        console.log('media not yet initialized')
         return '0:00'
       }
       const sec = Math.floor(media.currentTime)
@@ -134,7 +134,6 @@ export default {
       this.wasPlayingWhenDragged = false
     },
     sliderChanged: function (sliderPosition) {
-      console.log('Slider Changed')
       const media = document.getElementById('videoPreviewPlayer')
       media.currentTime = sliderPosition / 100 * media.duration
       this.loopStartTime = media.currentTime
@@ -162,6 +161,7 @@ export default {
   watch: {
     isVisible: function (isVisible, wasVisible) {
       if (isVisible) {
+        const currentDailyMedia = this.$store.state.currentDailyMediaShown
         this.$nextTick(function () {
           const lastVideoSource = document.querySelector('source:last-child')// TODO: Document might be replacable by something that only searches within this component
           lastVideoSource.addEventListener('error', (event) => {
@@ -174,6 +174,12 @@ export default {
             })
             this.closeVideoPlayer()
           })
+          const media = document.getElementById('videoPreviewPlayer')
+          const setPlayTime = function () {
+            media.currentTime = currentDailyMedia.timeStamp
+            media.removeEventListener('canplaythrough', setPlayTime)
+          }
+          media.addEventListener('canplaythrough', setPlayTime)
         })
       } else {
         this.resetLoop()

@@ -11,3 +11,6 @@ it now features a loop function that let's you see the 1.5 second loop that is g
 * Updated the dev libs
 * Including lates eslint which in turn forced us to
 * Rename components to respect multi-word-name constraint
+
+### Bugfixes
+* Opening a video from the calendar will jump to the saved timestamp
