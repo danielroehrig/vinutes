@@ -2,7 +2,7 @@ import path from 'path'
 import {
   handleStoreMutation,
   initDBStructure,
-  loadLastState
+  loadLastState, migrate
 } from '@/lib/PersistenceService'
 import {
   createNewTimeline,
@@ -29,6 +29,7 @@ if (process.env.NODE_ENV === 'test') {
 }
 contextBridge.exposeInMainWorld('db', {
   initDBStructure: () => initDBStructure(db),
+  migrate: () => migrate(db),
   getAllTimelines: () => getAllTimelines(db),
   loadLastState: () => loadLastState(db),
   loadTimeline: (timeline) => loadTimeline(db, timeline),

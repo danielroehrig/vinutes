@@ -34,10 +34,12 @@ export default {
   beforeCreate () {
     // TODO Migration comes here
     window.db.initDBStructure()
+    window.db.migrate()
   },
   computed: mapState(['appState', 'currentYear', 'currentMonth', 'currentDaySelected', 'language']),
   // As soon as app is ready, load the last saved state
   mounted () {
+    // TODO Somehow
     this.$store.dispatch('loadTimelines')
     this.$store.dispatch('loadLastState')
   },
