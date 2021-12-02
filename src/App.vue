@@ -32,9 +32,10 @@ export default {
   },
   // Before any window is created, load database structure
   beforeCreate () {
-    // TODO Migration comes here
     window.db.initDBStructure()
-    window.db.migrate()
+    if (!window.db.migrate()) {
+      window.ipc.exitApp(1)
+    }
   },
   computed: mapState(['appState', 'currentYear', 'currentMonth', 'currentDaySelected', 'language']),
   // As soon as app is ready, load the last saved state

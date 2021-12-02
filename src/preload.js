@@ -58,5 +58,6 @@ contextBridge.exposeInMainWorld('ipc', {
   cancelRendering: () => ipcRenderer.send('cancel-rendering'),
   startRendering: (filePath, mediaFiles) => ipcRenderer.send('start-rendering', filePath, mediaFiles),
   getMediaType: (filePath) => ipcRenderer.sendSync('get-media-type', filePath),
-  createVideoScreenshot: (currentDailyMedia, currentTimeline) => ipcRenderer.send('create-video-screenshot', currentDailyMedia, currentTimeline)
+  createVideoScreenshot: (currentDailyMedia, currentTimeline) => ipcRenderer.send('create-video-screenshot', currentDailyMedia, currentTimeline),
+  exitApp: (statusCode) => ipcRenderer.send('exit-app', statusCode)
 })

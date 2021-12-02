@@ -4,7 +4,6 @@
 
 import { safeDailyMediaForTimeline } from './TimelineService'
 import dayjs from 'dayjs'
-import { app } from 'electron'
 
 const path = require('path')
 const log = require('electron-log')
@@ -27,20 +26,20 @@ export const initDBStructure = (db) => {
 /**
  * Migrate the database to a new version if necessary
  * @param db
- * @returns void
+ * @returns boolean
  */
 export const migrate = (db) => {
   const migrationVersion = getMigrationVersion(db)
   const targetMigrationVersion = 1 // This will change when we upgrade the database
   if (migrationVersion === targetMigrationVersion) {
-    return
+    return true
   }
   let databaseBackupPath
   try {
     databaseBackupPath = backupDatabase(db)
   } catch (err) {
     log.error('Could not backup database but migration necessary. I better stop now: ' + err)
-    app.exit(1)
+    return false
   }
   // Migration 1: Add migration version field
   if (migrationVersion < 1) {
@@ -52,12 +51,14 @@ export const migrate = (db) => {
       })
       transaction1()
     } catch (err) {
-      log.error('Colud not execute migration 1. ' + err)
+      log.error('Could not execute migration 1. ' + err)
+      log.error('Restoring database with file ' + databaseBackupPath)
       fs.copyFileSync(databaseBackupPath, db.name) // restore database
-      app.exit(1)
+      return false
     }
     log.debug('Migrated to database version 1')
   }
+  return true
 }
 
 function getMigrationVersion (db) {
