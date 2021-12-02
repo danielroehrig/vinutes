@@ -4,6 +4,7 @@
 
 import { safeDailyMediaForTimeline } from './TimelineService'
 import dayjs from 'dayjs'
+import { app } from 'electron'
 
 const path = require('path')
 const log = require('electron-log')
@@ -26,34 +27,61 @@ export const initDBStructure = (db) => {
 /**
  * Migrate the database to a new version if necessary
  * @param db
- * @returns {Promise<*>}
+ * @returns void
  */
 export const migrate = (db) => {
+  const migrationVersion = getMigrationVersion(db)
+  const targetMigrationVersion = 1 // This will change when we upgrade the database
+  if (migrationVersion === targetMigrationVersion) {
+    return
+  }
+  let databaseBackupPath
+  try {
+    databaseBackupPath = backupDatabase(db)
+  } catch (err) {
+    log.error('Could not backup database but migration necessary. I better stop now: ' + err)
+    app.exit(1)
+  }
+  // Migration 1: Add migration version field
+  if (migrationVersion < 1) {
+    try {
+      const transaction1 = db.transaction(() => {
+        db.prepare('ALTER TABLE state ADD COLUMN migrationVersion INTEGER NOT NULL DEFAULT 1').run()
+        db.prepare('UPDATE state SET migrationVersion=1 WHERE id=1').run()
+        db.prepare('ALTER TABLE media ADD COLUMN rotation INTEGER NOT NULL DEFAULT 0').run()
+      })
+      transaction1()
+    } catch (err) {
+      log.error('Colud not execute migration 1. ' + err)
+      fs.copyFileSync(databaseBackupPath, db.name) // restore database
+      app.exit(1)
+    }
+    log.debug('Migrated to database version 1')
+  }
+}
+
+function getMigrationVersion (db) {
   const fieldMigrationVersionExists = db.prepare("SELECT COUNT(*) AS fieldExists FROM pragma_table_info('state') WHERE name='migrationVersion'").get()
   let migrationVersion = 0
   if (fieldMigrationVersionExists.fieldExists === 1) {
     const dbMigrationVersion = db.prepare('SELECT migrationVersion FROM state WHERE id = 1;').get()
     migrationVersion = dbMigrationVersion.migrationVersion
   }
-  if (migrationVersion === 1) {
-    return
-  }
-  try {
-    backupDatabase(db)
-  } catch (err) {
-    log.error('Could not backup database but migration necessary. I better stop now: ' + err)
-  }
+  return migrationVersion
 }
 
 /**
  *
  * @param db
- * @returns {void}
+ * @returns {string}
+ * @throws
  */
 const backupDatabase = (db) => {
   const dbPath = path.dirname(db.name)
   const dbBackupPath = dbPath + '/' + dayjs().format('YYYYMMDDHHmmss') + '-backup-' + path.basename(db.name)
-  return fs.copyFileSync(db.name, dbBackupPath, fs.constants.COPYFILE_EXCL)
+  fs.copyFileSync(db.name, dbBackupPath, fs.constants.COPYFILE_EXCL)
+  fs.existsSync(dbBackupPath)
+  return dbBackupPath
 }
 
 /**
