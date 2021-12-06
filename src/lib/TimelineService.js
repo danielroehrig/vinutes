@@ -57,10 +57,8 @@ export const getDailyMediaForTimelineAndRange = (db, timelineId, startDate, endD
   })
   return rows.map(row => {
     const mediaMoment = moment(row.mediaDate)
-    // TODO Rotation of database
     return new DailyMedia(mediaMoment.year(), mediaMoment.month(),
-      mediaMoment.date(), row.path, row.mediaType, 0, row.videoTimestamp,
-      row.videoStill)
+      mediaMoment.date(), row.path, row.mediaType, row.rotation, row.videoTimestamp, row.videoStill)
   })
 }
 
@@ -71,14 +69,13 @@ export const getDailyMediaForTimelineAndRange = (db, timelineId, startDate, endD
  * @returns {DailyMedia[]}
  */
 export const getDailyMediaForTimeline = (db, timelineId) => {
-  const dbResults = db.prepare('SELECT m.mediaDate, m.path, m.videoTimestamp, m.mediaType, vs.data AS previewImage FROM media m LEFT JOIN videoStills vS on m.timelineId = vS.timelineId and m.mediaDate = vS.mediaDate WHERE m.timelineId=$id ORDER BY m.mediaDate ASC;').all({
+  const dbResults = db.prepare('SELECT m.mediaDate, m.path, m.videoTimestamp, m.mediaType, m.rotation, vs.data AS previewImage FROM media m LEFT JOIN videoStills vS on m.timelineId = vS.timelineId and m.mediaDate = vS.mediaDate WHERE m.timelineId=$id ORDER BY m.mediaDate ASC;').all({
     id: timelineId
   })
 
   return dbResults.map(row => {
     const mediaDate = moment(row.mediaDate)
-    // Todo rotation from database
-    return new DailyMedia(mediaDate.year(), mediaDate.month(), mediaDate.date(), row.path, row.mediaType, 0, row.videoTimestamp, row.previewImage)
+    return new DailyMedia(mediaDate.year(), mediaDate.month(), mediaDate.date(), row.path, row.mediaType, row.rotation, row.videoTimestamp, row.previewImage)
   })
 }
 
