@@ -91,13 +91,14 @@ export const getDailyMediaForTimeline = (db, timelineId) => {
 export const safeDailyMediaForTimeline = (db, timelineId, dailyMedia) => {
   console.log('Saving Timeline to database!')
   const replaceDailyMedia = db.transaction(() => {
-    db.prepare('INSERT INTO media (timelineId, mediaDate, path, videoTimestamp, mediaType) VALUES ($timelineId, $mediaDate, $path, $videoTimestamp, $mediaType) ON CONFLICT(timelineId, mediaDate) DO UPDATE SET path=$path, videoTimestamp=$videoTimestamp;')
+    db.prepare('INSERT INTO media (timelineId, mediaDate, path, videoTimestamp, mediaType, rotation) VALUES ($timelineId, $mediaDate, $path, $videoTimestamp, $mediaType, $rotation) ON CONFLICT(timelineId, mediaDate) DO UPDATE SET path=$path, videoTimestamp=$videoTimestamp;')
       .run({
         timelineId: timelineId,
         mediaDate: dateAsIso(dailyMedia),
         path: dailyMedia.filePath,
         videoTimestamp: dailyMedia.timeStamp,
-        mediaType: dailyMedia.mediaType
+        mediaType: dailyMedia.mediaType,
+        rotation: dailyMedia.rotation
       })
     deletePreviewImageFromTimeline(db, timelineId, dailyMedia)
     if (dailyMedia.previewImage) {

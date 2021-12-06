@@ -67,7 +67,9 @@ export default {
       const videoPreviewPlayer = document.getElementById('videoPreviewPlayer')
       const currentDailyMedia = this.$store.state.currentDailyMediaShown
       const currentTimeline = this.$store.state.currentTimeline
-      this.$store.dispatch('acceptVideo', videoPreviewPlayer.currentTime)
+      const timeStamp = videoPreviewPlayer.currentTime
+      const rotation = this.rotation
+      this.$store.dispatch('acceptVideo', { timeStamp, rotation })
       // TODO: creating a video screenshot fails, nothing happens and I'm not sure if that crashes the app
       window.ipc.createVideoScreenshot(currentDailyMedia, currentTimeline)
       this.$store.commit('setCurrentDailyMedia', null)

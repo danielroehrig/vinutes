@@ -29,6 +29,9 @@ const store = new Vuex.Store({
     setTimeStampForVideo (state, timeStamp) {
       state.currentDailyMediaShown.timeStamp = timeStamp
     },
+    setRotationForMedia (state, rotation) {
+      state.currentDailyMediaShown.rotation = rotation
+    },
     moveToPreviousMonth (state) {
       const currentMoment = moment(
         { year: state.currentYear, month: state.currentMonth })
@@ -147,8 +150,9 @@ const store = new Vuex.Store({
       context.commit('loadDailyMedia')
       context.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
     },
-    acceptVideo (context, timeStamp) {
+    acceptVideo (context, { timeStamp, rotation }) {
       context.commit('setTimeStampForVideo', timeStamp)
+      context.commit('setRotationForMedia', rotation)
     },
     /**
      * Load the last state of the app from the database
