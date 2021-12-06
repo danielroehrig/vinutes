@@ -71,6 +71,7 @@ const createScreenshot = (dailyMedia, timeline, event) => {
  */
 const createImagePreview = (dailyMedia, event) => {
   sharp(dailyMedia.filePath)
+    .rotate()
     .resize(320, 180, {
       fit: 'cover'
     })
