@@ -146,6 +146,7 @@ export default {
       this.wasPlayingWhenDragged = false
       this.showPlayButton = true
       this.sliderPosition = 0
+      this.rotation = 0
     },
     rotateLeft () {
       this.rotation -= 90
@@ -164,6 +165,7 @@ export default {
     isVisible: function (isVisible, wasVisible) {
       if (isVisible) {
         const currentDailyMedia = this.$store.state.currentDailyMediaShown
+        this.rotation = currentDailyMedia.rotation
         this.$nextTick(function () {
           const lastVideoSource = document.querySelector('source:last-child')// TODO: Document might be replacable by something that only searches within this component
           lastVideoSource.addEventListener('error', (event) => {
