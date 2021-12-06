@@ -150,7 +150,7 @@ const renderToVideoClip = (dailyMedia, tmpFolder) => {
 
 /**
  * Adds the timestamp to the video
- * @param {string}dateName
+ * @param {string} dateName
  */
 FfmpegCommand.prototype.addDateText = function (dateName) {
   this.videoFilters({
@@ -166,6 +166,48 @@ FfmpegCommand.prototype.addDateText = function (dateName) {
       shadowy: 2
     }
   })
+  return this
+}
+
+/**
+ * Rotate the video if necessary
+ * @param {int} rotation
+ */
+FfmpegCommand.prototype.rotate = function (rotation) {
+  console.log('Rotate by ' + rotation)
+  switch (rotation) {
+    case 90:
+      console.log('Rotate right')
+      this.videoFilters(
+        {
+          filter: 'transpose',
+          options: 1
+        }
+      )
+      break
+    case 180:
+      console.log('Rotate full')
+      this.videoFilters(
+        {
+          filter: 'transpose',
+          options: 2
+        })
+      this.videoFilters(
+        {
+          filter: 'transpose',
+          options: 2
+        })
+      break
+    case 270:
+      console.log('Rotate left')
+      this.videoFilters(
+        {
+          filter: 'transpose',
+          options: 2
+        }
+      )
+      break
+  }
   return this
 }
 
@@ -199,6 +241,7 @@ function prepareVideoClip (
     ffmpeg.addInput(dailyMedia.filePath)
       .seekInput(dailyMedia.timeStamp)
       .duration(1.5)
+      .rotate(dailyMedia.rotation)
       .addDateText(dateName)
       .setOutputParameters(tmpFileName)
       .on('error', (e) => {
