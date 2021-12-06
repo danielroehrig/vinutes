@@ -303,6 +303,7 @@ function prepareStillImageVideo (dailyMedia, tmpFolder, mediaDateString, dateNam
       })
 
     sharp(dailyMedia.filePath)
+      .rotate()
       .resize(1920, 1080, {
         fit: 'cover'
       })
