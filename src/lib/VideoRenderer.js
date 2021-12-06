@@ -37,16 +37,27 @@ FfmpegCommand.setFfmpegPath(ffmpegPath)
  */
 const createScreenshot = (dailyMedia, timeline, event) => {
   const screenshotName = `vinutes-${dailyMedia.year}${dailyMedia.month}${dailyMedia.day}.jpg`
+  const screenshotRotatedName = `vinutes-${dailyMedia.year}${dailyMedia.month}${dailyMedia.day}Rotated.jpg`
+  const tempFolder = app.getPath('temp')
   currentFFmpegCommand = new FfmpegCommand(dailyMedia.filePath).screenshots({
     timestamps: [dailyMedia.timeStamp],
     filename: screenshotName,
-    folder: app.getPath('temp'),
+    folder: tempFolder,
     size: '320x180'
   }).on('end', function () {
     console.log('screenshot created')
-    const buff = fs.readFileSync(path.join(app.getPath('temp'), screenshotName))
-    dailyMedia.previewImage = buff.toString('base64')
-    event.reply('screenshot-created', dailyMedia)
+    const screenShotPath = path.join(tempFolder, screenshotName)
+    const screenShotPathRotated = path.join(tempFolder, screenshotRotatedName)
+    sharp(screenShotPath)
+      .rotate(dailyMedia.rotation)
+      .toFile(screenShotPathRotated)
+      .then(data => {
+        console.log('screenshot rotated')
+        const buff = fs.readFileSync(screenShotPathRotated)
+        dailyMedia.previewImage = buff.toString('base64')
+        event.reply('screenshot-created', dailyMedia)
+      }
+      )
   }).on('error', function () {
     log.error('Could not create screenshot for ' + screenshotName)
   })
@@ -174,7 +185,6 @@ FfmpegCommand.prototype.addDateText = function (dateName) {
  * @param {int} rotation
  */
 FfmpegCommand.prototype.rotate = function (rotation) {
-  console.log('Rotate by ' + rotation)
   switch (rotation) {
     case 90:
       console.log('Rotate right')
