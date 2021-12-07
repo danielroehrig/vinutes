@@ -58,8 +58,7 @@ export const getDailyMediaForTimelineAndRange = (db, timelineId, startDate, endD
   return rows.map(row => {
     const mediaMoment = moment(row.mediaDate)
     return new DailyMedia(mediaMoment.year(), mediaMoment.month(),
-      mediaMoment.date(), row.path, row.mediaType, row.videoTimestamp,
-      row.videoStill)
+      mediaMoment.date(), row.path, row.mediaType, row.rotation, row.videoTimestamp, row.videoStill)
   })
 }
 
@@ -70,13 +69,13 @@ export const getDailyMediaForTimelineAndRange = (db, timelineId, startDate, endD
  * @returns {DailyMedia[]}
  */
 export const getDailyMediaForTimeline = (db, timelineId) => {
-  const dbResults = db.prepare('SELECT m.mediaDate, m.path, m.videoTimestamp, m.mediaType, vs.data AS previewImage FROM media m LEFT JOIN videoStills vS on m.timelineId = vS.timelineId and m.mediaDate = vS.mediaDate WHERE m.timelineId=$id ORDER BY m.mediaDate ASC;').all({
+  const dbResults = db.prepare('SELECT m.mediaDate, m.path, m.videoTimestamp, m.mediaType, m.rotation, vs.data AS previewImage FROM media m LEFT JOIN videoStills vS on m.timelineId = vS.timelineId and m.mediaDate = vS.mediaDate WHERE m.timelineId=$id ORDER BY m.mediaDate ASC;').all({
     id: timelineId
   })
 
   return dbResults.map(row => {
     const mediaDate = moment(row.mediaDate)
-    return new DailyMedia(mediaDate.year(), mediaDate.month(), mediaDate.date(), row.path, row.mediaType, row.videoTimestamp, row.previewImage)
+    return new DailyMedia(mediaDate.year(), mediaDate.month(), mediaDate.date(), row.path, row.mediaType, row.rotation, row.videoTimestamp, row.previewImage)
   })
 }
 
@@ -89,13 +88,14 @@ export const getDailyMediaForTimeline = (db, timelineId) => {
 export const safeDailyMediaForTimeline = (db, timelineId, dailyMedia) => {
   console.log('Saving Timeline to database!')
   const replaceDailyMedia = db.transaction(() => {
-    db.prepare('INSERT INTO media (timelineId, mediaDate, path, videoTimestamp, mediaType) VALUES ($timelineId, $mediaDate, $path, $videoTimestamp, $mediaType) ON CONFLICT(timelineId, mediaDate) DO UPDATE SET path=$path, videoTimestamp=$videoTimestamp;')
+    db.prepare('INSERT INTO media (timelineId, mediaDate, path, videoTimestamp, mediaType, rotation) VALUES ($timelineId, $mediaDate, $path, $videoTimestamp, $mediaType, $rotation) ON CONFLICT(timelineId, mediaDate) DO UPDATE SET path=$path, videoTimestamp=$videoTimestamp;')
       .run({
         timelineId: timelineId,
         mediaDate: dateAsIso(dailyMedia),
         path: dailyMedia.filePath,
         videoTimestamp: dailyMedia.timeStamp,
-        mediaType: dailyMedia.mediaType
+        mediaType: dailyMedia.mediaType,
+        rotation: dailyMedia.rotation
       })
     deletePreviewImageFromTimeline(db, timelineId, dailyMedia)
     if (dailyMedia.previewImage) {

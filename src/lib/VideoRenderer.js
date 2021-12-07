@@ -37,16 +37,27 @@ FfmpegCommand.setFfmpegPath(ffmpegPath)
  */
 const createScreenshot = (dailyMedia, timeline, event) => {
   const screenshotName = `vinutes-${dailyMedia.year}${dailyMedia.month}${dailyMedia.day}.jpg`
+  const screenshotRotatedName = `vinutes-${dailyMedia.year}${dailyMedia.month}${dailyMedia.day}Rotated.jpg`
+  const tempFolder = app.getPath('temp')
   currentFFmpegCommand = new FfmpegCommand(dailyMedia.filePath).screenshots({
     timestamps: [dailyMedia.timeStamp],
     filename: screenshotName,
-    folder: app.getPath('temp'),
+    folder: tempFolder,
     size: '320x180'
   }).on('end', function () {
     console.log('screenshot created')
-    const buff = fs.readFileSync(path.join(app.getPath('temp'), screenshotName))
-    dailyMedia.previewImage = buff.toString('base64')
-    event.reply('screenshot-created', dailyMedia)
+    const screenShotPath = path.join(tempFolder, screenshotName)
+    const screenShotPathRotated = path.join(tempFolder, screenshotRotatedName)
+    sharp(screenShotPath)
+      .rotate(dailyMedia.rotation)
+      .toFile(screenShotPathRotated)
+      .then(data => {
+        console.log('screenshot rotated')
+        const buff = fs.readFileSync(screenShotPathRotated)
+        dailyMedia.previewImage = buff.toString('base64')
+        event.reply('screenshot-created', dailyMedia)
+      }
+      )
   }).on('error', function () {
     log.error('Could not create screenshot for ' + screenshotName)
   })
@@ -60,6 +71,7 @@ const createScreenshot = (dailyMedia, timeline, event) => {
  */
 const createImagePreview = (dailyMedia, event) => {
   sharp(dailyMedia.filePath)
+    .rotate()
     .resize(320, 180, {
       fit: 'cover'
     })
@@ -150,7 +162,7 @@ const renderToVideoClip = (dailyMedia, tmpFolder) => {
 
 /**
  * Adds the timestamp to the video
- * @param {string}dateName
+ * @param {string} dateName
  */
 FfmpegCommand.prototype.addDateText = function (dateName) {
   this.videoFilters({
@@ -166,6 +178,47 @@ FfmpegCommand.prototype.addDateText = function (dateName) {
       shadowy: 2
     }
   })
+  return this
+}
+
+/**
+ * Rotate the video if necessary
+ * @param {int} rotation
+ */
+FfmpegCommand.prototype.rotate = function (rotation) {
+  switch (rotation) {
+    case 90:
+      console.log('Rotate right')
+      this.videoFilters(
+        {
+          filter: 'transpose',
+          options: 1
+        }
+      )
+      break
+    case 180:
+      console.log('Rotate full')
+      this.videoFilters(
+        {
+          filter: 'transpose',
+          options: 2
+        })
+      this.videoFilters(
+        {
+          filter: 'transpose',
+          options: 2
+        })
+      break
+    case 270:
+      console.log('Rotate left')
+      this.videoFilters(
+        {
+          filter: 'transpose',
+          options: 2
+        }
+      )
+      break
+  }
   return this
 }
 
@@ -199,6 +252,7 @@ function prepareVideoClip (
     ffmpeg.addInput(dailyMedia.filePath)
       .seekInput(dailyMedia.timeStamp)
       .duration(1.5)
+      .rotate(dailyMedia.rotation)
       .addDateText(dateName)
       .setOutputParameters(tmpFileName)
       .on('error', (e) => {
@@ -249,6 +303,7 @@ function prepareStillImageVideo (dailyMedia, tmpFolder, mediaDateString, dateNam
       })
 
     sharp(dailyMedia.filePath)
+      .rotate()
       .resize(1920, 1080, {
         fit: 'cover'
       })
