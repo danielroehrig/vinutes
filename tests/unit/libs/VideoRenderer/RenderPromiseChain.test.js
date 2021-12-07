@@ -8,15 +8,18 @@ jest.mock('sharp')
 const sharp = require('sharp')
 const mockSharpResize = jest.fn()
 const mockSharpToFile = jest.fn()
+const mockSharpRotate = jest.fn()
 const mockedSharp = () => {
   return {
     resize: mockSharpResize,
-    toFile: mockSharpToFile
+    toFile: mockSharpToFile,
+    rotate: mockSharpRotate
   }
 }
 sharp.mockImplementation(mockedSharp)
 mockSharpResize.mockImplementation(mockedSharp)
-mockSharpToFile.mockImplementation(() => Promise.resolve())
+mockSharpToFile.mockImplementation(mockedSharp)
+mockSharpRotate.mockImplementation(mockedSharp)
 
 const eventMock = {
   reply: () => {
