@@ -6,9 +6,11 @@
     <div class="modal-content">
       <div class="columns">
         <div class="column">
-          <div><video id="videoPreviewPlayer" v-on:timeupdate="loopPlayEventHandler" class="video-player" :class="{'video-no-rotation':this.rotation===0, 'video-90-rotation':this.rotation===90, 'video-180-rotation':this.rotation===180, 'video-270-rotation':this.rotation===270}">
+          <div class="video-canvas">
+            <video id="videoPreviewPlayer" v-on:timeupdate="loopPlayEventHandler" class="video-player" :class="{'video-no-rotation':this.rotation===0, 'video-90-rotation':this.rotation===90, 'video-180-rotation':this.rotation===180, 'video-270-rotation':this.rotation===270}">
             <source :src="videoSrc" :class="{'video-no-rotation':this.rotation===0, 'video-90-rotation':this.rotation===90, 'video-180-rotation':this.rotation===180, 'video-270-rotation':this.rotation===270}">
-          </video></div>
+          </video>
+          </div>
           <div class="video-controls">
             <b-slider v-model="sliderPosition" class="pl-3 pr-3" v-on:dragstart="sliderDragStart" v-on:dragging="sliderDragged" v-on:dragend="sliderDragEnd" v-on:change="sliderChanged" :custom-formatter="sliderLabel"></b-slider>
             <button class="button ml-2 is-primary" @click="togglePlayPauseVideo" id="videoPlayerPlayPauseButton"><i class="mdi mdi-24px" :class="{'mdi-play': this.showPlayButton, 'mdi-pause': !this.showPlayButton}"></i></button>
@@ -196,14 +198,16 @@ export default {
 <style scoped lang="scss">
 @import "sass/vinutes";
 
-#videoPreviewPlayer {
-  border: $primary-light 3px solid;
-  margin-bottom: -7px;
-}
-
 #buttonTogglePlayLooped:focus {
   box-shadow: none;
   border-color: #dbdbdb;
+}
+
+.video-canvas {
+  margin: auto auto;
+  background: black;
+  width: 400px;
+  border: $primary-light 3px solid;
 }
 
 .video-controls {
@@ -217,32 +221,32 @@ export default {
 
 .video-player {
   overflow: hidden;
-  margin: 0 auto;
+  margin: 0 auto -10px auto;
   background: black;
 }
 
 .video-no-rotation {
-  max-height: 400px;
-  width: 400px;
+  max-height: 394px;
+  width: 394px;
 }
 
 .video-90-rotation {
-  height: 400px;
-  max-width: 400px;
+  height: 394px;
+  max-width: 394px;
   transform: rotate(
           90deg);
 }
 
 .video-180-rotation {
-  max-height: 400px;
-  width: 400px;
+  max-height: 394px;
+  width: 394px;
   transform: rotate(
           180deg);
 }
 
 .video-270-rotation {
-  height: 400px;
-  max-width: 400px;
+  height: 394px;
+  max-width: 394px;
   transform: rotate(
           270deg);
 }
