@@ -6,6 +6,7 @@ it now features a loop function that lets you see the 1.5 second loop that is go
 ### Features
 * New video player
 * Rotate a video! 90, 180 or even 270 degrees!
+* Respect the image rotation
 * Video preview modal now accepts clicks outside and the ESC key as a cancel action
 
 ### Internals
