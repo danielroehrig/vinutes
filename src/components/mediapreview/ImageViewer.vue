@@ -8,7 +8,6 @@
 import * as sc from '@/store-constants'
 
 export default {
-  name: 'ImageViewer',
   computed: {
     isVisible () {
       return this.$store.state.appState === sc.APP_STATE_IMAGE_VIEWER

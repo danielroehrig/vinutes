@@ -2,7 +2,7 @@ import path from 'path'
 import {
   handleStoreMutation,
   initDBStructure,
-  loadLastState
+  loadLastState, migrate
 } from '@/lib/PersistenceService'
 import {
   createNewTimeline,
@@ -29,6 +29,7 @@ if (process.env.NODE_ENV === 'test') {
 }
 contextBridge.exposeInMainWorld('db', {
   initDBStructure: () => initDBStructure(db),
+  migrate: () => migrate(db),
   getAllTimelines: () => getAllTimelines(db),
   loadLastState: () => loadLastState(db),
   loadTimeline: (timeline) => loadTimeline(db, timeline),
@@ -57,5 +58,6 @@ contextBridge.exposeInMainWorld('ipc', {
   cancelRendering: () => ipcRenderer.send('cancel-rendering'),
   startRendering: (filePath, mediaFiles) => ipcRenderer.send('start-rendering', filePath, mediaFiles),
   getMediaType: (filePath) => ipcRenderer.sendSync('get-media-type', filePath),
-  createVideoScreenshot: (currentDailyMedia, currentTimeline) => ipcRenderer.send('create-video-screenshot', currentDailyMedia, currentTimeline)
+  createVideoScreenshot: (currentDailyMedia, currentTimeline) => ipcRenderer.send('create-video-screenshot', currentDailyMedia, currentTimeline),
+  exitApp: (statusCode) => ipcRenderer.send('exit-app', statusCode)
 })

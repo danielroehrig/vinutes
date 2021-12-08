@@ -19,7 +19,6 @@ import store from '@/store'
 import i18n from '@/i18n'
 
 export default {
-  name: 'CalendarDay',
   data () {
     return {
       draggedOver: false
@@ -129,7 +128,7 @@ export default {
         })
         return
       }
-      const dailyMedia = new DailyMedia(this.currentYear, this.currentMonth + 1, this.day, file.path, mediaType)
+      const dailyMedia = new DailyMedia(this.currentYear, this.currentMonth + 1, this.day, file.path, mediaType, 0)
       if (dailyMedia.mediaType === 'image') {
         window.ipc.renderImagePreview(dailyMedia)
         return

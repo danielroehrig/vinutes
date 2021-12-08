@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <Navbar v-on:openPreferences="openPreferences()"></Navbar>
-    <Preferences v-bind:open="this.showPreferences" v-on:closePreferences="closePreferences()"></Preferences>
-    <Calendar></Calendar>
+    <NavBar v-on:openPreferences="openPreferences()"></NavBar>
+    <PreferencesSidebar v-bind:open="this.showPreferences" v-on:closePreferences="closePreferences()"></PreferencesSidebar>
+    <CalendarView></CalendarView>
   </div>
 </template>
 
@@ -17,14 +17,14 @@
 
 </style>
 <script>
-import Navbar from './components/Navbar'
+import NavBar from './components/NavBar'
 import { mapState } from 'vuex'
 import * as sc from '@/store-constants'
-import Calendar from '@/components/calendar/Calendar'
-import Preferences from '@/components/Preferences'
+import CalendarView from '@/components/calendar/CalendarView'
+import PreferencesSidebar from '@/components/PreferencesSidebar'
 
 export default {
-  components: { Preferences, Calendar, Navbar },
+  components: { PreferencesSidebar, CalendarView, NavBar },
   data: function () {
     return {
       showPreferences: false
@@ -32,12 +32,15 @@ export default {
   },
   // Before any window is created, load database structure
   beforeCreate () {
-    // TODO Migration comes here
     window.db.initDBStructure()
+    if (!window.db.migrate()) {
+      window.ipc.exitApp(1)
+    }
   },
   computed: mapState(['appState', 'currentYear', 'currentMonth', 'currentDaySelected', 'language']),
   // As soon as app is ready, load the last saved state
   mounted () {
+    // TODO Somehow
     this.$store.dispatch('loadTimelines')
     this.$store.dispatch('loadLastState')
   },

@@ -11,30 +11,30 @@ describe('get missing files ', () => {
 
   it('finds no missing files with an existing file in the array', async () => {
     const videos = [
-      new DailyMedia(2020, 1, 1, path.join(__dirname, '..', '..', '_support', 'emptyJpg.jpg'), 'text')
+      new DailyMedia(2020, 1, 1, path.join(__dirname, '..', '..', '_support', 'emptyJpg.jpg'), 'text', 0)
     ]
     return expect(getMissingFiles(videos)).resolves.toStrictEqual([])
   })
 
   it('finds no missing files with two existing file in the array', async () => {
     const videos = [
-      new DailyMedia(2020, 1, 1, path.join(__dirname, '..', '..', '_support', 'emptyJpg.jpg'), 'text'),
-      new DailyMedia(2020, 1, 2, path.join(__dirname, '..', '..', '_support', 'emptyPng.png'), 'text')
+      new DailyMedia(2020, 1, 1, path.join(__dirname, '..', '..', '_support', 'emptyJpg.jpg'), 'text', 0),
+      new DailyMedia(2020, 1, 2, path.join(__dirname, '..', '..', '_support', 'emptyPng.png'), 'text', 0)
     ]
     return expect(getMissingFiles(videos)).resolves.toStrictEqual([])
   })
 
   it('finds one missing file with a missing file in the array', async () => {
     const videos = [
-      new DailyMedia(2020, 1, 1, path.join(__dirname, '..', '..', '_support', 'nofile.nope'), 'text')
+      new DailyMedia(2020, 1, 1, path.join(__dirname, '..', '..', '_support', 'nofile.nope'), 'text', 0)
     ]
     return expect(getMissingFiles(videos)).resolves.toStrictEqual([videos[0]])
   })
 
   it('finds one missing file with a missing file in the array', async () => {
     const videos = [
-      new DailyMedia(2020, 1, 1, path.join(__dirname, '..', '..', '_support', 'emptyJpg.jpg'), 'text'),
-      new DailyMedia(2020, 1, 2, path.join(__dirname, '..', '..', '_support', 'nofile.nope'), 'text')
+      new DailyMedia(2020, 1, 1, path.join(__dirname, '..', '..', '_support', 'emptyJpg.jpg'), 'text', 0),
+      new DailyMedia(2020, 1, 2, path.join(__dirname, '..', '..', '_support', 'nofile.nope'), 'text', 0)
     ]
     return expect(getMissingFiles(videos)).resolves.toStrictEqual([videos[1]])
   })

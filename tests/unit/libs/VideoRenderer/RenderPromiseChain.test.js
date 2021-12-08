@@ -8,15 +8,18 @@ jest.mock('sharp')
 const sharp = require('sharp')
 const mockSharpResize = jest.fn()
 const mockSharpToFile = jest.fn()
+const mockSharpRotate = jest.fn()
 const mockedSharp = () => {
   return {
     resize: mockSharpResize,
-    toFile: mockSharpToFile
+    toFile: mockSharpToFile,
+    rotate: mockSharpRotate
   }
 }
 sharp.mockImplementation(mockedSharp)
 mockSharpResize.mockImplementation(mockedSharp)
-mockSharpToFile.mockImplementation(() => Promise.resolve())
+mockSharpToFile.mockImplementation(mockedSharp)
+mockSharpRotate.mockImplementation(mockedSharp)
 
 const eventMock = {
   reply: () => {
@@ -43,30 +46,30 @@ describe('Render all videos as promise chain ', () => {
 
   it('reject an unsupported file type', async () => {
     const videos = [
-      new DailyMedia(2020, 1, 1, '/tmp/whatevs.txt', 'text')
+      new DailyMedia(2020, 1, 1, '/tmp/whatevs.txt', 'text', 0)
     ]
     return expect(run('/tmp/unsupportedType.mp4', videos, '/tmp', eventMock)).rejects.toThrow('Unsupported file type')
   })
 
   it('renders one video to tmp', async () => {
     const videos = [
-      new DailyMedia(2020, 1, 1, '/doesntmatter.mp4', 'video')
+      new DailyMedia(2020, 1, 1, '/doesntmatter.mp4', 'video', 0)
     ]
     return expect(run(finalVideoPath, videos, '/tmp', eventMock)).resolves.toBe(finalVideoPath)
   })
 
   it('renders two videos to tmp', async () => {
     const videos = [
-      new DailyMedia(2020, 1, 1, '/doesntmatter.mp4', 'video'),
-      new DailyMedia(2020, 1, 2, '/doesntmatter.mp4', 'video')
+      new DailyMedia(2020, 1, 1, '/doesntmatter.mp4', 'video', 0),
+      new DailyMedia(2020, 1, 2, '/doesntmatter.mp4', 'video', 0)
     ]
     return expect(run(finalVideoPath, videos, '/tmp', eventMock)).resolves.toBe(finalVideoPath)
   })
 
   it('rendering a video crashes', async () => {
     const videos = [
-      new DailyMedia(2020, 1, 1, '/doesntmatter.mp4', 'video'),
-      new DailyMedia(2020, 1, 2, '/doesntmatter.mp4', 'video')
+      new DailyMedia(2020, 1, 1, '/doesntmatter.mp4', 'video', 0),
+      new DailyMedia(2020, 1, 2, '/doesntmatter.mp4', 'video', 0)
     ]
     FfmpegCommand.prototype.run.mockImplementation(function () {
       this.emit('error', 'A Video Crashed')
@@ -76,8 +79,8 @@ describe('Render all videos as promise chain ', () => {
 
   it('merging two videos crashes', async () => {
     const videos = [
-      new DailyMedia(2020, 1, 1, '/doesntmatter.mp4', 'video'),
-      new DailyMedia(2020, 1, 2, '/doesntmatter.mp4', 'video')
+      new DailyMedia(2020, 1, 1, '/doesntmatter.mp4', 'video', 0),
+      new DailyMedia(2020, 1, 2, '/doesntmatter.mp4', 'video', 0)
     ]
     FfmpegCommand.prototype.mergeToFile.mockImplementation(function () {
       this.emit('error', 'A Merge Crashed')
@@ -87,7 +90,7 @@ describe('Render all videos as promise chain ', () => {
 
   it('renders an image to tmp', async () => {
     const testMediaObjects = [
-      new DailyMedia(2020, 1, 2, '/doesntmatter.jpg', 'image')
+      new DailyMedia(2020, 1, 2, '/doesntmatter.jpg', 'image', 0)
     ]
     await expect(run(finalVideoPath, testMediaObjects, '/tmp', eventMock)).resolves.toBe(finalVideoPath)
     expect(mockSharpResize).toHaveBeenCalledTimes(1)
@@ -95,7 +98,7 @@ describe('Render all videos as promise chain ', () => {
 
   it('renders an image to tmp crashes chain', async () => {
     const testMediaObjects = [
-      new DailyMedia(2020, 1, 2, '/doesntmatter.jpg', 'image')
+      new DailyMedia(2020, 1, 2, '/doesntmatter.jpg', 'image', 0)
     ]
     mockSharpToFile.mockImplementation(() => Promise.reject(Error('Some Sharp Error')))
     await expect(run(finalVideoPath, testMediaObjects, '/tmp', eventMock)).rejects.toThrow('Some Sharp Error')
@@ -105,10 +108,10 @@ describe('Render all videos as promise chain ', () => {
   it('renders two videos and two images to tmp', async () => {
     jest.setTimeout(15000)
     const testMediaObjects = [
-      new DailyMedia(2020, 1, 1, '/doesntmatter.mp4', 'video'),
-      new DailyMedia(2020, 1, 2, '/doesntmatter.jpg', 'image'),
-      new DailyMedia(2020, 1, 3, '/doesntmatter.mp4', 'video'),
-      new DailyMedia(2020, 1, 4, '/doesntmatter.jpg', 'image')
+      new DailyMedia(2020, 1, 1, '/doesntmatter.mp4', 'video', 0),
+      new DailyMedia(2020, 1, 2, '/doesntmatter.jpg', 'image', 0),
+      new DailyMedia(2020, 1, 3, '/doesntmatter.mp4', 'video', 0),
+      new DailyMedia(2020, 1, 4, '/doesntmatter.jpg', 'image', 0)
     ]
     return expect(run(finalVideoPath, testMediaObjects, '/tmp', eventMock)).resolves.toBe(finalVideoPath)
   })

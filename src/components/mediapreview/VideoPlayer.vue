@@ -1,25 +1,30 @@
 <template>
-  <div class="modal is-active" v-if="isVisible">
-    <div class="modal-background"></div>
+  <b-modal
+      :active="isVisible"
+      v-on:close="closeVideoPlayer"
+  >
     <div class="modal-content">
       <div class="columns">
         <div class="column">
-          <video width="400" id="videoPreviewPlayer" controls>
-            <source :src="videoSrc">
+          <div class="video-canvas">
+            <video id="videoPreviewPlayer" v-on:timeupdate="loopPlayEventHandler" class="video-player" :class="{'video-no-rotation':this.rotation===0, 'video-90-rotation':this.rotation===90, 'video-180-rotation':this.rotation===180, 'video-270-rotation':this.rotation===270}">
+            <source :src="videoSrc" :class="{'video-no-rotation':this.rotation===0, 'video-90-rotation':this.rotation===90, 'video-180-rotation':this.rotation===180, 'video-270-rotation':this.rotation===270}">
           </video>
-        </div>
-      </div>
-      <div class="columns">
-        <div class="column">
-          <button class="button" value="Cancel" @click="closeVideoPlayer">{{ $t('button.cancel') }}</button>
-        </div>
-        <div class="column">
-          <button class="button is-primary" @click="acceptVideo" id="videoPlayerAcceptButton">{{ $t('button.accept') }}</button>
+          </div>
+          <div class="video-controls">
+            <b-slider v-model="sliderPosition" class="pl-3 pr-3" v-on:dragstart="sliderDragStart" v-on:dragging="sliderDragged" v-on:dragend="sliderDragEnd" v-on:change="sliderChanged" :custom-formatter="sliderLabel"></b-slider>
+            <button class="button ml-2 is-primary" @click="togglePlayPauseVideo" id="videoPlayerPlayPauseButton"><i class="mdi mdi-24px" :class="{'mdi-play': this.showPlayButton, 'mdi-pause': !this.showPlayButton}"></i></button>
+            <button class="button ml-2" :class="{'is-primary': this.playLooped}" @click="togglePlayLooped" id="buttonTogglePlayLooped"><i class="mdi mdi-sync mdi-24px"></i></button>
+            <button class="button ml-2" id="videoPlayerButtonRotateLeft" @click="rotateLeft"><i class="mdi mdi-rotate-left mdi-24px"></i></button>
+            <button class="button ml-2" id="videoPlayerButtonRotateRight" @click="rotateRight"><i class="mdi mdi-rotate-right mdi-24px"></i></button>
+            <button class="button is-primary is-pulled-right mr-2" @click="acceptVideo" id="videoPlayerAcceptButton">
+              {{ $t('button.accept') }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
-    <button class="modal-close is-large" @click="closeVideoPlayer"></button>
-  </div>
+  </b-modal>
 </template>
 
 <script>
@@ -27,7 +32,16 @@ import * as sc from '@/store-constants'
 import i18n from '@/i18n'
 
 export default {
-  name: 'VideoPlayer',
+  data: function () {
+    return {
+      loopStartTime: 0.0,
+      playLooped: false,
+      sliderPosition: 0,
+      wasPlayingWhenDragged: false,
+      showPlayButton: true,
+      rotation: 0
+    }
+  },
   computed: {
     videoSrc () {
       return this.$store.state.currentDailyMediaShown !== null ? 'file://' + this.$store.state.currentDailyMediaShown.filePath : null
@@ -37,23 +51,123 @@ export default {
     }
   },
   methods: {
+    sliderLabel: function (val) {
+      const media = document.getElementById('videoPreviewPlayer')
+      // Slider not yet initialized
+      if (media === null) {
+        return '0:00'
+      }
+      const sec = Math.floor(media.currentTime)
+      const min = Math.floor(sec / 60)
+      return min + ':' + (sec % 60).toString().padStart(2, '0')
+    },
     closeVideoPlayer: function () {
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+      this.resetLoop()
     },
     acceptVideo: function () {
       const videoPreviewPlayer = document.getElementById('videoPreviewPlayer')
       const currentDailyMedia = this.$store.state.currentDailyMediaShown
       const currentTimeline = this.$store.state.currentTimeline
-      this.$store.dispatch('acceptVideo', videoPreviewPlayer.currentTime)
+      const timeStamp = videoPreviewPlayer.currentTime
+      const rotation = this.rotation
+      this.$store.dispatch('acceptVideo', { timeStamp, rotation })
       // TODO: creating a video screenshot fails, nothing happens and I'm not sure if that crashes the app
       window.ipc.createVideoScreenshot(currentDailyMedia, currentTimeline)
       this.$store.commit('setCurrentDailyMedia', null)
       this.$store.commit('changeAppState', sc.APP_STATE_CALENDAR_VIEW)
+    },
+    togglePlayPauseVideo: function () {
+      const media = document.getElementById('videoPreviewPlayer')
+      if (media.paused) {
+        if (this.playLooped) {
+          this.loopStartTime = media.currentTime
+          media.startPoint = this.loopStartTime
+        }
+        this.showPlayButton = false
+        media.play()
+      } else {
+        media.pause()
+        this.showPlayButton = true
+        if (this.playLooped) {
+          media.currentTime = this.loopStartTime
+        }
+      }
+    },
+    loopPlayEventHandler: function (event) {
+      const media = document.getElementById('videoPreviewPlayer')
+      let currentTime = media.currentTime
+      if (this.playLooped && currentTime > this.loopStartTime + 1.5) {
+        media.currentTime = this.loopStartTime
+        currentTime = media.currentTime
+      }
+      const playedPercentage = currentTime / media.duration
+      this.sliderPosition = 100 * playedPercentage
+      if (playedPercentage === 1) {
+        this.showPlayButton = true
+      }
+    },
+    togglePlayLooped: function () {
+      const media = document.getElementById('videoPreviewPlayer')
+      if (!this.playLooped) {
+        this.loopStartTime = media.currentTime
+        this.playLooped = true
+      } else {
+        this.playLooped = false
+      }
+    },
+    sliderDragStart: function () {
+      const media = document.getElementById('videoPreviewPlayer')
+      this.playLooped = false
+      if (!media.paused) {
+        this.wasPlayingWhenDragged = true
+        media.pause()
+      } else {
+        this.wasPlayingWhenDragged = false
+      }
+    },
+    sliderDragged: function () {
+      const media = document.getElementById('videoPreviewPlayer')
+      media.currentTime = this.sliderPosition / 100 * media.duration
+    },
+    sliderDragEnd: function () {
+      if (this.wasPlayingWhenDragged) {
+        const media = document.getElementById('videoPreviewPlayer')
+        media.play()
+      }
+      this.wasPlayingWhenDragged = false
+    },
+    sliderChanged: function (sliderPosition) {
+      const media = document.getElementById('videoPreviewPlayer')
+      media.currentTime = sliderPosition / 100 * media.duration
+      this.loopStartTime = media.currentTime
+    },
+    resetLoop () {
+      this.loopStartTime = 0.0
+      this.playLooped = false
+      this.wasPlayingWhenDragged = false
+      this.showPlayButton = true
+      this.sliderPosition = 0
+      this.rotation = 0
+    },
+    rotateLeft () {
+      this.rotation -= 90
+      if (this.rotation < 0) {
+        this.rotation += 360
+      }
+    },
+    rotateRight () {
+      this.rotation += 90
+      if (this.rotation >= 360) {
+        this.rotation -= 360
+      }
     }
   },
   watch: {
     isVisible: function (isVisible, wasVisible) {
       if (isVisible) {
+        const currentDailyMedia = this.$store.state.currentDailyMediaShown
+        this.rotation = currentDailyMedia.rotation
         this.$nextTick(function () {
           const lastVideoSource = document.querySelector('source:last-child')// TODO: Document might be replacable by something that only searches within this component
           lastVideoSource.addEventListener('error', (event) => {
@@ -66,19 +180,74 @@ export default {
             })
             this.closeVideoPlayer()
           })
+          const media = document.getElementById('videoPreviewPlayer')
+          const setPlayTime = function () {
+            media.currentTime = currentDailyMedia.timeStamp
+            media.removeEventListener('canplaythrough', setPlayTime)
+          }
+          media.addEventListener('canplaythrough', setPlayTime)
         })
+      } else {
+        this.resetLoop()
       }
     }
   }
 }
 </script>
 
-<style scoped>
-.columns {
-  overflow: hidden;
+<style scoped lang="scss">
+@import "sass/vinutes";
+
+#buttonTogglePlayLooped:focus {
+  box-shadow: none;
+  border-color: #dbdbdb;
 }
 
-.modal-content {
+.video-canvas {
+  margin: auto auto;
+  background: black;
+  width: 400px;
+  border: $primary-light 3px solid;
+}
+
+.video-controls {
+  width: 400px;
+  background: $primary-light;
+  margin: 0 auto;
+  padding: 5px 0;
+  border-radius: 0 0 5px 5px;
+  text-align: left;
+}
+
+.video-player {
   overflow: hidden;
+  margin: 0 auto -10px auto;
+  background: black;
+}
+
+.video-no-rotation {
+  max-height: 394px;
+  width: 394px;
+}
+
+.video-90-rotation {
+  height: 394px;
+  max-width: 394px;
+  transform: rotate(
+          90deg);
+}
+
+.video-180-rotation {
+  max-height: 394px;
+  width: 394px;
+  transform: rotate(
+          180deg);
+}
+
+.video-270-rotation {
+  height: 394px;
+  max-width: 394px;
+  transform: rotate(
+          270deg);
 }
 </style>

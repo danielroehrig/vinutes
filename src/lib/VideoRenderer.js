@@ -28,6 +28,7 @@ switch (os.type()) {
 let currentFFmpegCommand = null
 
 FfmpegCommand.setFfmpegPath(ffmpegPath)
+
 /**
  * Create screenshot from a video at the given time stamp from file path
  *
@@ -37,16 +38,27 @@ FfmpegCommand.setFfmpegPath(ffmpegPath)
  */
 const createScreenshot = (dailyMedia, timeline, event) => {
   const screenshotName = `vinutes-${dailyMedia.year}${dailyMedia.month}${dailyMedia.day}.jpg`
+  const screenshotRotatedName = `vinutes-${dailyMedia.year}${dailyMedia.month}${dailyMedia.day}Rotated.jpg`
+  const tempFolder = app.getPath('temp')
   currentFFmpegCommand = new FfmpegCommand(dailyMedia.filePath).screenshots({
     timestamps: [dailyMedia.timeStamp],
     filename: screenshotName,
-    folder: app.getPath('temp'),
-    size: '320x180'
+    folder: tempFolder
   }).on('end', function () {
     console.log('screenshot created')
-    const buff = fs.readFileSync(path.join(app.getPath('temp'), screenshotName))
-    dailyMedia.previewImage = buff.toString('base64')
-    event.reply('screenshot-created', dailyMedia)
+    const screenShotPath = path.join(tempFolder, screenshotName)
+    const screenShotPathRotated = path.join(tempFolder, screenshotRotatedName)
+    sharp(screenShotPath)
+      .rotate(dailyMedia.rotation)
+      .resize({ width: 320, height: 180, fit: 'contain' })
+      .toFile(screenShotPathRotated)
+      .then(data => {
+        console.log('screenshot rotated')
+        const buff = fs.readFileSync(screenShotPathRotated)
+        dailyMedia.previewImage = buff.toString('base64')
+        event.reply('screenshot-created', dailyMedia)
+      }
+      )
   }).on('error', function () {
     log.error('Could not create screenshot for ' + screenshotName)
   })
@@ -54,12 +66,13 @@ const createScreenshot = (dailyMedia, timeline, event) => {
 
 /**
  * Create and save a thumbnail of a given image
- * @param dailyMedia
- * @param event
+ * @param {DailyMedia} dailyMedia
+ * @param {Event} event
  * @return {Promise<void>}
  */
 const createImagePreview = (dailyMedia, event) => {
   sharp(dailyMedia.filePath)
+    .rotate()
     .resize(320, 180, {
       fit: 'cover'
     })
@@ -100,10 +113,10 @@ const run = (filePath, dailyMediaObjects, tmpFolder, event) => {
 
 /**
  * Create and start a new render queue
- * @param filePath
- * @param dailyMediaObjects
- * @param tmpFolder
- * @param event
+ * @param {string} filePath
+ * @param {DailyMedia[]} dailyMediaObjects
+ * @param {string} tmpFolder
+ * @param {Event} event
  * @return {Promise<never>|T}
  */
 const renderClips = (filePath, dailyMediaObjects, tmpFolder, event) => {
@@ -129,18 +142,22 @@ const renderClips = (filePath, dailyMediaObjects, tmpFolder, event) => {
 /**
  * Render all videos into short clips of same size and codec that can be merged
  * into a longer compilation.
- * @param dailyMedia
- * @param tmpFolder
+ * @param {DailyMedia} dailyMedia
+ * @param {string} tmpFolder
  * @return {Promise<DailyMedia>}
  */
 const renderToVideoClip = (dailyMedia, tmpFolder) => {
   const mediaMoment = moment({ year: dailyMedia.year, month: dailyMedia.month, day: dailyMedia.day })
   const mediaDateString = mediaMoment.format('YYYY-MM-DD')
   const dateName = mediaMoment.format('LL')
-  const tmpFileName = path.join(tmpFolder, mediaDateString + '.mp4')
+  const tmpFileName = path.join(tmpFolder, mediaDateString + '-no-date.mp4')
+  const tmpFileNameWithDate = path.join(tmpFolder, mediaDateString + '.mp4')
 
   if (dailyMedia.mediaType === 'video') {
-    return prepareVideoClip(dailyMedia, tmpFolder, mediaDateString, dateName, tmpFileName)
+    return prepareVideoClip(dailyMedia, mediaDateString, tmpFileName)
+      .then(() => {
+        return addTextToVideo(dailyMedia, mediaDateString, dateName, tmpFileName, tmpFileNameWithDate)
+      })
   } else if (dailyMedia.mediaType === 'image') {
     return prepareStillImageVideo(dailyMedia, tmpFolder, mediaDateString, dateName, tmpFileName)
   } else {
@@ -150,7 +167,7 @@ const renderToVideoClip = (dailyMedia, tmpFolder) => {
 
 /**
  * Adds the timestamp to the video
- * @param {string}dateName
+ * @param {string} dateName
  */
 FfmpegCommand.prototype.addDateText = function (dateName) {
   this.videoFilters({
@@ -170,8 +187,49 @@ FfmpegCommand.prototype.addDateText = function (dateName) {
 }
 
 /**
+ * Rotate the video if necessary
+ * @param {int} rotation
+ */
+FfmpegCommand.prototype.rotate = function (rotation) {
+  switch (rotation) {
+    case 90:
+      console.log('Rotate right')
+      this.videoFilters(
+        {
+          filter: 'transpose',
+          options: 1
+        }
+      )
+      break
+    case 180:
+      console.log('Rotate full')
+      this.videoFilters(
+        {
+          filter: 'transpose',
+          options: 2
+        })
+      this.videoFilters(
+        {
+          filter: 'transpose',
+          options: 2
+        })
+      break
+    case 270:
+      console.log('Rotate left')
+      this.videoFilters(
+        {
+          filter: 'transpose',
+          options: 2
+        }
+      )
+      break
+  }
+  return this
+}
+
+/**
  * Set output parameters like codec and bitrate for the clips
- * @param tmpFileName
+ * @param {string} tmpFileName
  */
 FfmpegCommand.prototype.setOutputParameters = function (tmpFileName) {
   this.size('1920x1080')
@@ -184,21 +242,51 @@ FfmpegCommand.prototype.setOutputParameters = function (tmpFileName) {
 
 /**
  * Render a short video clip from a video
- * @param {DailyMedia}dailyMedia
- * @param {string}tmpFolder
- * @param {string}mediaDateString
- * @param {string}dateName
- * @param {string}tmpFileName
+ * @param {DailyMedia} dailyMedia
+ * @param {string} mediaDateString
+ * @param {string} tmpFileName
  * @return {Promise<unknown>}
  */
 function prepareVideoClip (
-  dailyMedia, tmpFolder, mediaDateString, dateName, tmpFileName) {
+  dailyMedia, mediaDateString, tmpFileName) {
   return new Promise((resolve, reject) => {
     const ffmpeg = new FfmpegCommand()
     currentFFmpegCommand = ffmpeg
     ffmpeg.addInput(dailyMedia.filePath)
       .seekInput(dailyMedia.timeStamp)
       .duration(1.5)
+      .rotate(dailyMedia.rotation)
+      .setOutputParameters(tmpFileName)
+      .on('error', (e) => {
+        reject(Error('Render failed for file ' + dailyMedia.filePath + ' with ffmpeg error: ' + e))
+      })
+      .on('start', function () {
+        console.log('Rendering started for ' + dailyMedia.filePath + ' at position ' + dailyMedia.timeStamp)
+      })
+      .on('end', function () {
+        console.log('Finished processing ' + mediaDateString)
+        dailyMedia.tmpFilePath = tmpFileName
+        resolve(dailyMedia)
+      })
+      .run()
+  })
+}
+
+/**
+ * Render a short video clip from a video
+ * @param {DailyMedia} dailyMedia
+ * @param {string} mediaDateString
+ * @param {string} dateName
+ * @param {string} tmpFileNameNoName
+ * @param {string} tmpFileName
+ * @return {Promise<unknown>}
+ */
+function addTextToVideo (
+  dailyMedia, mediaDateString, dateName, tmpFileNameNoName, tmpFileName) {
+  return new Promise((resolve, reject) => {
+    const ffmpeg = new FfmpegCommand()
+    currentFFmpegCommand = ffmpeg
+    ffmpeg.addInput(tmpFileNameNoName)
       .addDateText(dateName)
       .setOutputParameters(tmpFileName)
       .on('error', (e) => {
@@ -249,6 +337,7 @@ function prepareStillImageVideo (dailyMedia, tmpFolder, mediaDateString, dateNam
       })
 
     sharp(dailyMedia.filePath)
+      .rotate()
       .resize(1920, 1080, {
         fit: 'cover'
       })
