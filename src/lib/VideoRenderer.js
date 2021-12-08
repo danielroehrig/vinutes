@@ -28,6 +28,7 @@ switch (os.type()) {
 let currentFFmpegCommand = null
 
 FfmpegCommand.setFfmpegPath(ffmpegPath)
+
 /**
  * Create screenshot from a video at the given time stamp from file path
  *
@@ -65,8 +66,8 @@ const createScreenshot = (dailyMedia, timeline, event) => {
 
 /**
  * Create and save a thumbnail of a given image
- * @param dailyMedia
- * @param event
+ * @param {DailyMedia} dailyMedia
+ * @param {Event} event
  * @return {Promise<void>}
  */
 const createImagePreview = (dailyMedia, event) => {
@@ -112,10 +113,10 @@ const run = (filePath, dailyMediaObjects, tmpFolder, event) => {
 
 /**
  * Create and start a new render queue
- * @param filePath
- * @param dailyMediaObjects
- * @param tmpFolder
- * @param event
+ * @param {string} filePath
+ * @param {DailyMedia[]} dailyMediaObjects
+ * @param {string} tmpFolder
+ * @param {Event} event
  * @return {Promise<never>|T}
  */
 const renderClips = (filePath, dailyMediaObjects, tmpFolder, event) => {
@@ -141,8 +142,8 @@ const renderClips = (filePath, dailyMediaObjects, tmpFolder, event) => {
 /**
  * Render all videos into short clips of same size and codec that can be merged
  * into a longer compilation.
- * @param dailyMedia
- * @param tmpFolder
+ * @param {DailyMedia} dailyMedia
+ * @param {string} tmpFolder
  * @return {Promise<DailyMedia>}
  */
 const renderToVideoClip = (dailyMedia, tmpFolder) => {
@@ -228,7 +229,7 @@ FfmpegCommand.prototype.rotate = function (rotation) {
 
 /**
  * Set output parameters like codec and bitrate for the clips
- * @param tmpFileName
+ * @param {string} tmpFileName
  */
 FfmpegCommand.prototype.setOutputParameters = function (tmpFileName) {
   this.size('1920x1080')
