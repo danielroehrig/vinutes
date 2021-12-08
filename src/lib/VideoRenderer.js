@@ -149,10 +149,14 @@ const renderToVideoClip = (dailyMedia, tmpFolder) => {
   const mediaMoment = moment({ year: dailyMedia.year, month: dailyMedia.month, day: dailyMedia.day })
   const mediaDateString = mediaMoment.format('YYYY-MM-DD')
   const dateName = mediaMoment.format('LL')
-  const tmpFileName = path.join(tmpFolder, mediaDateString + '.mp4')
+  const tmpFileName = path.join(tmpFolder, mediaDateString + '-no-date.mp4')
+  const tmpFileNameWithDate = path.join(tmpFolder, mediaDateString + '.mp4')
 
   if (dailyMedia.mediaType === 'video') {
-    return prepareVideoClip(dailyMedia, tmpFolder, mediaDateString, dateName, tmpFileName)
+    return prepareVideoClip(dailyMedia, mediaDateString, tmpFileName)
+      .then(() => {
+        return addTextToVideo(dailyMedia, mediaDateString, dateName, tmpFileName, tmpFileNameWithDate)
+      })
   } else if (dailyMedia.mediaType === 'image') {
     return prepareStillImageVideo(dailyMedia, tmpFolder, mediaDateString, dateName, tmpFileName)
   } else {
@@ -237,15 +241,13 @@ FfmpegCommand.prototype.setOutputParameters = function (tmpFileName) {
 
 /**
  * Render a short video clip from a video
- * @param {DailyMedia}dailyMedia
- * @param {string}tmpFolder
- * @param {string}mediaDateString
- * @param {string}dateName
- * @param {string}tmpFileName
+ * @param {DailyMedia} dailyMedia
+ * @param {string} mediaDateString
+ * @param {string} tmpFileName
  * @return {Promise<unknown>}
  */
 function prepareVideoClip (
-  dailyMedia, tmpFolder, mediaDateString, dateName, tmpFileName) {
+  dailyMedia, mediaDateString, tmpFileName) {
   return new Promise((resolve, reject) => {
     const ffmpeg = new FfmpegCommand()
     currentFFmpegCommand = ffmpeg
@@ -253,6 +255,37 @@ function prepareVideoClip (
       .seekInput(dailyMedia.timeStamp)
       .duration(1.5)
       .rotate(dailyMedia.rotation)
+      .setOutputParameters(tmpFileName)
+      .on('error', (e) => {
+        reject(Error('Render failed for file ' + dailyMedia.filePath + ' with ffmpeg error: ' + e))
+      })
+      .on('start', function () {
+        console.log('Rendering started for ' + dailyMedia.filePath + ' at position ' + dailyMedia.timeStamp)
+      })
+      .on('end', function () {
+        console.log('Finished processing ' + mediaDateString)
+        dailyMedia.tmpFilePath = tmpFileName
+        resolve(dailyMedia)
+      })
+      .run()
+  })
+}
+
+/**
+ * Render a short video clip from a video
+ * @param {DailyMedia} dailyMedia
+ * @param {string} mediaDateString
+ * @param {string} dateName
+ * @param {string} tmpFileNameNoName
+ * @param {string} tmpFileName
+ * @return {Promise<unknown>}
+ */
+function addTextToVideo (
+  dailyMedia, mediaDateString, dateName, tmpFileNameNoName, tmpFileName) {
+  return new Promise((resolve, reject) => {
+    const ffmpeg = new FfmpegCommand()
+    currentFFmpegCommand = ffmpeg
+    ffmpeg.addInput(tmpFileNameNoName)
       .addDateText(dateName)
       .setOutputParameters(tmpFileName)
       .on('error', (e) => {
