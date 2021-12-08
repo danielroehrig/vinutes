@@ -42,14 +42,14 @@ const createScreenshot = (dailyMedia, timeline, event) => {
   currentFFmpegCommand = new FfmpegCommand(dailyMedia.filePath).screenshots({
     timestamps: [dailyMedia.timeStamp],
     filename: screenshotName,
-    folder: tempFolder,
-    size: '320x180'
+    folder: tempFolder
   }).on('end', function () {
     console.log('screenshot created')
     const screenShotPath = path.join(tempFolder, screenshotName)
     const screenShotPathRotated = path.join(tempFolder, screenshotRotatedName)
     sharp(screenShotPath)
       .rotate(dailyMedia.rotation)
+      .resize({ width: 320, height: 180, fit: 'contain' })
       .toFile(screenShotPathRotated)
       .then(data => {
         console.log('screenshot rotated')
