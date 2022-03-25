@@ -103,6 +103,11 @@ const run = (filePath, dailyMediaObjects, tmpFolder, event) => {
     .then(
       () => {
         const filePaths = dailyMediaObjects.map(d => d.tmpFilePath)
+        return testExistenceOfRenderedVideos(filePaths)
+      }
+    )
+    .then(
+      (filePaths) => {
         return mergeVideos(filePaths, filePath, tmpFolder, event)
       }
     )
@@ -350,48 +355,46 @@ function prepareStillImageVideo (dailyMedia, tmpFolder, mediaDateString, dateNam
 }
 
 /**
- * Merge previously rendered video clips into a new compilation
- * @param videoPaths
- * @param outputPath
- * @param event
- * @param {string|PromiseLike<T>|T} outputPath
+ * Check if all files that need to be merged are there
+ * @param {string[]} videoPaths
+ * @returns {Promise<string[]>}
  */
-const mergeVideos = (videoPaths, outputPath, tmpFolder, event) => {
-  const outputPathObject = path.parse(outputPath)
-  outputPath = path.join(outputPathObject.dir, outputPathObject.name + '.mp4')// TODO What happens if you add mp4 extension
+const testExistenceOfRenderedVideos = (videoPaths) => {
   return new Promise((resolve, reject) => {
     videoPaths.forEach((path) => {
       try {
         fs.statSync(path)
       } catch (e) {
-        console.log('File does not exist.')
         reject(Error(e))
       }
     })
-    const mergeFileContents = videoPaths.map((v) => {
-      return `file '${v}'`
-    }).join('\n')
-    const mergeFile = path.join(tmpFolder, 'mergefile')
-    fs.writeFileSync(mergeFile, mergeFileContents)
+    resolve(videoPaths)
+  })
+}
+
+/**
+ * Merge previously rendered video clips into a new compilation
+ * @param {string[]} videoPaths
+ * @param {string} outputPath
+ * @param {string}tmpFolder
+ * @param {event} event
+ */
+const mergeVideos = (videoPaths, outputPath, tmpFolder, event) => {
+  // Set the percentage to 90% as we are mostly done
+  event.reply('render-update', null, 90)
+  const outputPathObject = path.parse(outputPath)
+  outputPath = path.join(outputPathObject.dir, outputPathObject.name + '.mp4')// TODO What happens if you add mp4 extension
+  const mergeFileContents = videoPaths.map((v) => {
+    return `file '${v}'`
+  }).join('\n')
+  const mergeFile = path.join(tmpFolder, 'mergefile')
+  fs.writeFileSync(mergeFile, mergeFileContents)
+  return new Promise((resolve, reject) => {
     const mergeCommand = spawn(ffmpegPath, ['-f', 'concat', '-safe', 0, '-nostdin', '-y', '-i', mergeFile, '-c', 'copy', outputPath])
-    mergeCommand.on('close', code => {
-      console.log(`child process exited with code ${code}`)
-    })
-    mergeCommand.stderr.on('data', data => {
-      log.error(data)
-    })
-    mergeCommand.stdout.on('data', data => {
-      log.debug(data)
-    })
-    mergeCommand.on('error', (error) => {
-      log.error(`error: ${error.message}`)
-      reject(error)
-    })
     mergeCommand.on('close', (code) => {
       if (code === 0) {
         resolve()
       } else {
-        log.error("Merging videos didn't work")
         reject(Error("Merging videos didn't work"))
       }
     })
