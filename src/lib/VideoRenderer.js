@@ -3,6 +3,7 @@ const moment = require('moment')
 const path = require('path')
 const fs = require('fs')
 const os = require('os')
+const { spawn } = require('child_process')
 let ffmpegPath = null
 const silenceMP3Path = path.resolve(path.join(app.getAppPath(), '..', 'public', 'silence.mp3'))
 const FfmpegCommand = require('fluent-ffmpeg')
@@ -102,7 +103,7 @@ const run = (filePath, dailyMediaObjects, tmpFolder, event) => {
     .then(
       () => {
         const filePaths = dailyMediaObjects.map(d => d.tmpFilePath)
-        return mergeVideos(filePaths, filePath, event)
+        return mergeVideos(filePaths, filePath, tmpFolder, event)
       }
     )
     .catch(error => {
@@ -235,6 +236,7 @@ FfmpegCommand.prototype.setOutputParameters = function (tmpFileName) {
   this.size('1920x1080')
     .videoBitrate('16384k')
     .videoCodec('libx264')
+    .fps(30)
     .autopad('black')
     .output(tmpFileName)
   return this
@@ -354,11 +356,9 @@ function prepareStillImageVideo (dailyMedia, tmpFolder, mediaDateString, dateNam
  * @param event
  * @param {string|PromiseLike<T>|T} outputPath
  */
-const mergeVideos = (videoPaths, outputPath, event) => {
+const mergeVideos = (videoPaths, outputPath, tmpFolder, event) => {
   const outputPathObject = path.parse(outputPath)
   outputPath = path.join(outputPathObject.dir, outputPathObject.name + '.mp4')// TODO What happens if you add mp4 extension
-  const mergeCommand = new FfmpegCommand()
-  currentFFmpegCommand = mergeCommand
   return new Promise((resolve, reject) => {
     videoPaths.forEach((path) => {
       try {
@@ -367,18 +367,34 @@ const mergeVideos = (videoPaths, outputPath, event) => {
         console.log('File does not exist.')
         reject(Error(e))
       }
-      mergeCommand.addInput(path)
     })
-    mergeCommand
-      .on('end', () => {
-        console.log('merging ended')
-        resolve(outputPath)
-      }).on('error', (e) => {
-        reject(Error(e))
-      }).on('start', () => {
-        event.reply('render-update', null, 90)
-        console.log('merging started')
-      }).mergeToFile(outputPath, app.getPath('temp'))
+    const mergeFileContents = videoPaths.map((v) => {
+      return `file '${v}'`
+    }).join('\n')
+    const mergeFile = path.join(tmpFolder, 'mergefile')
+    fs.writeFileSync(mergeFile, mergeFileContents)
+    const mergeCommand = spawn(ffmpegPath, ['-f', 'concat', '-safe', 0, '-nostdin', '-y', '-i', mergeFile, '-c', 'copy', outputPath])
+    mergeCommand.on('close', code => {
+      console.log(`child process exited with code ${code}`)
+    })
+    mergeCommand.stderr.on('data', data => {
+      log.error(data)
+    })
+    mergeCommand.stdout.on('data', data => {
+      log.debug(data)
+    })
+    mergeCommand.on('error', (error) => {
+      log.error(`error: ${error.message}`)
+      reject(error)
+    })
+    mergeCommand.on('close', (code) => {
+      if (code === 0) {
+        resolve()
+      } else {
+        log.error("Merging videos didn't work")
+        reject(Error("Merging videos didn't work"))
+      }
+    })
   })
 }
 
