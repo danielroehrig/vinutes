@@ -46,7 +46,7 @@
     "dayjs": "^1.10.6",
     "electron-log": "^4.4.1",
     "fluent-ffmpeg": "^2.1.2",
-    "moment": "^2.26.0",
+    "moment": "^2.29.2",
     "sass": "^1.43.4",
     "sass-loader": "^10.2.0",
     "sharp": "^0.29.2",
