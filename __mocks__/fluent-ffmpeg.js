@@ -18,6 +18,7 @@ FfmpegCommand.prototype.loop = function () { return this }
 FfmpegCommand.prototype.duration = function () { return this }
 FfmpegCommand.prototype.videoFilters = function () { return this }
 FfmpegCommand.prototype.size = function () { return this }
+FfmpegCommand.prototype.fps = function () { return this }
 FfmpegCommand.prototype.videoBitrate = function () { return this }
 FfmpegCommand.prototype.videoCodec = function () { return this }
 FfmpegCommand.prototype.autopad = function () { return this }

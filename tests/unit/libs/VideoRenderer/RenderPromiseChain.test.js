@@ -27,12 +27,15 @@ const eventMock = {
   }
 }
 
+const { spawnMergeVideos } = require('@/lib/FfmpegWrapper')
+jest.mock('@/lib/FfmpegWrapper')
+
 describe('Render all videos as promise chain ', () => {
   const finalVideoPath = '/wontbeused.mp4'
   beforeEach(() => {
     mockSharpToFile.mockImplementation(() => Promise.resolve())
-    FfmpegCommand.prototype.mergeToFile.mockImplementation(function () {
-      this.emit('end')
+    spawnMergeVideos.mockImplementation((ffmpegPath, mergeFile, outputPath) => {
+      return Promise.resolve(outputPath)
     })
     FfmpegCommand.prototype.run.mockImplementation(function () {
       this.emit('end')
@@ -82,8 +85,8 @@ describe('Render all videos as promise chain ', () => {
       new DailyMedia(2020, 1, 1, '/doesntmatter.mp4', 'video', 0),
       new DailyMedia(2020, 1, 2, '/doesntmatter.mp4', 'video', 0)
     ]
-    FfmpegCommand.prototype.mergeToFile.mockImplementation(function () {
-      this.emit('error', 'A Merge Crashed')
+    spawnMergeVideos.mockImplementation((ffmpegPath, mergeFile, outputPath) => {
+      return Promise.reject(Error('A Merge Crashed'))
     })
     return expect(run(finalVideoPath, videos, '/tmp', eventMock)).rejects.toThrow('A Merge Crashed')
   })

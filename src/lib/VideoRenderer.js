@@ -3,12 +3,12 @@ const moment = require('moment')
 const path = require('path')
 const fs = require('fs')
 const os = require('os')
-const { spawn } = require('child_process')
 let ffmpegPath = null
 const silenceMP3Path = path.resolve(path.join(app.getAppPath(), '..', 'public', 'silence.mp3'))
 const FfmpegCommand = require('fluent-ffmpeg')
 const sharp = require('sharp')
 const log = require('electron-log')
+const { spawnMergeVideos, killCurrentFfmpegProcess } = require('@/lib/FfmpegWrapper')
 switch (os.type()) {
   case 'Linux':
     ffmpegPath = path.join(app.getAppPath(), '..', 'bin', 'amd64', 'ffmpeg')
@@ -376,7 +376,7 @@ const testExistenceOfRenderedVideos = (videoPaths) => {
  * Merge previously rendered video clips into a new compilation
  * @param {string[]} videoPaths
  * @param {string} outputPath
- * @param {string}tmpFolder
+ * @param {string} tmpFolder
  * @param {event} event
  */
 const mergeVideos = (videoPaths, outputPath, tmpFolder, event) => {
@@ -389,23 +389,16 @@ const mergeVideos = (videoPaths, outputPath, tmpFolder, event) => {
   }).join('\n')
   const mergeFile = path.join(tmpFolder, 'mergefile')
   fs.writeFileSync(mergeFile, mergeFileContents)
-  return new Promise((resolve, reject) => {
-    const mergeCommand = spawn(ffmpegPath, ['-f', 'concat', '-safe', 0, '-nostdin', '-y', '-i', mergeFile, '-c', 'copy', outputPath])
-    mergeCommand.on('close', (code) => {
-      if (code === 0) {
-        resolve()
-      } else {
-        reject(Error("Merging videos didn't work"))
-      }
-    })
-  })
+  return spawnMergeVideos(ffmpegPath, mergeFile, outputPath)
 }
 
 /**
  * Cancel the current running ffmpeg command
+ * spawned process
  */
 const cancelRendering = () => {
   currentFFmpegCommand.kill('SIGKILL')
+  killCurrentFfmpegProcess()
 }
 
 module.exports.createScreenshot = createScreenshot
