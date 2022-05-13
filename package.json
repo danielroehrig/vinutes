@@ -6,7 +6,7 @@
     "diary"
   ],
   "homepage": "http://vinutes.org",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "private": true,
   "author": {
     "name": "Daniel Röhrig",
@@ -42,7 +42,7 @@
     "buefy": "^0.9.11",
     "bulma": "^0.9.3",
     "calendar": "^0.1.1",
-    "caniuse-lite": "^1.0.30001279",
+    "caniuse-lite": "^1.0.30001340",
     "dayjs": "^1.10.6",
     "electron-log": "^4.4.1",
     "fluent-ffmpeg": "^2.1.2",
@@ -64,7 +64,7 @@
     "@vue/cli-service": "^4.5.15",
     "@vue/test-utils": "^1.2.2",
     "babel-core": "^7.0.0-bridge.0",
-    "electron": "^15.3.1",
+    "electron": "^15.3.5",
     "electron-devtools-installer": "^3.2.0",
     "electron-icon-builder": "^2.0.1",
     "eslint": "^8.2.0",

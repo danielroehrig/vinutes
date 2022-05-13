@@ -8,6 +8,7 @@ const silenceMP3Path = path.resolve(path.join(app.getAppPath(), '..', 'public', 
 const FfmpegCommand = require('fluent-ffmpeg')
 const sharp = require('sharp')
 const log = require('electron-log')
+const { spawnMergeVideos, killCurrentFfmpegProcess } = require('@/lib/FfmpegWrapper')
 switch (os.type()) {
   case 'Linux':
     ffmpegPath = path.join(app.getAppPath(), '..', 'bin', 'amd64', 'ffmpeg')
@@ -102,7 +103,12 @@ const run = (filePath, dailyMediaObjects, tmpFolder, event) => {
     .then(
       () => {
         const filePaths = dailyMediaObjects.map(d => d.tmpFilePath)
-        return mergeVideos(filePaths, filePath, event)
+        return testExistenceOfRenderedVideos(filePaths)
+      }
+    )
+    .then(
+      (filePaths) => {
+        return mergeVideos(filePaths, filePath, tmpFolder, event)
       }
     )
     .catch(error => {
@@ -235,6 +241,7 @@ FfmpegCommand.prototype.setOutputParameters = function (tmpFileName) {
   this.size('1920x1080')
     .videoBitrate('16384k')
     .videoCodec('libx264')
+    .fps(30)
     .autopad('black')
     .output(tmpFileName)
   return this
@@ -348,45 +355,50 @@ function prepareStillImageVideo (dailyMedia, tmpFolder, mediaDateString, dateNam
 }
 
 /**
- * Merge previously rendered video clips into a new compilation
- * @param videoPaths
- * @param outputPath
- * @param event
- * @param {string|PromiseLike<T>|T} outputPath
+ * Check if all files that need to be merged are there
+ * @param {string[]} videoPaths
+ * @returns {Promise<string[]>}
  */
-const mergeVideos = (videoPaths, outputPath, event) => {
-  const outputPathObject = path.parse(outputPath)
-  outputPath = path.join(outputPathObject.dir, outputPathObject.name + '.mp4')// TODO What happens if you add mp4 extension
-  const mergeCommand = new FfmpegCommand()
-  currentFFmpegCommand = mergeCommand
+const testExistenceOfRenderedVideos = (videoPaths) => {
   return new Promise((resolve, reject) => {
     videoPaths.forEach((path) => {
       try {
         fs.statSync(path)
       } catch (e) {
-        console.log('File does not exist.')
         reject(Error(e))
       }
-      mergeCommand.addInput(path)
     })
-    mergeCommand
-      .on('end', () => {
-        console.log('merging ended')
-        resolve(outputPath)
-      }).on('error', (e) => {
-        reject(Error(e))
-      }).on('start', () => {
-        event.reply('render-update', null, 90)
-        console.log('merging started')
-      }).mergeToFile(outputPath, app.getPath('temp'))
+    resolve(videoPaths)
   })
 }
 
 /**
+ * Merge previously rendered video clips into a new compilation
+ * @param {string[]} videoPaths
+ * @param {string} outputPath
+ * @param {string} tmpFolder
+ * @param {event} event
+ */
+const mergeVideos = (videoPaths, outputPath, tmpFolder, event) => {
+  // Set the percentage to 90% as we are mostly done
+  event.reply('render-update', null, 90)
+  const outputPathObject = path.parse(outputPath)
+  outputPath = path.join(outputPathObject.dir, outputPathObject.name + '.mp4')// TODO What happens if you add mp4 extension
+  const mergeFileContents = videoPaths.map((v) => {
+    return `file '${v}'`
+  }).join('\n')
+  const mergeFile = path.join(tmpFolder, 'mergefile')
+  fs.writeFileSync(mergeFile, mergeFileContents)
+  return spawnMergeVideos(ffmpegPath, mergeFile, outputPath)
+}
+
+/**
  * Cancel the current running ffmpeg command
+ * spawned process
  */
 const cancelRendering = () => {
   currentFFmpegCommand.kill('SIGKILL')
+  killCurrentFfmpegProcess()
 }
 
 module.exports.createScreenshot = createScreenshot
