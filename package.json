@@ -42,7 +42,7 @@
     "buefy": "^0.9.11",
     "bulma": "^0.9.3",
     "calendar": "^0.1.1",
-    "caniuse-lite": "^1.0.30001279",
+    "caniuse-lite": "^1.0.30001340",
     "dayjs": "^1.10.6",
     "electron-log": "^4.4.1",
     "fluent-ffmpeg": "^2.1.2",
