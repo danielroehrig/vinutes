@@ -2,7 +2,7 @@
   <div class="column">
     <button v-if="isVisible && hasMedia" class="delete is-pulled-right removeMedia" @click="removeMedia" :id="deleteButtonId"></button>
     <div class="box calendar-day" :id="dayId" :class="{'inactive': !isVisible, 'withMedia': hasMedia, 'missing': fileMissing, 'dragged': this.draggedOver }" :style="styling"
-         @click="calendarDayClicked" @drop.prevent="droppedFile" @dragover.prevent @dragenter.prevent="draggedFile" @dragleave="leaveDrag">
+         @click="calendarDayClicked" @drop.prevent="droppedFile" @dragover.prevent @dragenter.prevent="draggedFile" @dragleave.prevent="leaveDrag">
       <div class="date" :class="{ 'missing': fileMissing }">
         <div v-if="fileMissing"><span class="icon mdi mdi-24px mdi-alert"></span><br>{{ $t('missing') }}!</div> {{ isVisible && !fileMissing ? timestampString : '' }}
       </div>
